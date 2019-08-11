@@ -78,7 +78,7 @@ fragment {
             material.baseColor.b *= 1.0 - a;
         }
 
-        material.baseColor.a = 0.8 + 0.2 * (1.0 - material.baseColor.a);
+        material.baseColor.a = mix(1.0, 0.8 + 0.2 * (1.0 - material.baseColor.a), materialParams.progress);
 
         material.roughness = materialParams.roughness;
         material.clearCoat = materialParams.clearCoat;

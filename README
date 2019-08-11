@@ -19,7 +19,7 @@ you can do this to list, start, and stop ignorable files:
 Todo:
 
     Part 1
-        Lat Long lines on step1cylfront and step1
+        Lat Long lines on step1 (step1CylinderFront)
             fade in at [.4, .45]
             fade in at [.55, .6]
 

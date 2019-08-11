@@ -11,6 +11,7 @@ class Viewpoint {
 }
 
 const clamp = (val: number, lower: number, upper: number): number => Math.max(Math.min(val, upper), lower);
+const mix = (a: number, b: number, t: number): number => a * (1 - t) + b * t;
 
 const smoothstep = (edge0: number, edge1: number, x: number): number => {
     const t = clamp((x - edge0) / (edge1 - edge0), 0.0, 1.0);
@@ -163,10 +164,13 @@ export class Display {
                 const fadeIn = smoothstep(.2, .3, progress);
                 const fadeOut = 1.0 - smoothstep(.6, .7, progress);
                 const cylinderPresence = fadeIn * fadeOut;
-                const cylinderZ = -0.5 + (1.0 - cylinderPresence);
+                let cylinderZ = -0.5 + (1.0 - cylinderPresence);
 
                 const cameraFn = d3.interpolate([0, 0, 3], [0, 3, 7]);
                 glm.vec3.copy(this.viewpoint.eye, cameraFn(cylinderPresence));
+
+                cylinderZ = mix(cylinderZ, -10.0, smoothstep(0.8, 1.0, progress));
+
 
                 const m1 = glm.mat4.fromRotation(glm.mat4.create(), Math.PI / 2, [1, 0, 0]);
                 const m2 = glm.mat4.fromTranslation(glm.mat4.create(), [0, 0, cylinderZ]);
@@ -294,6 +298,7 @@ export class Display {
             .boundingBox({ center: [-1, -1, -1], halfExtent: [1, 1, 1] })
             .material(0, this.step1CylinderFrontMaterial)
             .geometry(0, PrimitiveType.TRIANGLES, vb, ib)
+            .culling(false)
             .build(this.engine, this.frontCylinderEntity);
 
         this.backCylinderEntity = Filament.EntityManager.get().create();
@@ -301,6 +306,7 @@ export class Display {
             .boundingBox({ center: [-1, -1, -1], halfExtent: [1, 1, 1] })
             .material(0, this.step1CylinderBackMaterial)
             .geometry(0, PrimitiveType.TRIANGLES, vb, ib)
+            .culling(false)
             .build(this.engine, this.backCylinderEntity);
 
         const tcm = this.engine.getTransformManager();

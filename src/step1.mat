@@ -19,7 +19,6 @@ fragment {
         prepareMaterial(material);
         material.baseColor.rgb = materialParams.baseColor;
         material.baseColor.b *= 0.5;
-        material.baseColor.a = 0.8;
         material.roughness = materialParams.roughness;
         material.clearCoat = materialParams.clearCoat;
         material.clearCoatRoughness = materialParams.clearCoatRoughness;
