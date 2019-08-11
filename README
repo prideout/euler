@@ -9,11 +9,14 @@ also do:
 
     ./extras/update-release.sh
 
-Todo:
+If you want to avoid accidentally publishing change to your local build output,
+you can do this to list, start, and stop ignorable files:
 
-    Part 2
-        Animate camera and fade in lines  [0.0, 0.2]
-        Animate camera and fade out lines [0.8, 1.0]
+    git ls-files -v|grep '^S'
+    git update-index --skip-worktree docs/main.js
+    git update-index --no-skip-worktree docs/main.js
+
+Todo:
 
     Part 1
         Lat Long lines on step1cylfront and step1

@@ -145,7 +145,7 @@ export class Display {
                     break;
                 case 1:
                     this.currentMaterial = this.step2Material;
-                    glm.vec3.copy(this.viewpoint.eye, [0, 1, 3]);
+                    glm.vec3.copy(this.viewpoint.eye, [0, 0, 3]);
                     break;
                 default:
                     this.currentMaterial = this.step1Material;
@@ -153,24 +153,19 @@ export class Display {
             }
             rm.setMaterialInstanceAt(sphere, 0, this.currentMaterial);
             this.currentStep = step;
-            this.currentMaterial.setFloatParameter("progress", progress);
             this.currentProgress = progress;
         } else if (this.currentProgress !== progress) {
-            this.currentMaterial.setFloatParameter("progress", progress);
             this.currentProgress = progress;
         }
 
         switch (step) {
-            case 0:
+            case 0: {
                 const fadeIn = smoothstep(.2, .3, progress);
                 const fadeOut = 1.0 - smoothstep(.6, .7, progress);
                 const cylinderPresence = fadeIn * fadeOut;
                 const cylinderZ = -0.5 + (1.0 - cylinderPresence);
 
-                const source = [0, 0, 3];
-                const target = [0, 3, 7];
-                const cameraFn = d3.interpolate(source, target);
-
+                const cameraFn = d3.interpolate([0, 0, 3], [0, 3, 7]);
                 glm.vec3.copy(this.viewpoint.eye, cameraFn(cylinderPresence));
 
                 const m1 = glm.mat4.fromRotation(glm.mat4.create(), Math.PI / 2, [1, 0, 0]);
@@ -191,8 +186,20 @@ export class Display {
                 this.step1CylinderBackMaterial.setColor4Parameter("baseColor",  sRGB, [0.0, 0.0, 0.0, 0.0]);
 
                 break;
-            case 1:
+            }
+            case 1: {
+
+                const fadeInLune = smoothstep(0.0, 0.2, progress);
+                const fadeOutLune = 1.0 - smoothstep(0.8, 1.0, progress);
+                const lunePresence = fadeInLune * fadeOutLune;
+
+                const cameraFn = d3.interpolate([0, 0, 3], [0, 1, 3]);
+                glm.vec3.copy(this.viewpoint.eye, cameraFn(lunePresence));
+
+                this.currentMaterial.setFloatParameter("progress", lunePresence);
+
                 break;
+            }
             default:
         }
 }
