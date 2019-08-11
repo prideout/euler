@@ -39242,6 +39242,7 @@ var App = /** @class */ (function () {
 "use strict";
 
 exports.__esModule = true;
+var d3 = __webpack_require__(/*! d3 */ "./node_modules/d3/index.js");
 var Filament = __webpack_require__(/*! filament */ "./filament/filament.js");
 var glm = __webpack_require__(/*! gl-matrix */ "./node_modules/gl-matrix/lib/gl-matrix.js");
 var urls = __webpack_require__(/*! ./urls */ "./src/urls.ts");
@@ -39253,6 +39254,12 @@ var Viewpoint = /** @class */ (function () {
     }
     return Viewpoint;
 }());
+var clamp = function (val, lower, upper) { return Math.max(Math.min(val, upper), lower); };
+var mix = function (a, b, t) { return a * (1 - t) + b * t; };
+var smoothstep = function (edge0, edge1, x) {
+    var t = clamp((x - edge0) / (edge1 - edge0), 0.0, 1.0);
+    return t * t * (3.0 - t * 2.0);
+};
 var Display = /** @class */ (function () {
     function Display(canvas, onFinishedLoading) {
         this.currentProgress = 0;
@@ -39281,11 +39288,11 @@ var Display = /** @class */ (function () {
         this.step1Material.setFloatParameter("roughness", 0.5);
         this.step1Material.setFloatParameter("clearCoat", 0.0);
         this.step1Material.setFloatParameter("clearCoatRoughness", 0.8);
-        this.step1CylinderBackMaterial.setColor3Parameter("baseColor", Filament.RgbType.sRGB, [0.0, 0.8, 0.4]);
+        this.step1CylinderBackMaterial.setColor4Parameter("baseColor", Filament.RgbaType.sRGB, [0.0, 0.8, 0.4, 1.0]);
         this.step1CylinderBackMaterial.setFloatParameter("roughness", 0.5);
         this.step1CylinderBackMaterial.setFloatParameter("clearCoat", 0.0);
         this.step1CylinderBackMaterial.setFloatParameter("clearCoatRoughness", 0.8);
-        this.step1CylinderFrontMaterial.setColor3Parameter("baseColor", Filament.RgbType.sRGB, [0.0, 0.8, 0.4]);
+        this.step1CylinderFrontMaterial.setColor4Parameter("baseColor", Filament.RgbaType.sRGB, [0.0, 0.8, 0.4, 1.0]);
         this.step1CylinderFrontMaterial.setFloatParameter("roughness", 0.5);
         this.step1CylinderFrontMaterial.setFloatParameter("clearCoat", 0.0);
         this.step1CylinderFrontMaterial.setFloatParameter("clearCoatRoughness", 0.8);
@@ -39329,6 +39336,7 @@ var Display = /** @class */ (function () {
         this.camera.setProjectionFov(45, aspect, 1.0, 20000.0, fov);
     };
     Display.prototype.setAnimation = function (step, progress) {
+        var sRGB = Filament.RgbaType.sRGB;
         if (this.currentStep !== step) {
             var rm = this.engine.getRenderableManager();
             var sphere = rm.getInstance(this.sphereEntity);
@@ -39339,11 +39347,11 @@ var Display = /** @class */ (function () {
                     this.scene.addEntity(this.backCylinderEntity);
                     this.scene.addEntity(this.frontCylinderEntity);
                     this.currentMaterial = this.step1Material;
-                    glm.vec3.copy(this.viewpoint.eye, [0, 3, 7]);
+                    glm.vec3.copy(this.viewpoint.eye, [0, 0, 3]);
                     break;
                 case 1:
                     this.currentMaterial = this.step2Material;
-                    glm.vec3.copy(this.viewpoint.eye, [0, 1, 3]);
+                    glm.vec3.copy(this.viewpoint.eye, [0, 0, 3]);
                     break;
                 default:
                     this.currentMaterial = this.step1Material;
@@ -39351,12 +39359,46 @@ var Display = /** @class */ (function () {
             }
             rm.setMaterialInstanceAt(sphere, 0, this.currentMaterial);
             this.currentStep = step;
-            this.currentMaterial.setFloatParameter("progress", progress);
             this.currentProgress = progress;
         }
         else if (this.currentProgress !== progress) {
-            this.currentMaterial.setFloatParameter("progress", progress);
             this.currentProgress = progress;
+        }
+        switch (step) {
+            case 0: {
+                var fadeIn = smoothstep(.2, .3, progress);
+                var fadeOut = 1.0 - smoothstep(.6, .7, progress);
+                var cylinderPresence = fadeIn * fadeOut;
+                var cylinderZ = -0.5 + (1.0 - cylinderPresence);
+                var cameraFn = d3.interpolate([0, 0, 3], [0, 3, 7]);
+                glm.vec3.copy(this.viewpoint.eye, cameraFn(cylinderPresence));
+                cylinderZ = mix(cylinderZ, -10.0, smoothstep(0.8, 1.0, progress));
+                var m1 = glm.mat4.fromRotation(glm.mat4.create(), Math.PI / 2, [1, 0, 0]);
+                var m2 = glm.mat4.fromTranslation(glm.mat4.create(), [0, 0, cylinderZ]);
+                var m3 = glm.mat4.fromScaling(glm.mat4.create(), [1, 1, 2]);
+                glm.mat4.multiply(m1, m1, m3);
+                glm.mat4.multiply(m1, m1, m2);
+                var tcm = this.engine.getTransformManager();
+                var front = tcm.getInstance(this.frontCylinderEntity);
+                tcm.setTransform(front, m1);
+                front["delete"]();
+                var back = tcm.getInstance(this.backCylinderEntity);
+                tcm.setTransform(back, m1);
+                back["delete"]();
+                this.step1CylinderFrontMaterial.setColor4Parameter("baseColor", sRGB, [0.0, 0.0, 0.0, 0.0]);
+                this.step1CylinderBackMaterial.setColor4Parameter("baseColor", sRGB, [0.0, 0.0, 0.0, 0.0]);
+                break;
+            }
+            case 1: {
+                var fadeInLune = smoothstep(0.0, 0.2, progress);
+                var fadeOutLune = 1.0 - smoothstep(0.8, 1.0, progress);
+                var lunePresence = fadeInLune * fadeOutLune;
+                var cameraFn = d3.interpolate([0, 0, 3], [0, 1, 3]);
+                glm.vec3.copy(this.viewpoint.eye, cameraFn(lunePresence));
+                this.currentMaterial.setFloatParameter("progress", lunePresence);
+                break;
+            }
+            default:
         }
     };
     Display.prototype.createCylinders = function () {
@@ -39436,12 +39478,14 @@ var Display = /** @class */ (function () {
             .boundingBox({ center: [-1, -1, -1], halfExtent: [1, 1, 1] })
             .material(0, this.step1CylinderFrontMaterial)
             .geometry(0, PrimitiveType.TRIANGLES, vb, ib)
+            .culling(false)
             .build(this.engine, this.frontCylinderEntity);
         this.backCylinderEntity = Filament.EntityManager.get().create();
         Filament.RenderableManager.Builder(1)
             .boundingBox({ center: [-1, -1, -1], halfExtent: [1, 1, 1] })
             .material(0, this.step1CylinderBackMaterial)
             .geometry(0, PrimitiveType.TRIANGLES, vb, ib)
+            .culling(false)
             .build(this.engine, this.backCylinderEntity);
         var tcm = this.engine.getTransformManager();
         tcm.create(this.frontCylinderEntity);
