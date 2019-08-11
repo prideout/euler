@@ -2,7 +2,7 @@ material {
     name : step1,
     shadingModel : lit,
     // transparency: twoPassesTwoSides,
-    blending: transparent,
+    // blending: transparent,
     culling: back,
     parameters : [
         { type : float3, name : baseColor },

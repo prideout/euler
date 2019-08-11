@@ -17,11 +17,9 @@
   },
   "dependencies": {
     "@types/d3": "^5.7.2",
-    "@types/mathjax": "^0.0.35",
     "d3": "^5.9.7",
     "filament": "file:./filament",
     "gl-matrix": "^2.8.1",
-    "http-server": "^0.11.1",
-    "mathjax": "^2.7.5"
+    "http-server": "^0.11.1"
   }
 }

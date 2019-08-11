@@ -39293,7 +39293,7 @@ var Display = /** @class */ (function () {
         this.step2Material.setFloatParameter("roughness", 0.5);
         this.step2Material.setFloatParameter("clearCoat", 0.0);
         this.step2Material.setFloatParameter("clearCoatRoughness", 0.8);
-        this.cylinderEntity = this.createCylinder();
+        this.createCylinders();
         this.sphereEntity = this.createSphere();
         this.scene.addEntity(this.sphereEntity);
         this.skybox = this.engine.createSkyFromKtx(urls.sky);
@@ -39332,12 +39332,14 @@ var Display = /** @class */ (function () {
         if (this.currentStep !== step) {
             var rm = this.engine.getRenderableManager();
             var sphere = rm.getInstance(this.sphereEntity);
-            this.scene.remove(this.cylinderEntity);
+            this.scene.remove(this.frontCylinderEntity);
+            this.scene.remove(this.backCylinderEntity);
             switch (step) {
                 case 0:
-                    this.scene.addEntity(this.cylinderEntity);
+                    this.scene.addEntity(this.backCylinderEntity);
+                    this.scene.addEntity(this.frontCylinderEntity);
                     this.currentMaterial = this.step1Material;
-                    glm.vec3.copy(this.viewpoint.eye, [0, 2, 8]);
+                    glm.vec3.copy(this.viewpoint.eye, [0, 3, 7]);
                     break;
                 case 1:
                     this.currentMaterial = this.step2Material;
@@ -39357,7 +39359,7 @@ var Display = /** @class */ (function () {
             this.currentProgress = progress;
         }
     };
-    Display.prototype.createCylinder = function () {
+    Display.prototype.createCylinders = function () {
         var AttributeType = Filament.VertexBuffer$AttributeType;
         var IndexType = Filament.IndexBuffer$IndexType;
         var PrimitiveType = Filament.RenderableManager$PrimitiveType;
@@ -39424,23 +39426,32 @@ var Display = /** @class */ (function () {
         vb.setBufferAt(this.engine, 0, cylinder.vertices);
         vb.setBufferAt(this.engine, 1, cylinder.tangents);
         ib.setBuffer(this.engine, cylinder.triangles);
-        var renderable = Filament.EntityManager.get().create();
-        Filament.RenderableManager.Builder(1)
-            .boundingBox({ center: [-1, -1, -1], halfExtent: [1, 1, 1] })
-            .material(0, this.step1CylinderFrontMaterial)
-            .geometry(0, PrimitiveType.TRIANGLES, vb, ib)
-            .build(this.engine, renderable);
-        var tcm = this.engine.getTransformManager();
         var m1 = glm.mat4.fromRotation(glm.mat4.create(), Math.PI / 2, [1, 0, 0]);
         var m2 = glm.mat4.fromTranslation(glm.mat4.create(), [0, 0, -0.5]);
         var m3 = glm.mat4.fromScaling(glm.mat4.create(), [1, 1, 2]);
         glm.mat4.multiply(m1, m1, m3);
         glm.mat4.multiply(m1, m1, m2);
-        tcm.create(renderable);
-        var inst = tcm.getInstance(renderable);
+        this.frontCylinderEntity = Filament.EntityManager.get().create();
+        Filament.RenderableManager.Builder(1)
+            .boundingBox({ center: [-1, -1, -1], halfExtent: [1, 1, 1] })
+            .material(0, this.step1CylinderFrontMaterial)
+            .geometry(0, PrimitiveType.TRIANGLES, vb, ib)
+            .build(this.engine, this.frontCylinderEntity);
+        this.backCylinderEntity = Filament.EntityManager.get().create();
+        Filament.RenderableManager.Builder(1)
+            .boundingBox({ center: [-1, -1, -1], halfExtent: [1, 1, 1] })
+            .material(0, this.step1CylinderBackMaterial)
+            .geometry(0, PrimitiveType.TRIANGLES, vb, ib)
+            .build(this.engine, this.backCylinderEntity);
+        var tcm = this.engine.getTransformManager();
+        tcm.create(this.frontCylinderEntity);
+        var inst = tcm.getInstance(this.frontCylinderEntity);
         tcm.setTransform(inst, m1);
         inst["delete"]();
-        return renderable;
+        tcm.create(this.backCylinderEntity);
+        inst = tcm.getInstance(this.backCylinderEntity);
+        tcm.setTransform(inst, m1);
+        inst["delete"]();
     };
     Display.prototype.createSphere = function () {
         var AttributeType = Filament.VertexBuffer$AttributeType;

@@ -11,7 +11,6 @@ also do:
 
 Todo:
 
-    Back cylinder
     Fade the cylinder in [.2, .3] and out [.6, .7]
     Markdown pandoc for JS
     Load tiny skybox

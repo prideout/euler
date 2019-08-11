@@ -10,13 +10,14 @@ class Viewpoint {
 }
 
 export class Display {
-    public readonly camera: Filament.Camera;
+    private backCylinderEntity: Filament.Entity;
+    private readonly camera: Filament.Camera;
     private readonly canvas: HTMLCanvasElement;
     private currentMaterial: Filament.MaterialInstance;
     private currentProgress = 0;
     private currentStep = 0;
-    private readonly cylinderEntity: Filament.Entity;
     private readonly engine: Filament.Engine;
+    private frontCylinderEntity: Filament.Entity;
     private readonly indirectLight: Filament.IndirectLight;
     private readonly renderer: Filament.Renderer;
     private readonly scene: Filament.Scene;
@@ -74,7 +75,8 @@ export class Display {
         this.step2Material.setFloatParameter("clearCoat", 0.0);
         this.step2Material.setFloatParameter("clearCoatRoughness", 0.8);
 
-        this.cylinderEntity = this.createCylinder();
+        this.createCylinders();
+
         this.sphereEntity = this.createSphere();
         this.scene.addEntity(this.sphereEntity);
 
@@ -123,12 +125,14 @@ export class Display {
         if (this.currentStep !== step) {
             const rm = this.engine.getRenderableManager();
             const sphere = rm.getInstance(this.sphereEntity);
-            this.scene.remove(this.cylinderEntity);
+            this.scene.remove(this.frontCylinderEntity);
+            this.scene.remove(this.backCylinderEntity);
             switch (step) {
                 case 0:
-                    this.scene.addEntity(this.cylinderEntity);
+                    this.scene.addEntity(this.backCylinderEntity);
+                    this.scene.addEntity(this.frontCylinderEntity);
                     this.currentMaterial = this.step1Material;
-                    glm.vec3.copy(this.viewpoint.eye, [0, 2, 8]);
+                    glm.vec3.copy(this.viewpoint.eye, [0, 3, 7]);
                     break;
                 case 1:
                     this.currentMaterial = this.step2Material;
@@ -148,7 +152,7 @@ export class Display {
         }
     }
 
-    private createCylinder(): Filament.Entity {
+    private createCylinders() {
         const AttributeType = Filament.VertexBuffer$AttributeType;
         const IndexType = Filament.IndexBuffer$IndexType;
         const PrimitiveType = Filament.RenderableManager$PrimitiveType;
@@ -227,25 +231,36 @@ export class Display {
         vb.setBufferAt(this.engine, 1, cylinder.tangents);
         ib.setBuffer(this.engine, cylinder.triangles);
 
-        const renderable = Filament.EntityManager.get().create();
-        Filament.RenderableManager.Builder(1)
-            .boundingBox({ center: [-1, -1, -1], halfExtent: [1, 1, 1] })
-            .material(0, this.step1CylinderFrontMaterial)
-            .geometry(0, PrimitiveType.TRIANGLES, vb, ib)
-            .build(this.engine, renderable);
-
-        const tcm = this.engine.getTransformManager();
         const m1 = glm.mat4.fromRotation(glm.mat4.create(), Math.PI / 2, [1, 0, 0]);
         const m2 = glm.mat4.fromTranslation(glm.mat4.create(), [0, 0, -0.5]);
         const m3 = glm.mat4.fromScaling(glm.mat4.create(), [1, 1, 2]);
         glm.mat4.multiply(m1, m1, m3);
         glm.mat4.multiply(m1, m1, m2);
-        tcm.create(renderable);
-        const inst = tcm.getInstance(renderable);
+
+        this.frontCylinderEntity = Filament.EntityManager.get().create();
+        Filament.RenderableManager.Builder(1)
+            .boundingBox({ center: [-1, -1, -1], halfExtent: [1, 1, 1] })
+            .material(0, this.step1CylinderFrontMaterial)
+            .geometry(0, PrimitiveType.TRIANGLES, vb, ib)
+            .build(this.engine, this.frontCylinderEntity);
+
+        this.backCylinderEntity = Filament.EntityManager.get().create();
+        Filament.RenderableManager.Builder(1)
+            .boundingBox({ center: [-1, -1, -1], halfExtent: [1, 1, 1] })
+            .material(0, this.step1CylinderBackMaterial)
+            .geometry(0, PrimitiveType.TRIANGLES, vb, ib)
+            .build(this.engine, this.backCylinderEntity);
+
+        const tcm = this.engine.getTransformManager();
+        tcm.create(this.frontCylinderEntity);
+        let inst = tcm.getInstance(this.frontCylinderEntity);
         tcm.setTransform(inst, m1);
         inst.delete();
 
-        return renderable;
+        tcm.create(this.backCylinderEntity);
+        inst = tcm.getInstance(this.backCylinderEntity);
+        tcm.setTransform(inst, m1);
+        inst.delete();
     }
 
     private createSphere(): Filament.Entity {
