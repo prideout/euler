@@ -1,3 +1,4 @@
+import * as d3 from "d3";
 import * as Filament from "filament";
 import * as glm from "gl-matrix";
 
@@ -140,7 +141,7 @@ export class Display {
                     this.scene.addEntity(this.backCylinderEntity);
                     this.scene.addEntity(this.frontCylinderEntity);
                     this.currentMaterial = this.step1Material;
-                    glm.vec3.copy(this.viewpoint.eye, [0, 3, 7]);
+                    glm.vec3.copy(this.viewpoint.eye, [0, 0, 3]);
                     break;
                 case 1:
                     this.currentMaterial = this.step2Material;
@@ -163,10 +164,17 @@ export class Display {
             case 0:
                 const fadeIn = smoothstep(.2, .3, progress);
                 const fadeOut = 1.0 - smoothstep(.6, .7, progress);
-                const alpha = 1.0 - fadeIn * fadeOut;
+                const cylinderPresence = fadeIn * fadeOut;
+                const cylinderZ = -0.5 + (1.0 - cylinderPresence);
+
+                const source = [0, 0, 3];
+                const target = [0, 3, 7];
+                const cameraFn = d3.interpolate(source, target);
+
+                glm.vec3.copy(this.viewpoint.eye, cameraFn(cylinderPresence));
 
                 const m1 = glm.mat4.fromRotation(glm.mat4.create(), Math.PI / 2, [1, 0, 0]);
-                const m2 = glm.mat4.fromTranslation(glm.mat4.create(), [0, 0, -0.5 - alpha]);
+                const m2 = glm.mat4.fromTranslation(glm.mat4.create(), [0, 0, cylinderZ]);
                 const m3 = glm.mat4.fromScaling(glm.mat4.create(), [1, 1, 2]);
                 glm.mat4.multiply(m1, m1, m3);
                 glm.mat4.multiply(m1, m1, m2);

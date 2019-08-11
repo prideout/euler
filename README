@@ -11,20 +11,17 @@ also do:
 
 Todo:
 
-    Fade the cylinder in [.2, .3] and out [.6, .7]
-    Animate the camera for entry and exit
+    Part 2
+        Animate camera and fade in lines  [0.0, 0.2]
+        Animate camera and fade out lines [0.8, 1.0]
+
+    Part 1
+        Lat Long lines on step1cylfront and step1
+            fade in at [.4, .45]
+            fade in at [.55, .6]
 
     Markdown pandoc for JS
     Load tiny skybox
-
-    Step 1
-        Fade the cylinder in [.2, .3] and out [.6, .7]
-        Two-sided cylinder
-            step1cylfront.mat
-            step1cylback.mat
-        Lat Long lines on step1cylfront and step1
-            fade in at [.4, .5]
-
     Factor some of display.ts into timeline.ts
 
 Tweet:
