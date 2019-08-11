@@ -1,0 +1,19 @@
+{
+    "defaultSeverity": "error",
+    "extends": [
+        "tslint:all"
+    ],
+    "rules": {
+        "no-console" : false,
+        "no-this-assignment": false,
+        "max-classes-per-file": false,
+        "completed-docs": false,
+        "newline-per-chained-call": false,
+        "no-magic-numbers": false,
+        "number-literal-format": false,
+        "typedef": false,
+        "newline-before-return": false,
+        "variable-name": false
+    },
+    "rulesDirectory": []
+}

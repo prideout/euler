@@ -1,0 +1,27 @@
+material {
+    name : step1,
+    shadingModel : lit,
+    // transparency: twoPassesTwoSides,
+    blending: transparent,
+    culling: back,
+    parameters : [
+        { type : float3, name : baseColor },
+        { type : float,  name : roughness },
+        { type : float,  name : progress },
+        { type : float,  name : clearCoat },
+        { type : float,  name : clearCoatRoughness }
+    ],
+}
+
+fragment {
+
+    void material(inout MaterialInputs material) {
+        prepareMaterial(material);
+        material.baseColor.rgb = materialParams.baseColor;
+        material.baseColor.b *= 0.5;
+        material.baseColor.a = 0.8;
+        material.roughness = materialParams.roughness;
+        material.clearCoat = materialParams.clearCoat;
+        material.clearCoatRoughness = materialParams.clearCoatRoughness;
+    }
+}

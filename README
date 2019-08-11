@@ -1,0 +1,10 @@
+To build and run the web app:
+
+    yarn install
+    yarn build
+    yarn run http-server docs
+
+If you have a Filament source tree located at ~/github/filament, you can
+also do:
+
+    ./extras/update-release.sh

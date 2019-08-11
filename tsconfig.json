@@ -1,0 +1,12 @@
+{
+    "compilerOptions": {
+        //"sourceMap": true,
+        "inlineSourceMap": false,
+        "baseUrl": "./",
+
+        // This must be consistent with tsconfig.json:
+        "paths": {
+            "filament": ["filament/filament"]
+        }
+    }
+}
