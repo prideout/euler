@@ -7,7 +7,7 @@ material {
     parameters : [
         { type : float4, name : baseColor },
         { type : float,  name : roughness },
-        { type : float,  name : progress },
+        { type : float,  name : gridlines },
         { type : float,  name : clearCoat },
         { type : float,  name : clearCoatRoughness }
     ],
@@ -17,7 +17,17 @@ fragment {
 
     void material(inout MaterialInputs material) {
         prepareMaterial(material);
-        material.baseColor = materialParams.baseColor;
+
+        // Gridlines
+        material.baseColor = vec4(0);
+        vec4 wpos = vec4(getWorldPosition() + getWorldOffset(), 1.0);
+        float y = fract(wpos.y * 10.0);
+        material.baseColor.a = smoothstep(0.0, 0.1, abs(y - 0.5));
+        float theta = atan(wpos.z, wpos.x) / 6.28;
+        theta = fract(theta * 30.0);
+        material.baseColor.a *= smoothstep(0.0, 0.1, abs(theta - 0.5));
+        material.baseColor.a = 1.0 - materialParams.gridlines * material.baseColor.a;
+
         material.roughness = materialParams.roughness;
         material.clearCoat = 0.0;
         material.metallic = 0.0;

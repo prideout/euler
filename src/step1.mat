@@ -9,7 +9,8 @@ material {
         { type : float,  name : roughness },
         { type : float,  name : progress },
         { type : float,  name : clearCoat },
-        { type : float,  name : clearCoatRoughness }
+        { type : float,  name : clearCoatRoughness },
+        { type : float,  name : gridlines }
     ],
 }
 
@@ -19,6 +20,20 @@ fragment {
         prepareMaterial(material);
         material.baseColor.rgb = materialParams.baseColor;
         material.baseColor.b *= 0.5;
+
+        // Gridlines
+        vec4 wpos = vec4(getWorldPosition() + getWorldOffset(), 1.0);
+        float angle = atan(wpos.z, wpos.x);
+        float ythickness = 0.025 + 5.0 * fwidth(wpos.y);
+        float athickness = 0.025 + 5.0 * fwidth(angle);
+        float y = fract(wpos.y * 10.0);
+        float y2 = abs(y - 0.5);
+        float alpha = smoothstep(0.0, ythickness, y2);
+        float theta = fract(30.0 * angle / 6.28);
+        float theta2 = abs(theta - 0.5);
+        alpha *= smoothstep(0.0, athickness, theta2);
+        material.baseColor.rgb *= 1.0 - (materialParams.gridlines * (1.0 - alpha));
+
         material.roughness = materialParams.roughness;
         material.clearCoat = materialParams.clearCoat;
         material.clearCoatRoughness = materialParams.clearCoatRoughness;

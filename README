@@ -19,9 +19,13 @@ you can do this to list, start, and stop ignorable files:
 Todo:
 
     Part 1
-        Lat Long lines on step1 (step1CylinderFront)
-            fade in at [.4, .45]
-            fade in at [.55, .6]
+        The cylinder "gridlines" coefficient isn't working correctly
+        [0.4, 0.5] Fade in Cylinder wireframe
+        [0.6, 0.5] Fade out Cylinder wireframe and fade in Sphere wireframe
+        [0.9, 1.0] Fade out Sphere wireframe
+
+    Add progress indicator to tile bar?
+        Debugging feature that defaults on
 
     Markdown pandoc for JS
     Load tiny skybox

@@ -60,8 +60,9 @@ h1 {
 #intro p {
     margin: 12px;
     font-size: 16px;
-    text-align: justify;
-    hyphens: auto;
+    text-align: left;
+    /* text-align: justify; */
+    /* hyphens: auto; */
 }
 
 .intro__dek {
@@ -102,6 +103,7 @@ canvas {
     font-size: 18px;
     text-align: left;
     text-shadow: 1px 1px 2px black;
+    text-align: left;
     text-align: justify;
     hyphens: auto;
 }

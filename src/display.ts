@@ -166,11 +166,10 @@ export class Display {
                 const cylinderPresence = fadeIn * fadeOut;
                 let cylinderZ = -0.5 + (1.0 - cylinderPresence);
 
-                const cameraFn = d3.interpolate([0, 0, 3], [0, 3, 7]);
+                const cameraFn = d3.interpolate([0, 0, 3], [0, 2, 5]);
                 glm.vec3.copy(this.viewpoint.eye, cameraFn(cylinderPresence));
 
-                cylinderZ = mix(cylinderZ, -10.0, smoothstep(0.8, 1.0, progress));
-
+                cylinderZ = mix(cylinderZ, -4.0, smoothstep(0.9, 1.0, progress));
 
                 const m1 = glm.mat4.fromRotation(glm.mat4.create(), Math.PI / 2, [1, 0, 0]);
                 const m2 = glm.mat4.fromTranslation(glm.mat4.create(), [0, 0, cylinderZ]);
@@ -186,6 +185,8 @@ export class Display {
                 tcm.setTransform(back, m1);
                 back.delete();
 
+                this.step1Material.setFloatParameter("gridlines", 0.0);
+                this.step1CylinderFrontMaterial.setFloatParameter("gridlines", 1.0);
                 this.step1CylinderFrontMaterial.setColor4Parameter("baseColor", sRGB, [0.0, 0.0, 0.0, 0.0]);
                 this.step1CylinderBackMaterial.setColor4Parameter("baseColor",  sRGB, [0.0, 0.0, 0.0, 0.0]);
 
@@ -206,6 +207,8 @@ export class Display {
             }
             default:
         }
+
+        document.title = progress.toFixed(2); // TODO: remove
 }
 
     private createCylinders() {
