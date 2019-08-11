@@ -9,6 +9,13 @@ class Viewpoint {
     public up: glm.vec3 = glm.vec3.fromValues(0, 1, 0);
 }
 
+const clamp = (val: number, lower: number, upper: number): number => Math.max(Math.min(val, upper), lower);
+
+const smoothstep = (edge0: number, edge1: number, x: number): number => {
+    const t = clamp((x - edge0) / (edge1 - edge0), 0.0, 1.0);
+    return t * t * (3.0 - t * 2.0);
+};
+
 export class Display {
     private backCylinderEntity: Filament.Entity;
     private readonly camera: Filament.Camera;
@@ -60,12 +67,12 @@ export class Display {
         this.step1Material.setFloatParameter("clearCoat", 0.0);
         this.step1Material.setFloatParameter("clearCoatRoughness", 0.8);
 
-        this.step1CylinderBackMaterial.setColor3Parameter("baseColor", Filament.RgbType.sRGB, [0.0, 0.8, 0.4]);
+        this.step1CylinderBackMaterial.setColor4Parameter("baseColor", Filament.RgbaType.sRGB, [0.0, 0.8, 0.4, 1.0]);
         this.step1CylinderBackMaterial.setFloatParameter("roughness", 0.5);
         this.step1CylinderBackMaterial.setFloatParameter("clearCoat", 0.0);
         this.step1CylinderBackMaterial.setFloatParameter("clearCoatRoughness", 0.8);
 
-        this.step1CylinderFrontMaterial.setColor3Parameter("baseColor", Filament.RgbType.sRGB, [0.0, 0.8, 0.4]);
+        this.step1CylinderFrontMaterial.setColor4Parameter("baseColor", Filament.RgbaType.sRGB, [0.0, 0.8, 0.4, 1.0]);
         this.step1CylinderFrontMaterial.setFloatParameter("roughness", 0.5);
         this.step1CylinderFrontMaterial.setFloatParameter("clearCoat", 0.0);
         this.step1CylinderFrontMaterial.setFloatParameter("clearCoatRoughness", 0.8);
@@ -122,6 +129,7 @@ export class Display {
     }
 
     public setAnimation(step: number, progress: number) {
+        const sRGB = Filament.RgbaType.sRGB;
         if (this.currentStep !== step) {
             const rm = this.engine.getRenderableManager();
             const sphere = rm.getInstance(this.sphereEntity);
@@ -150,7 +158,36 @@ export class Display {
             this.currentMaterial.setFloatParameter("progress", progress);
             this.currentProgress = progress;
         }
-    }
+
+        switch (step) {
+            case 0:
+                const fadeIn = smoothstep(.2, .3, progress);
+                const fadeOut = 1.0 - smoothstep(.6, .7, progress);
+                const alpha = 1.0 - fadeIn * fadeOut;
+
+                const m1 = glm.mat4.fromRotation(glm.mat4.create(), Math.PI / 2, [1, 0, 0]);
+                const m2 = glm.mat4.fromTranslation(glm.mat4.create(), [0, 0, -0.5 - alpha]);
+                const m3 = glm.mat4.fromScaling(glm.mat4.create(), [1, 1, 2]);
+                glm.mat4.multiply(m1, m1, m3);
+                glm.mat4.multiply(m1, m1, m2);
+
+                const tcm = this.engine.getTransformManager();
+                const front = tcm.getInstance(this.frontCylinderEntity);
+                tcm.setTransform(front, m1);
+                front.delete();
+                const back = tcm.getInstance(this.backCylinderEntity);
+                tcm.setTransform(back, m1);
+                back.delete();
+
+                this.step1CylinderFrontMaterial.setColor4Parameter("baseColor", sRGB, [0.0, 0.0, 0.0, 0.0]);
+                this.step1CylinderBackMaterial.setColor4Parameter("baseColor",  sRGB, [0.0, 0.0, 0.0, 0.0]);
+
+                break;
+            case 1:
+                break;
+            default:
+        }
+}
 
     private createCylinders() {
         const AttributeType = Filament.VertexBuffer$AttributeType;

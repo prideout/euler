@@ -12,12 +12,13 @@ also do:
 Todo:
 
     Fade the cylinder in [.2, .3] and out [.6, .7]
+    Animate the camera for entry and exit
+
     Markdown pandoc for JS
     Load tiny skybox
 
     Step 1
         Fade the cylinder in [.2, .3] and out [.6, .7]
-        Animate the camera for entry and exit
         Two-sided cylinder
             step1cylfront.mat
             step1cylback.mat

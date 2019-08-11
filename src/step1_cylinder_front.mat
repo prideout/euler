@@ -5,7 +5,7 @@ material {
     culling: back,
     depthCulling: false,
     parameters : [
-        { type : float3, name : baseColor },
+        { type : float4, name : baseColor },
         { type : float,  name : roughness },
         { type : float,  name : progress },
         { type : float,  name : clearCoat },
@@ -17,10 +17,10 @@ fragment {
 
     void material(inout MaterialInputs material) {
         prepareMaterial(material);
-        material.baseColor.rgb = materialParams.baseColor;
-        material.baseColor.a = 0.5;
+        material.baseColor = materialParams.baseColor;
         material.roughness = materialParams.roughness;
-        material.clearCoat = materialParams.clearCoat;
+        material.clearCoat = 0.0;
+        material.metallic = 0.0;
         material.clearCoatRoughness = materialParams.clearCoatRoughness;
     }
 }

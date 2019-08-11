@@ -13,7 +13,8 @@
         "number-literal-format": false,
         "typedef": false,
         "newline-before-return": false,
-        "variable-name": false
+        "variable-name": false,
+        "binary-expression-operand-order": false
     },
     "rulesDirectory": []
 }
