@@ -3,7 +3,7 @@ const path = require('path');
 'use strict';
 
 module.exports = {
-    //devtool: 'source-map',
+    devtool: 'source-map',
     entry: './src/app.ts',
 
     // We do not actually use the following modules, but emscripten emits JS bindings that
@@ -16,7 +16,7 @@ module.exports = {
     },
 
     output:  {
-        path: path.resolve(__dirname, '../../docs/eulers_gem')
+        path: path.resolve(__dirname, 'docs')
     },
 
     module: {

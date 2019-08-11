@@ -8,3 +8,27 @@ If you have a Filament source tree located at ~/github/filament, you can
 also do:
 
     ./extras/update-release.sh
+
+Todo:
+
+    Back cylinder
+    Fade the cylinder in [.2, .3] and out [.6, .7]
+    Markdown pandoc for JS
+    Load tiny skybox
+
+    Step 1
+        Fade the cylinder in [.2, .3] and out [.6, .7]
+        Animate the camera for entry and exit
+        Two-sided cylinder
+            step1cylfront.mat
+            step1cylback.mat
+        Lat Long lines on step1cylfront and step1
+            fade in at [.4, .5]
+
+    Factor some of display.ts into timeline.ts
+
+Tweet:
+
+    Informal proof of Euler's Polyhedron Formula, made with Filament and TypeScript.
+    Inspired by "Euler's Gem" by @divbyzero and the videos of @3blue1brown.
+    #scrollytelling
