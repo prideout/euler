@@ -1,0 +1,16 @@
+{
+    "editor.rulers": [
+        120
+    ],
+    "typescript.autoClosingTags": false,
+    "html.autoClosingTags": false,
+    "spellright.language": [
+        "en"
+    ],
+    "spellright.documentTypes": [
+        "markdown",
+        "latex",
+        "plaintext",
+        "html"
+    ]
+}
