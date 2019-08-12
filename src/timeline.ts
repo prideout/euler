@@ -21,15 +21,15 @@ export class Timeline {
 
     public update(step: number, progress: number) {
         switch (step) {
-            case 0: this.updateStep0(progress); break;
-            case 1: this.updateStep1(progress); break;
+            case 0: this.updateStep1(progress); break;
+            case 1: this.updateStep2(progress); break;
             default:
                 this.animation.step1Material.setFloatParameter("gridlines", 0.0);
-                this.updateStep0(0);
+                this.updateStep1(0);
         }
     }
 
-    private updateStep0(progress: number) {
+    private updateStep1(progress: number) {
         const sRGBA = Filament.RgbaType.sRGB;
         const tcm = this.animation.transformManager;
         const fadeIn = smoothstep(.2, .3, progress);
@@ -64,7 +64,13 @@ export class Timeline {
         this.animation.step1CylinderBackMaterial.setColor4Parameter("baseColor",  sRGBA, [0.0, 0.0, 0.0, 0.0]);
     }
 
-    private updateStep1(progress: number) {
+    private updateStep2(progress: number) {
+        // 0.00 to 0.18 Fade in the great circle and change the camera
+        // 0.18 to 0.41 Fade in the second great circle and lune
+        // 0.41 to 0.57 Widen lune to entire sphere
+        // 0.57 to 0.72 Narrow lune back down
+        // 0.72 to 0.88 Fade in antipode
+        // 0.88 to 1.00 Fade out the double-lune and change the camera
         const fadeInLune = smoothstep(0.0, 0.2, progress);
         const fadeOutLune = 1.0 - smoothstep(0.8, 1.0, progress);
         const lunePresence = fadeInLune * fadeOutLune;
