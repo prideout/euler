@@ -1,46 +1,25 @@
-import * as d3 from "d3";
 import * as Filament from "filament";
 import * as glm from "gl-matrix";
 
+import { Animation } from "./animation";
 import * as urls from "./urls";
 
-class Viewpoint {
-    public center: glm.vec3 = glm.vec3.fromValues(0, 0, 0);
-    public eye: glm.vec3 = glm.vec3.fromValues(0, 1, 3);
-    public up: glm.vec3 = glm.vec3.fromValues(0, 1, 0);
-}
-
-const clamp = (val: number, lower: number, upper: number): number => Math.max(Math.min(val, upper), lower);
-const mix = (a: number, b: number, t: number): number => a * (1 - t) + b * t;
-
-const smoothstep = (edge0: number, edge1: number, x: number): number => {
-    const t = clamp((x - edge0) / (edge1 - edge0), 0.0, 1.0);
-    return t * t * (3.0 - t * 2.0);
-};
-
 export class Display {
-    private backCylinderEntity: Filament.Entity;
+    private readonly animation: Animation = new Animation();
     private readonly camera: Filament.Camera;
     private readonly canvas: HTMLCanvasElement;
-    private currentMaterial: Filament.MaterialInstance;
-    private currentProgress = 0;
     private currentStep = 0;
     private readonly engine: Filament.Engine;
-    private frontCylinderEntity: Filament.Entity;
     private readonly indirectLight: Filament.IndirectLight;
     private readonly renderer: Filament.Renderer;
     private readonly scene: Filament.Scene;
     private readonly skybox: Filament.Skybox;
-    private readonly sphereEntity: Filament.Entity;
-    private readonly step1CylinderBackMaterial: Filament.MaterialInstance;
-    private readonly step1CylinderFrontMaterial: Filament.MaterialInstance;
-    private readonly step1Material: Filament.MaterialInstance;
-    private readonly step2Material: Filament.MaterialInstance;
     private readonly swapChain: Filament.SwapChain;
     private readonly view: Filament.View;
-    private readonly viewpoint = new Viewpoint();
 
     public constructor(canvas: HTMLCanvasElement, onFinishedLoading: () => void) {
+        const sRGBA = Filament.RgbaType.sRGB;
+        const sRGB = Filament.RgbType.sRGB;
         window["vec3"] = glm.vec3; // tslint:disable-line
 
         this.canvas = canvas;
@@ -53,41 +32,42 @@ export class Display {
         this.view.setCamera(this.camera);
         this.view.setScene(this.scene);
 
+        this.animation.transformManager = this.engine.getTransformManager();
+
         const step1Material = this.engine.createMaterial(urls.step1Material);
         const step1CylinderBackMaterial = this.engine.createMaterial(urls.step1CylinderBackMaterial);
         const step1CylinderFrontMaterial = this.engine.createMaterial(urls.step1CylinderFrontMaterial);
         const step2Material = this.engine.createMaterial(urls.step2Material);
 
-        this.step1Material = step1Material.createInstance();
-        this.step1CylinderBackMaterial = step1CylinderBackMaterial.createInstance();
-        this.step1CylinderFrontMaterial = step1CylinderFrontMaterial.createInstance();
-        this.step2Material = step2Material.createInstance();
-        this.currentMaterial = this.step1Material;
+        this.animation.step1Material = step1Material.createInstance();
+        this.animation.step1CylinderBackMaterial = step1CylinderBackMaterial.createInstance();
+        this.animation.step1CylinderFrontMaterial = step1CylinderFrontMaterial.createInstance();
+        this.animation.step2Material = step2Material.createInstance();
 
-        this.step1Material.setColor3Parameter("baseColor", Filament.RgbType.sRGB, [0.0, 0.4, 0.8]);
-        this.step1Material.setFloatParameter("roughness", 0.5);
-        this.step1Material.setFloatParameter("clearCoat", 0.0);
-        this.step1Material.setFloatParameter("clearCoatRoughness", 0.8);
+        this.animation.step1Material.setColor3Parameter("baseColor", sRGB, [0.0, 0.4, 0.8]);
+        this.animation.step1Material.setFloatParameter("roughness", 0.5);
+        this.animation.step1Material.setFloatParameter("clearCoat", 0.0);
+        this.animation.step1Material.setFloatParameter("clearCoatRoughness", 0.8);
 
-        this.step1CylinderBackMaterial.setColor4Parameter("baseColor", Filament.RgbaType.sRGB, [0.0, 0.8, 0.4, 1.0]);
-        this.step1CylinderBackMaterial.setFloatParameter("roughness", 0.5);
-        this.step1CylinderBackMaterial.setFloatParameter("clearCoat", 0.0);
-        this.step1CylinderBackMaterial.setFloatParameter("clearCoatRoughness", 0.8);
+        this.animation.step1CylinderBackMaterial.setColor4Parameter("baseColor", sRGBA, [0.0, 0.8, 0.4, 1.0]);
+        this.animation.step1CylinderBackMaterial.setFloatParameter("roughness", 0.5);
+        this.animation.step1CylinderBackMaterial.setFloatParameter("clearCoat", 0.0);
+        this.animation.step1CylinderBackMaterial.setFloatParameter("clearCoatRoughness", 0.8);
 
-        this.step1CylinderFrontMaterial.setColor4Parameter("baseColor", Filament.RgbaType.sRGB, [0.0, 0.8, 0.4, 1.0]);
-        this.step1CylinderFrontMaterial.setFloatParameter("roughness", 0.5);
-        this.step1CylinderFrontMaterial.setFloatParameter("clearCoat", 0.0);
-        this.step1CylinderFrontMaterial.setFloatParameter("clearCoatRoughness", 0.8);
+        this.animation.step1CylinderFrontMaterial.setColor4Parameter("baseColor", sRGBA, [0.0, 0.8, 0.4, 1.0]);
+        this.animation.step1CylinderFrontMaterial.setFloatParameter("roughness", 0.5);
+        this.animation.step1CylinderFrontMaterial.setFloatParameter("clearCoat", 0.0);
+        this.animation.step1CylinderFrontMaterial.setFloatParameter("clearCoatRoughness", 0.8);
 
-        this.step2Material.setColor3Parameter("baseColor", Filament.RgbType.sRGB, [0.0, 0.4, 0.8]);
-        this.step2Material.setFloatParameter("roughness", 0.5);
-        this.step2Material.setFloatParameter("clearCoat", 0.0);
-        this.step2Material.setFloatParameter("clearCoatRoughness", 0.8);
+        this.animation.step2Material.setColor3Parameter("baseColor", sRGB, [0.0, 0.4, 0.8]);
+        this.animation.step2Material.setFloatParameter("roughness", 0.5);
+        this.animation.step2Material.setFloatParameter("clearCoat", 0.0);
+        this.animation.step2Material.setFloatParameter("clearCoatRoughness", 0.8);
 
         this.createCylinders();
 
-        this.sphereEntity = this.createSphere();
-        this.scene.addEntity(this.sphereEntity);
+        this.animation.sphereEntity = this.createSphere();
+        this.scene.addEntity(this.animation.sphereEntity);
 
         this.skybox = this.engine.createSkyFromKtx(urls.sky);
         this.indirectLight = this.engine.createIblFromKtx(urls.ibl);
@@ -109,11 +89,16 @@ export class Display {
         this.scene.addEntity(sunlight);
 
         this.currentStep = -1;
-        this.setAnimation(0, 0);
+        this.update(0);
+    }
+
+    public getAnimation() {
+        return this.animation;
     }
 
     public render() {
-        this.camera.lookAt(this.viewpoint.eye, this.viewpoint.center, this.viewpoint.up);
+        const vp = this.animation.viewpoint;
+        this.camera.lookAt(vp.eye, vp.center, vp.up);
         this.renderer.render(this.swapChain, this.view);
     }
 
@@ -130,88 +115,30 @@ export class Display {
         this.camera.setProjectionFov(45, aspect, 1.0, 20000.0, fov);
     }
 
-    public setAnimation(step: number, progress: number) {
-        const sRGB = Filament.RgbaType.sRGB;
+    public update(step: number) {
         if (this.currentStep !== step) {
             const rm = this.engine.getRenderableManager();
-            const sphere = rm.getInstance(this.sphereEntity);
-            this.scene.remove(this.frontCylinderEntity);
-            this.scene.remove(this.backCylinderEntity);
+            const sphere = rm.getInstance(this.animation.sphereEntity);
+            this.scene.remove(this.animation.frontCylinderEntity);
+            this.scene.remove(this.animation.backCylinderEntity);
+            let currentMaterial: Filament.MaterialInstance;
             switch (step) {
                 case 0:
-                    this.scene.addEntity(this.backCylinderEntity);
-                    this.scene.addEntity(this.frontCylinderEntity);
-                    this.currentMaterial = this.step1Material;
-                    glm.vec3.copy(this.viewpoint.eye, [0, 0, 3]);
+                    this.scene.addEntity(this.animation.backCylinderEntity);
+                    this.scene.addEntity(this.animation.frontCylinderEntity);
+                    currentMaterial = this.animation.step1Material;
                     break;
                 case 1:
-                    this.currentMaterial = this.step2Material;
-                    glm.vec3.copy(this.viewpoint.eye, [0, 0, 3]);
+                    currentMaterial = this.animation.step2Material;
                     break;
                 default:
-                    this.currentMaterial = this.step1Material;
-                    glm.vec3.copy(this.viewpoint.eye, [0, 0, 3]);
+                    currentMaterial = this.animation.step1Material;
             }
-            rm.setMaterialInstanceAt(sphere, 0, this.currentMaterial);
+            glm.vec3.copy(this.animation.viewpoint.eye, [0, 0, 3]);
+            rm.setMaterialInstanceAt(sphere, 0, currentMaterial);
             this.currentStep = step;
-            this.currentProgress = progress;
-        } else if (this.currentProgress !== progress) {
-            this.currentProgress = progress;
         }
-
-        switch (step) {
-            case 0: {
-                const fadeIn = smoothstep(.2, .3, progress);
-                const fadeOut = 1.0 - smoothstep(.7, .8, progress);
-                const cylinderPresence = fadeIn * fadeOut;
-                let cylinderZ = -0.5 + (1.0 - cylinderPresence);
-
-                const cameraFn = d3.interpolate([0, 0, 3], [0, 1.5, 3.5]);
-                glm.vec3.copy(this.viewpoint.eye, cameraFn(cylinderPresence));
-
-                cylinderZ = mix(cylinderZ, -4.0, smoothstep(0.9, 1.0, progress));
-
-                const m1 = glm.mat4.fromRotation(glm.mat4.create(), Math.PI / 2, [1, 0, 0]);
-                const m2 = glm.mat4.fromTranslation(glm.mat4.create(), [0, 0, cylinderZ]);
-                const m3 = glm.mat4.fromScaling(glm.mat4.create(), [1, 1, 2]);
-                glm.mat4.multiply(m1, m1, m3);
-                glm.mat4.multiply(m1, m1, m2);
-
-                const tcm = this.engine.getTransformManager();
-                const front = tcm.getInstance(this.frontCylinderEntity);
-                tcm.setTransform(front, m1);
-                front.delete();
-                const back = tcm.getInstance(this.backCylinderEntity);
-                tcm.setTransform(back, m1);
-                back.delete();
-
-                const sphereGridlines = smoothstep(.5, .7, progress) * smoothstep(1., .9, progress);
-                const cylinderGridlines = smoothstep(.4, .5, progress) * smoothstep(.7, .5, progress);
-
-                this.step1Material.setFloatParameter("gridlines", sphereGridlines);
-                this.step1CylinderFrontMaterial.setFloatParameter("gridlines", cylinderGridlines);
-                this.step1CylinderFrontMaterial.setColor4Parameter("baseColor", sRGB, [0.0, 0.0, 0.0, 0.0]);
-                this.step1CylinderBackMaterial.setColor4Parameter("baseColor",  sRGB, [0.0, 0.0, 0.0, 0.0]);
-
-                break;
-            }
-
-            case 1: {
-                const fadeInLune = smoothstep(0.0, 0.2, progress);
-                const fadeOutLune = 1.0 - smoothstep(0.8, 1.0, progress);
-                const lunePresence = fadeInLune * fadeOutLune;
-                const cameraFn = d3.interpolate([0, 0, 3], [0, 1, 3]);
-                glm.vec3.copy(this.viewpoint.eye, cameraFn(lunePresence));
-                this.currentMaterial.setFloatParameter("progress", lunePresence);
-                break;
-            }
-
-            default:
-                this.step1Material.setFloatParameter("gridlines", 0.0);
-        }
-
-        document.title = progress.toFixed(2); // TODO: remove
-}
+    }
 
     private createCylinders() {
         const AttributeType = Filament.VertexBuffer$AttributeType;
@@ -298,30 +225,30 @@ export class Display {
         glm.mat4.multiply(m1, m1, m3);
         glm.mat4.multiply(m1, m1, m2);
 
-        this.frontCylinderEntity = Filament.EntityManager.get().create();
+        this.animation.frontCylinderEntity = Filament.EntityManager.get().create();
         Filament.RenderableManager.Builder(1)
             .boundingBox({ center: [-1, -1, -1], halfExtent: [1, 1, 1] })
-            .material(0, this.step1CylinderFrontMaterial)
+            .material(0, this.animation.step1CylinderFrontMaterial)
             .geometry(0, PrimitiveType.TRIANGLES, vb, ib)
             .culling(false)
-            .build(this.engine, this.frontCylinderEntity);
+            .build(this.engine, this.animation.frontCylinderEntity);
 
-        this.backCylinderEntity = Filament.EntityManager.get().create();
+        this.animation.backCylinderEntity = Filament.EntityManager.get().create();
         Filament.RenderableManager.Builder(1)
             .boundingBox({ center: [-1, -1, -1], halfExtent: [1, 1, 1] })
-            .material(0, this.step1CylinderBackMaterial)
+            .material(0, this.animation.step1CylinderBackMaterial)
             .geometry(0, PrimitiveType.TRIANGLES, vb, ib)
             .culling(false)
-            .build(this.engine, this.backCylinderEntity);
+            .build(this.engine, this.animation.backCylinderEntity);
 
         const tcm = this.engine.getTransformManager();
-        tcm.create(this.frontCylinderEntity);
-        let inst = tcm.getInstance(this.frontCylinderEntity);
+        tcm.create(this.animation.frontCylinderEntity);
+        let inst = tcm.getInstance(this.animation.frontCylinderEntity);
         tcm.setTransform(inst, m1);
         inst.delete();
 
-        tcm.create(this.backCylinderEntity);
-        inst = tcm.getInstance(this.backCylinderEntity);
+        tcm.create(this.animation.backCylinderEntity);
+        inst = tcm.getInstance(this.animation.backCylinderEntity);
         tcm.setTransform(inst, m1);
         inst.delete();
     }
@@ -354,7 +281,7 @@ export class Display {
         const renderable = Filament.EntityManager.get().create();
         Filament.RenderableManager.Builder(1)
             .boundingBox({ center: [-1, -1, -1], halfExtent: [1, 1, 1] })
-            .material(0, this.step1Material)
+            .material(0, this.animation.step1Material)
             .geometry(0, PrimitiveType.TRIANGLES, vb, ib)
             .build(this.engine, renderable);
 

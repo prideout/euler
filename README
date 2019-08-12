@@ -18,18 +18,9 @@ you can do this to list, start, and stop ignorable files:
 
 Todo:
 
-    Part 1
-        The cylinder "gridlines" coefficient isn't working correctly
-        [0.4, 0.5] Fade in Cylinder wireframe
-        [0.6, 0.5] Fade out Cylinder wireframe and fade in Sphere wireframe
-        [0.9, 1.0] Fade out Sphere wireframe
-
-    Add progress indicator to tile bar?
-        Debugging feature that defaults on
-
-    Markdown pandoc for JS
     Load tiny skybox
-    Factor some of display.ts into timeline.ts
+    Power Optimization: do not draw if not scrolling
+    Fix links to 3dblue1brown, remove title bar progress indicator
 
 Tweet:
 

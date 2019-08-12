@@ -1,6 +1,6 @@
 import * as d3 from "d3";
 import * as Filament from "filament";
-import { glMatrix, vec3 } from "gl-matrix";
+import { glMatrix } from "gl-matrix";
 
 import { Display } from "./display";
 import { Timeline } from "./timeline";
@@ -22,24 +22,18 @@ class App {
     private readonly timeline: Timeline;
 
     public constructor() {
-
         this.tick = this.doTick.bind(this) as (() => void);
         this.canvas = document.getElementsByTagName("canvas")[0];
         this.scrollable = document.getElementById("scrollable-content");
-
         this.display = new Display(this.canvas, () => { /* no-op */ });
-        this.timeline = new Timeline();
+        this.timeline = new Timeline(this.display.getAnimation());
         this.time = Date.now();
-
         const main = d3.select("main");
         const scrolly = main.select("#scrolly");
         const canvas = scrolly.select("canvas");
         const article = scrolly.select("article");
-
         this.steps = article.selectAll(".step");
 
-        const canvasTop = 0;
-        canvas.style("top", `${canvasTop}px`);
         canvas.style("height", `${window.innerHeight}px`);
 
         this.display.resize();
@@ -69,7 +63,6 @@ class App {
         const dt = (time - this.time) * 0.1;
         this.time = time;
 
-        this.timeline.tick(dt);
         this.display.render();
 
         if (this.scrollable.getBoundingClientRect().top < 0) {
@@ -132,7 +125,9 @@ class App {
             return true;
         });
 
-        this.display.setAnimation(currentStep, currentProgress);
+        this.display.update(currentStep);
+        this.timeline.update(currentStep, currentProgress);
+        document.title = currentProgress.toFixed(2); // TODO: remove
 
         window.requestAnimationFrame(this.tick);
     }

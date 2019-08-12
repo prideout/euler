@@ -19,13 +19,16 @@ fragment {
         prepareMaterial(material);
 
         // Gridlines
-        material.baseColor = vec4(0);
         vec4 wpos = vec4(getWorldPosition() + getWorldOffset(), 1.0);
+        float angle = atan(wpos.z, wpos.x);
+        float ythickness = 0.025 + 5.0 * fwidth(wpos.y);
+        float athickness = 0.025 + 5.0 * fwidth(angle);
+        material.baseColor = vec4(0);
         float y = fract(wpos.y * 10.0);
-        material.baseColor.a = smoothstep(0.0, 0.1, abs(y - 0.5));
+        material.baseColor.a = smoothstep(0.0, ythickness, abs(y - 0.5));
         float theta = atan(wpos.z, wpos.x) / 6.28;
         theta = fract(theta * 30.0);
-        material.baseColor.a *= smoothstep(0.0, 0.1, abs(theta - 0.5));
+        material.baseColor.a *= smoothstep(0.0, athickness, abs(theta - 0.5));
         material.baseColor.a = 1.0 - materialParams.gridlines * (1.0 - material.baseColor.a);
         material.baseColor.a = 1.0 - material.baseColor.a;
 
