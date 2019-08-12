@@ -15,6 +15,7 @@ export class Animation {
     public step1CylinderFrontMaterial: Filament.MaterialInstance;
     public step1Material: Filament.MaterialInstance;
     public step2Material: Filament.MaterialInstance;
+    public step3Material: Filament.MaterialInstance;
     public transformManager: Filament.TransformManager;
     public viewpoint = new Viewpoint();
 }

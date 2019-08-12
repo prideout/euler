@@ -47,8 +47,12 @@ fragment {
         const float D = 0.0;
         const float T = 0.01;
 
+        float luneExpansion = 1.0 - pow(1.0 - materialParams.luneExpansion, 8.0);
+        float A_theta = mix(0.1, -0.3 - 3.14 / 2.0, luneExpansion);
+        float B_theta = mix(0.4, -0.3 + 3.14 / 2.0, luneExpansion);
+
         {
-            const float theta = 0.1;
+            float theta = A_theta;
             vec3 N = get_plane_normal(theta);
             float d1 = dot(wpos, vec4(N, D + T));
             float d2 = dot(wpos, vec4(N, D - T));
@@ -59,7 +63,7 @@ fragment {
         }
 
         {
-            const float theta = 0.4;
+            float theta = B_theta;
             vec3 N = get_plane_normal(theta);
             float d1 = dot(wpos, vec4(N, D + T));
             float d2 = dot(wpos, vec4(N, D - T));
@@ -72,14 +76,26 @@ fragment {
         material.baseColor.b *= 0.5;
 
         {
-            const float theta0 = 0.1;
-            const float theta1 = 0.4;
+            float theta0 = A_theta;
+            float theta1 = B_theta;
             vec3 N0 = get_plane_normal(theta0);
             vec3 N1 = get_plane_normal(theta1);
             float d1 = dot(wpos, vec4(N0, D));
             float d2 = dot(wpos, vec4(N1, D));
             float a = step(d2, 0.0) * step(0.0, d1);
             a *= materialParams.luneAlpha;
+            material.baseColor.b *= 1.0 - a;
+        }
+
+        {
+            float theta1 = A_theta;
+            float theta0 = B_theta;
+            vec3 N0 = get_plane_normal(theta0);
+            vec3 N1 = get_plane_normal(theta1);
+            float d1 = dot(wpos, vec4(N0, D));
+            float d2 = dot(wpos, vec4(N1, D));
+            float a = step(d2, 0.0) * step(0.0, d1);
+            a *= materialParams.luneAlpha * materialParams.antipodeAlpha;
             material.baseColor.b *= 1.0 - a;
         }
 

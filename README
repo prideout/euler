@@ -4,11 +4,6 @@ To build and run the web app:
     yarn build
     yarn run http-server docs
 
-If you have a Filament source tree located at ~/github/filament, you can
-also do:
-
-    ./extras/update-release.sh
-
 If you want to avoid accidentally publishing change to your local build output,
 you can do this to list, start, and stop ignorable files:
 
@@ -18,10 +13,20 @@ you can do this to list, start, and stop ignorable files:
 
 Todo:
 
-    Remove "extras" in favor of npm script
+    Drawing text
+        https://webglfundamentals.org/webgl/lessons/webgl-text-canvas2d.html
+
+    Debug mode
+        show a HUD that has frameNumber and currentProgress.toFixed(2)
+        make this default to "on" with "yarn build:debug"
+
+    Get rid of d3
+    Part 3 tweaks
+        RGB lines should be dark, and should have extensions that fade away (to show they are great circles)
     Load tiny skybox
-    Power Optimization: do not draw if not scrolling
     Fix links to 3dblue1brown, remove title bar progress indicator
+    Data-oriented timeline, generalize to google/scrollytelling
+        mobile-friendly template for scrollytelling
 
 Tweet:
 
@@ -29,4 +34,5 @@ Tweet:
     Inspired by "Euler's Gem" by @divbyzero and the videos of @3blue1brown.
     #scrollytelling
 
-https://www.math.csi.cuny.edu/abhijit/623/spherical-triangle.pdf
+See also:
+    https://www.math.csi.cuny.edu/abhijit/623/spherical-triangle.pdf

@@ -61,8 +61,6 @@ h1 {
     margin: 12px;
     font-size: 16px;
     text-align: left;
-    /* text-align: justify; */
-    /* hyphens: auto; */
 }
 
 .intro__dek {
@@ -73,6 +71,8 @@ h1 {
 #scrolly {
     position: relative;
     padding: 1rem;
+    margin: auto;
+    max-width: 768px;
 }
 
 article {
@@ -93,25 +93,25 @@ canvas {
 
 .step {
     margin: 0;
-    color: #fff;
-    background-color: rgba(0, 0, 0, 0.1);
     border: none;
     height: 512px;
 }
 
 .step p {
-    margin: 12px;
+    background-color: rgba(255, 255, 255, 0.5);
+    padding: 6px 12px 6px 12px;
+}
+
+.step div {
+    height: 512px;
     font-size: 18px;
-    text-align: left;
-    text-shadow: 1px 1px 2px black;
-    text-align: left;
     text-align: justify;
     hyphens: auto;
 }
 
 mathspan {
-    color: black;
-    text-shadow: white 0 0 5px;
+    font-family: sans-serif;
+    font-weight: bold;
 }
 
 .step.blank {
@@ -120,13 +120,14 @@ mathspan {
 }
 
 .step.final {
-    background-color: rgba(255, 255, 255, 0.5);
     padding: 20px;
+    font-size: 18px;
+    background-color: rgba(255, 255, 255, 0.5);
+    border-radius: 5px;
 }
 
 .step.final p {
-    color: black;
-    text-shadow: none;
+    background: none;
 }
 
 .step.is-active h2 {
@@ -135,11 +136,16 @@ mathspan {
 }
 
 .step h2 {
+    margin-bottom: 12px;
     text-align: center;
     padding: 1rem;
     font-size: 16px;
-    font-family: "circular-bold", sans-serif;
+    font-family: "circular-bold";
     background-color: #3b3b3b;
+    color: white;
+
+    transition-property: background-color, color;
+    transition-duration: 0.25s;
 }
 
 #scrollable-content {

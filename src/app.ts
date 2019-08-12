@@ -11,14 +11,16 @@ Filament.init(urls.initialAssets, () => {
     window["app"] = new App();  // tslint:disable-line
 });
 
+const SCROLL_INVALID = 9999;
+
 class App {
     private readonly canvas: HTMLCanvasElement;
     private debugging = false;
     private readonly display: Display;
     private readonly scrollable: HTMLElement;
+    private scrollTop = SCROLL_INVALID;
     private readonly steps: d3.Selection<HTMLElement, number, d3.BaseType, unknown>;
     private readonly tick: () => void;
-    private time: number;
     private readonly timeline: Timeline;
 
     public constructor() {
@@ -27,18 +29,20 @@ class App {
         this.scrollable = document.getElementById("scrollable-content");
         this.display = new Display(this.canvas, () => { /* no-op */ });
         this.timeline = new Timeline(this.display.getAnimation());
-        this.time = Date.now();
         const main = d3.select("main");
         const scrolly = main.select("#scrolly");
-        const canvas = scrolly.select("canvas");
         const article = scrolly.select("article");
         this.steps = article.selectAll(".step");
 
+        const canvas = scrolly.select("canvas");
         canvas.style("height", `${window.innerHeight}px`);
 
+        this.timeline.update(0, 0);
+        this.display.update(0);
         this.display.resize();
 
         window.addEventListener("resize", () => {
+            this.requestRedraw();
             this.display.resize();
         });
 
@@ -59,10 +63,13 @@ class App {
     }
 
     private doTick() {
-        const time = Date.now();
-        const dt = (time - this.time) * 0.1;
-        this.time = time;
+        const scrollTop = document.getElementById("scrolly").getBoundingClientRect().top;
+        if (scrollTop === this.scrollTop) {
+            window.requestAnimationFrame(this.tick);
+            return;
+        }
 
+        this.scrollTop = scrollTop;
         this.display.render();
 
         if (this.scrollable.getBoundingClientRect().top < 0) {
@@ -125,10 +132,17 @@ class App {
             return true;
         });
 
+        // Force a re-draw if the timeline requests it.
+        if (this.timeline.update(currentStep, currentProgress)) {
+            this.requestRedraw();
+        }
+
         this.display.update(currentStep);
-        this.timeline.update(currentStep, currentProgress);
-        document.title = currentProgress.toFixed(2); // TODO: remove
 
         window.requestAnimationFrame(this.tick);
+    }
+
+    private requestRedraw() {
+        this.scrollTop = SCROLL_INVALID;
     }
 }

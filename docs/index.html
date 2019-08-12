@@ -16,7 +16,7 @@
             <section id="intro">
                 <h1 class="intro__hed">Euler's Polyhedron Formula</h1>
                 <p class="intro__dek">
-                    Please use Android and / or Chrome to view this page because it requires support for WebGL 2.
+                    Chrome / Android is recommended for viewing this page because it uses WebGL 2.
                 </p>
                 <p>
                     I highly recommend <i>Euler's Gem</i> by David Richeson. It's up there with <i>The Knot Book</i>
@@ -62,11 +62,11 @@
                     The proof is divided into 5 steps:
                 </p>
                 <ol>
-                    <li>Surface Area of Sphere</li>
-                    <li>Area of Double Lune</li>
-                    <li>Girard's Theorem</li>
-                    <li>Spherical Polygons</li>
-                    <li>The Conclusion</li>
+                    <li><!--a href="#part1"-->Surface Area of Sphere<!--/a--></li>
+                    <li><!--a href="#part2"-->Area of Double Lune<!--/a--></li>
+                    <li><!--a href="#part3"-->Girard's Theorem<!--/a--></li>
+                    <li><!--a href="#part4"-->Spherical Polygons<!--/a--></li>
+                    <li><!--a href="#part5"-->The Conclusion<!--/a--></li>
                 </ol>
                 <p>
                     By the way, 3blue1brown has a a great video on the polyhedron formula <a href="TODO">here</a>, as
@@ -81,74 +81,114 @@
                 <div id="debug-guide"></div>
                 <article>
 
-                    <div id="part1" class="step" style="height:1400px">
+                    <div id="part1" class="step" style="height:calc(4 * 512px + 20px + 32px + 12px)">
                         <h2>Part 1: Surface Area of Sphere</h2>
-                        <p>
-                            The surface area of a sphere can be derived with freshman calculus, but it was discovered by
-                            Archimedes long before the invention of calculus.
-                        </p>
-                        <p style="margin-top:200px">
-                            Archimedes realized that the surface area of a sphere is equal to the area of its smallest
-                            enclosing cylinder, which is
-                            <mathspan>4πr<sup>2</sup></mathspan>. This is somewhat intuitive if you think about lat-long
-                            rectangles.
-                        </p>
-                        <p style="margin-top:200px"> 
-                            At the equator, lat-long rectangles are fat and short. Closer to the poles they are tall and
-                            thin. As they move closer to the poles, they become tall at the same rate at which they
-                            become thin, so their area remains constant.
-                        </p>
-                        <p style="margin-top:200px"> 
-                            Going forward, we'll keep things simple by focusing on a unit sphere whose surface area is
-                            <mathspan>4π</mathspan>.
-                        </p>
+                        <div>
+                            <p>
+                                The surface area of a sphere can be derived with freshman calculus, but it was
+                                discovered by Archimedes long before the invention of calculus.
+                            </p>
+                        </div>
+                        <div>
+                            <p>
+                                Archimedes realized that the surface area of a sphere is equal to the area of its
+                                smallest enclosing cylinder, which is <mathspan>4πr<sup>2</sup></mathspan>. This is
+                                somewhat intuitive if you think about lat-long rectangles.
+                            </p>
+                        </div>
+                        <div>
+                            <p>
+                                At the equator, lat-long rectangles are fat and short. Closer to the poles they are tall
+                                and thin. As they move closer to the poles, they become tall at the same rate at which
+                                they become thin, so their area remains constant.
+                            </p>
+                        </div>
+                        <div>
+                            <p>
+                                Going forward, we'll keep things simple by focusing on a unit sphere whose surface area
+                                is <mathspan>4π</mathspan>.
+                            </p>
+                        </div>
                     </div>
 
-                    <div id="part2" class="step" style="height:2000px">
+                    <div id="part2" class="step" style="height:calc(4 * 512px + 20px + 32px + 12px)">
                         <h2>Part 2: Area of a Double Lune</h2>
-                        <p>
-                            <i>Great circles</i> are lines on the surface of a sphere that divide the sphere in half. If
-                            you place your car anywhere on a sphere's surface, then continuously drive without turning
-                            the steering wheel, you'll always inscribe a great circle. Any portion of a great circle is
-                            called a <i>geodesic path</i>.
-                        </p>
-                        <p style="margin-top:400px">
-                            The region on a sphere between two great circles is called a "lune". Let's figure out the
-                            surface area of a lune bounded by θ radians.
-                        </p>
-                        <p style="margin-top:400px">
-                            If θ is 2π radians, the lune encompasses the entire sphere. Since the area of the sphere is
-                            <mathspan>4π</mathspan>, the area of the lune <mathspan>2θ</mathspan>.
-                        </p>
-                        <p style="margin-top:400px">
-                            The surface area of a lune plus its antipode is <mathspan>4θ</mathspan>. Let's call this a
-                            <i>double lune</i>.
-                        </p>
+                        <div>
+                            <p>
+                                <i>Great circles</i> are lines on the surface of a sphere that divide the sphere in
+                                half. If you place your car anywhere on a sphere's surface, then continuously drive
+                                without turning the steering wheel, you'll always inscribe a great circle. Any portion
+                                of a great circle is called a <i>geodesic path</i>.
+                            </p>
+                        </div>
+                        <div>
+                            <p>
+                                The region on a sphere between two great circles is called a "lune". Let's figure out
+                                the surface area of a lune bounded by θ radians.
+                            </p>
+                        </div>
+                        <div>
+                            <p>
+                                If θ is π radians, the lune encompasses one hemisphere. Since the area of a hemisphere
+                                is <mathspan>2π</mathspan>, the area of the lune is <mathspan>2θ</mathspan>.
+                            </p>
+                        </div>
+                        <div>
+                            <p>
+                                The surface area of a lune plus its antipode is <mathspan>4θ</mathspan>. Let's call this
+                                a <i>double lune</i>.
+                            </p>
+                        </div>
                     </div>
 
-                    <div class="step">
+                    <div id="part3" class="step" style="height:calc(4 * 512px + 20px + 32px + 12px)">
                         <h2>Part 3: Girard's Theorem</h2>
-                    </div>
+                        <div>
+                            <p>
+                                Spherical triangles are inscribed by geodesic lines (i.e. portions of great circles).
+                                Unlike a planar triangle, the area of a spherical triangle can be determined solely
+                                from its angles. With planar triangles, the sum of the three angles is always 
+                                π radians. Not so with spherical triangles!
+                            </p>
+                        </div>
+                        <div>
+                            <p>
+                                For example, consider the triangle that encompasses one-eighth of the sphere surface,
+                                which has three 90° angles, or π/2 radians each. Clearly these do not add up to π.
+                            </p>
+                        </div>
+                        <div>
+                            <p>
+                                Let's figure out the area of any geodesic triangle with angles A, B, and C.
+                            </p>
+                        </div>
+                        <div>
+                            <p>
+                                Each corner in the triangle corresponds to a double lune on the surface.
+                            </p>
+                        </div>
+                        </div>
 
-                    <div class="step">
+                    <div id="part4" class="step">
                         <h2>Part 4: Spherical Polygons</h2>
                     </div>
 
-                    <div class="step">
+                    <div id="part5" class="step">
                         <h2>Part 5: The Conclusion</h2>
                     </div>
 
-                    <div class="step final">
+                    <div class="step final" style="height:200px">
                         <p>
-                        Thanks for reading the proof! Take a look at the code if you're interested in how I made this.
-                        <br>
-                        <br>
-                        GitHub Project: <a href="">prideout/euler</a>
+                            Thanks for reading the proof! Take a look at the code if you're interested in how I made
+                            this.
+                            <br>
+                            <br>
+                            GitHub Project: <a href="">prideout/euler</a>
+                            <hr>
+                            <a href="https://prideout.net">
+                                <img src="https://prideout.net/assets/PublishedLogo.svg" style="height:64px">
+                            </a>
                         </p>
-                        <hr>
-                        <a href="https://prideout.net">
-                            <img src="https://prideout.net/assets/PublishedLogo.svg" style="height:64px">
-                        </a>
                     </div>
 
                     <div class="step blank"></div>
@@ -162,4 +202,5 @@
         <script src="main.js"></script>
     </div>
 </body>
+
 </html>

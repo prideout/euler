@@ -2,10 +2,18 @@
   "name": "euler_filament",
   "main": "index.js",
   "version": "1.0.0",
+  "config": {
+    "filajs": "/Users/prideout/github/filament/out/cmake-webgl-release/web/filament-js",
+    "matc":   "./materials/matc"
+  },
   "scripts": {
     "build": "webpack --mode development",
-    "build_release": "webpack --mode production",
-    "watch": "webpack --mode development --watch"
+    "build:release": "webpack --mode production",
+    "build:shaders": "ls -1 materials/*.mat | sed -e 's/\\.mat$//' | xargs -I % ${npm_package_config_matc} -o docs/%.filamat %.mat",
+    "update": "yarn run f1 && yarn run f2 && yarn run f3",
+    "f1":     "cp ${npm_package_config_filajs}/filament.js    filament/",
+    "f2":     "cp ${npm_package_config_filajs}/filament.d.ts  filament/",
+    "f3":     "cp ${npm_package_config_filajs}/filament.wasm  docs/"
   },
   "devDependencies": {
     "@types/gl-matrix": "^2.4.4",

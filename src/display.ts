@@ -18,7 +18,6 @@ export class Display {
     private readonly view: Filament.View;
 
     public constructor(canvas: HTMLCanvasElement, onFinishedLoading: () => void) {
-        const sRGBA = Filament.RgbaType.sRGB;
         const sRGB = Filament.RgbType.sRGB;
         window["vec3"] = glm.vec3; // tslint:disable-line
 
@@ -38,31 +37,22 @@ export class Display {
         const step1CylinderBackMaterial = this.engine.createMaterial(urls.step1CylinderBackMaterial);
         const step1CylinderFrontMaterial = this.engine.createMaterial(urls.step1CylinderFrontMaterial);
         const step2Material = this.engine.createMaterial(urls.step2Material);
+        const step3Material = this.engine.createMaterial(urls.step3Material);
 
-        this.animation.step1Material = step1Material.createInstance();
-        this.animation.step1CylinderBackMaterial = step1CylinderBackMaterial.createInstance();
-        this.animation.step1CylinderFrontMaterial = step1CylinderFrontMaterial.createInstance();
-        this.animation.step2Material = step2Material.createInstance();
+        const mats: Filament.MaterialInstance[] = [];
 
-        this.animation.step1Material.setColor3Parameter("baseColor", sRGB, [0.0, 0.4, 0.8]);
-        this.animation.step1Material.setFloatParameter("roughness", 0.5);
-        this.animation.step1Material.setFloatParameter("clearCoat", 0.0);
-        this.animation.step1Material.setFloatParameter("clearCoatRoughness", 0.8);
+        mats[0] = this.animation.step1Material = step1Material.createInstance();
+        mats[1] = this.animation.step1CylinderBackMaterial = step1CylinderBackMaterial.createInstance();
+        mats[2] = this.animation.step1CylinderFrontMaterial = step1CylinderFrontMaterial.createInstance();
+        mats[3] = this.animation.step2Material = step2Material.createInstance();
+        mats[4] = this.animation.step3Material = step3Material.createInstance();
 
-        this.animation.step1CylinderBackMaterial.setColor4Parameter("baseColor", sRGBA, [0.0, 0.8, 0.4, 1.0]);
-        this.animation.step1CylinderBackMaterial.setFloatParameter("roughness", 0.5);
-        this.animation.step1CylinderBackMaterial.setFloatParameter("clearCoat", 0.0);
-        this.animation.step1CylinderBackMaterial.setFloatParameter("clearCoatRoughness", 0.8);
-
-        this.animation.step1CylinderFrontMaterial.setColor4Parameter("baseColor", sRGBA, [0.0, 0.8, 0.4, 1.0]);
-        this.animation.step1CylinderFrontMaterial.setFloatParameter("roughness", 0.5);
-        this.animation.step1CylinderFrontMaterial.setFloatParameter("clearCoat", 0.0);
-        this.animation.step1CylinderFrontMaterial.setFloatParameter("clearCoatRoughness", 0.8);
-
-        this.animation.step2Material.setColor3Parameter("baseColor", sRGB, [0.0, 0.4, 0.8]);
-        this.animation.step2Material.setFloatParameter("roughness", 0.5);
-        this.animation.step2Material.setFloatParameter("clearCoat", 0.0);
-        this.animation.step2Material.setFloatParameter("clearCoatRoughness", 0.8);
+        for (const mat of mats) {
+            mat.setColor3Parameter("baseColor", sRGB, [0.0, 0.4, 0.8]);
+            mat.setFloatParameter("roughness", 0.5);
+            mat.setFloatParameter("clearCoat", 0.0);
+            mat.setFloatParameter("clearCoatRoughness", 0.8);
+        }
 
         this.createCylinders();
 
@@ -130,6 +120,9 @@ export class Display {
                     break;
                 case 1:
                     currentMaterial = this.animation.step2Material;
+                    break;
+                case 2:
+                    currentMaterial = this.animation.step3Material;
                     break;
                 default:
                     currentMaterial = this.animation.step1Material;
