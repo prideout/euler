@@ -162,11 +162,11 @@ export class Display {
         switch (step) {
             case 0: {
                 const fadeIn = smoothstep(.2, .3, progress);
-                const fadeOut = 1.0 - smoothstep(.6, .7, progress);
+                const fadeOut = 1.0 - smoothstep(.7, .8, progress);
                 const cylinderPresence = fadeIn * fadeOut;
                 let cylinderZ = -0.5 + (1.0 - cylinderPresence);
 
-                const cameraFn = d3.interpolate([0, 0, 3], [0, 2, 5]);
+                const cameraFn = d3.interpolate([0, 0, 3], [0, 1.5, 3.5]);
                 glm.vec3.copy(this.viewpoint.eye, cameraFn(cylinderPresence));
 
                 cylinderZ = mix(cylinderZ, -4.0, smoothstep(0.9, 1.0, progress));
@@ -185,27 +185,29 @@ export class Display {
                 tcm.setTransform(back, m1);
                 back.delete();
 
-                this.step1Material.setFloatParameter("gridlines", 0.0);
-                this.step1CylinderFrontMaterial.setFloatParameter("gridlines", 1.0);
+                const sphereGridlines = smoothstep(.5, .7, progress) * smoothstep(1., .9, progress);
+                const cylinderGridlines = smoothstep(.4, .5, progress) * smoothstep(.7, .5, progress);
+
+                this.step1Material.setFloatParameter("gridlines", sphereGridlines);
+                this.step1CylinderFrontMaterial.setFloatParameter("gridlines", cylinderGridlines);
                 this.step1CylinderFrontMaterial.setColor4Parameter("baseColor", sRGB, [0.0, 0.0, 0.0, 0.0]);
                 this.step1CylinderBackMaterial.setColor4Parameter("baseColor",  sRGB, [0.0, 0.0, 0.0, 0.0]);
 
                 break;
             }
-            case 1: {
 
+            case 1: {
                 const fadeInLune = smoothstep(0.0, 0.2, progress);
                 const fadeOutLune = 1.0 - smoothstep(0.8, 1.0, progress);
                 const lunePresence = fadeInLune * fadeOutLune;
-
                 const cameraFn = d3.interpolate([0, 0, 3], [0, 1, 3]);
                 glm.vec3.copy(this.viewpoint.eye, cameraFn(lunePresence));
-
                 this.currentMaterial.setFloatParameter("progress", lunePresence);
-
                 break;
             }
+
             default:
+                this.step1Material.setFloatParameter("gridlines", 0.0);
         }
 
         document.title = progress.toFixed(2); // TODO: remove

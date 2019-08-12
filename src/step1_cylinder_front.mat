@@ -26,7 +26,8 @@ fragment {
         float theta = atan(wpos.z, wpos.x) / 6.28;
         theta = fract(theta * 30.0);
         material.baseColor.a *= smoothstep(0.0, 0.1, abs(theta - 0.5));
-        material.baseColor.a = 1.0 - materialParams.gridlines * material.baseColor.a;
+        material.baseColor.a = 1.0 - materialParams.gridlines * (1.0 - material.baseColor.a);
+        material.baseColor.a = 1.0 - material.baseColor.a;
 
         material.roughness = materialParams.roughness;
         material.clearCoat = 0.0;
