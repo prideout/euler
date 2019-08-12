@@ -7,7 +7,12 @@ material {
     parameters : [
         { type : float3, name : baseColor },
         { type : float,  name : roughness },
-        { type : float,  name : progress },
+        
+        { type : float,  name : greatCircle },
+        { type : float,  name : luneAlpha },
+        { type : float,  name : luneExpansion },
+        { type : float,  name : antipodeAlpha },
+
         { type : float,  name : clearCoat },
         { type : float,  name : clearCoatRoughness }
     ],
@@ -48,7 +53,7 @@ fragment {
             float d1 = dot(wpos, vec4(N, D + T));
             float d2 = dot(wpos, vec4(N, D - T));
             float a = step(d2, 0.0) * step(0.0, d1);
-            a *= materialParams.progress;
+            a *= materialParams.greatCircle;
             material.baseColor.rgb *= 1.0 - a;
             material.baseColor.a *= 1.0 - a;
         }
@@ -59,7 +64,7 @@ fragment {
             float d1 = dot(wpos, vec4(N, D + T));
             float d2 = dot(wpos, vec4(N, D - T));
             float a = step(d2, 0.0) * step(0.0, d1);
-            a *= materialParams.progress;
+            a *= materialParams.luneAlpha;
             material.baseColor.rgb *= 1.0 - a;
             material.baseColor.a *= 1.0 - a;
         }
@@ -74,11 +79,12 @@ fragment {
             float d1 = dot(wpos, vec4(N0, D));
             float d2 = dot(wpos, vec4(N1, D));
             float a = step(d2, 0.0) * step(0.0, d1);
-            a *= materialParams.progress;
+            a *= materialParams.luneAlpha;
             material.baseColor.b *= 1.0 - a;
         }
 
-        material.baseColor.a = mix(1.0, 0.8 + 0.2 * (1.0 - material.baseColor.a), materialParams.progress);
+        float fadeIn = materialParams.greatCircle;
+        material.baseColor.a = mix(1.0, 0.7 + 0.3 * (1.0 - material.baseColor.a), fadeIn);
 
         material.roughness = materialParams.roughness;
         material.clearCoat = materialParams.clearCoat;

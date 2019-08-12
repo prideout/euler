@@ -18,6 +18,7 @@ you can do this to list, start, and stop ignorable files:
 
 Todo:
 
+    Remove "extras" in favor of npm script
     Load tiny skybox
     Power Optimization: do not draw if not scrolling
     Fix links to 3dblue1brown, remove title bar progress indicator

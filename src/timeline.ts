@@ -65,17 +65,25 @@ export class Timeline {
     }
 
     private updateStep2(progress: number) {
-        // 0.00 to 0.18 Fade in the great circle and change the camera
-        // 0.18 to 0.41 Fade in the second great circle and lune
-        // 0.41 to 0.57 Widen lune to entire sphere
-        // 0.57 to 0.72 Narrow lune back down
-        // 0.72 to 0.88 Fade in antipode
-        // 0.88 to 1.00 Fade out the double-lune and change the camera
-        const fadeInLune = smoothstep(0.0, 0.2, progress);
-        const fadeOutLune = 1.0 - smoothstep(0.8, 1.0, progress);
-        const lunePresence = fadeInLune * fadeOutLune;
+        // A 0.00 to 0.18 Fade in the great circle and change the camera
+        // B 0.18 to 0.41 Fade in the second great circle and lune
+        // C 0.41 to 0.57 Widen lune to entire sphere
+        // D 0.57 to 0.72 Narrow lune back down
+        // E 0.72 to 0.88 Fade in antipode
+        // F 0.88 to 1.00 Fade out the double-lune and change the camera
+        const A = smoothstep(0.00, 0.18, progress);
+        const B = smoothstep(0.18, 0.41, progress);
+        const C = smoothstep(0.41, 0.57, progress);
+        const D = smoothstep(0.57, 0.72, progress);
+        const E = smoothstep(0.72, 0.88, progress);
+        const F = smoothstep(0.88, 1.00, progress);
+
         const cameraFn = d3.interpolate([0, 0, 3], [0, 1, 3]);
-        glm.vec3.copy(this.animation.viewpoint.eye, cameraFn(lunePresence));
-        this.animation.step2Material.setFloatParameter("progress", lunePresence);
+        glm.vec3.copy(this.animation.viewpoint.eye, cameraFn(A * (1 - F)));
+
+        this.animation.step2Material.setFloatParameter("greatCircle", A * (1 - F));
+        this.animation.step2Material.setFloatParameter("luneAlpha", B * (1 - F));
+        this.animation.step2Material.setFloatParameter("luneExpansion", C * (1 - D));
+        this.animation.step2Material.setFloatParameter("antipodeAlpha", E * (1 - F));
     }
 }
