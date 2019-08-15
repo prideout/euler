@@ -4,27 +4,28 @@ To build and run the web app:
     yarn build
     yarn run http-server docs
 
-If you want to avoid accidentally publishing change to your local build output,
-you can do this to list, start, and stop ignorable files:
-
-    git ls-files -v|grep '^S'
-    git update-index --skip-worktree docs/main.js
-    git update-index --no-skip-worktree docs/main.js
-
 Todo:
-
-    Drawing text
-        https://webglfundamentals.org/webgl/lessons/webgl-text-canvas2d.html
 
     Debug mode
         show a HUD that has frameNumber and currentProgress.toFixed(2)
-        make this default to "on" with "yarn build:debug"
+        make this default to "on" with "yarn build"
+
+    Drawing text
+        Use the HUD to test a normalized coord system (no need for 3D math)
+        https://webglfundamentals.org/webgl/lessons/webgl-text-canvas2d.html
+        Display has a context2d
+
+    Part 1
+        Refactor to use timeline notation and should be pushed up (earlier)
+
+    Part 3
+        Lines should have extensions that fade away (to show they are great circles)
+
+    animation.ts should just be values (no Filament-specific stuff)
 
     Get rid of d3
-    Part 3 tweaks
-        RGB lines should be dark, and should have extensions that fade away (to show they are great circles)
     Load tiny skybox
-    Fix links to 3dblue1brown, remove title bar progress indicator
+    Fix links to 3dblue1brown
     Data-oriented timeline, generalize to google/scrollytelling
         mobile-friendly template for scrollytelling
 

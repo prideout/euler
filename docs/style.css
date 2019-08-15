@@ -77,8 +77,16 @@ canvas {
     left: 0;
     top: 0;
     width: 100%;
-    height: 512px;
     margin: 0;
+    height: 512px; /* changed at run time */
+}
+
+#debug-guide {
+    position: fixed;
+    left: 0;
+    height: 10px;
+    width: 100%;
+    top: 10px; /* changed at run time */
 }
 
 .step {
@@ -142,14 +150,6 @@ mathspan {
 #scrollable-content {
     height: 100%;
     overflow-y: scroll;
-}
-
-#debug-guide {
-    position: fixed;
-    left: 0;
-    height: 10px;
-    width: 100%;
-    top: 10px;
 }
 
 li {

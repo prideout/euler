@@ -14,7 +14,8 @@ Filament.init(urls.initialAssets, () => {
 const SCROLL_INVALID = 9999;
 
 class App {
-    private readonly canvas: HTMLCanvasElement;
+    private readonly canvas2d: HTMLCanvasElement;
+    private readonly canvas3d: HTMLCanvasElement;
     private debugging = false;
     private readonly display: Display;
     private readonly scrollable: HTMLElement;
@@ -25,17 +26,18 @@ class App {
 
     public constructor() {
         this.tick = this.doTick.bind(this) as (() => void);
-        this.canvas = document.getElementsByTagName("canvas")[0];
+        this.canvas2d = document.getElementById("canvas2d") as HTMLCanvasElement;
+        this.canvas3d = document.getElementById("canvas3d") as HTMLCanvasElement;
         this.scrollable = document.getElementById("scrollable-content");
-        this.display = new Display(this.canvas, () => { /* no-op */ });
+        this.display = new Display(this.canvas2d, this.canvas3d, () => { /* no-op */ });
         this.timeline = new Timeline(this.display.getAnimation());
         const main = d3.select("main");
         const scrolly = main.select("#scrolly");
         const article = scrolly.select("article");
         this.steps = article.selectAll(".step");
 
-        const canvas = scrolly.select("canvas");
-        canvas.style("height", `${window.innerHeight}px`);
+        const el = document.getElementsByClassName("container")[0] as HTMLElement;
+        el.style.height = `${window.innerHeight}px`;
 
         this.timeline.update(0, 0);
         this.display.update(0);
@@ -56,7 +58,7 @@ class App {
             console.info(`${label} top = ${rect.top}`);
         };
         d3.select("#debug-guide").style("border-top", "dashed 2px black");
-        print("    canvas", document.getElementsByTagName("canvas")[0]);
+        print("    canvas", document.getElementById("canvas3d")[0]);
         print("   scrolly", document.getElementById("scrolly"));
         print("      main", document.getElementsByTagName("main")[0]);
         print("scrollable", document.getElementById("scrollable-content"));
@@ -79,7 +81,7 @@ class App {
         }
 
         const app = this;
-        const canvasBox = app.canvas.getBoundingClientRect();
+        const canvasBox = this.canvas3d.getBoundingClientRect();
         const midway = (canvasBox.top + canvasBox.bottom) / 2;
 
         const getStepProgress = (el: HTMLElement) => {

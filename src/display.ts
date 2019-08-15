@@ -7,7 +7,8 @@ import * as urls from "./urls";
 export class Display {
     private readonly animation: Animation = new Animation();
     private readonly camera: Filament.Camera;
-    private readonly canvas: HTMLCanvasElement;
+    private readonly canvas2d: HTMLCanvasElement;
+    private readonly canvas3d: HTMLCanvasElement;
     private currentStep = 0;
     private readonly engine: Filament.Engine;
     private readonly indirectLight: Filament.IndirectLight;
@@ -17,12 +18,16 @@ export class Display {
     private readonly swapChain: Filament.SwapChain;
     private readonly view: Filament.View;
 
-    public constructor(canvas: HTMLCanvasElement, onFinishedLoading: () => void) {
+    public constructor(canvas2d: HTMLCanvasElement, canvas3d: HTMLCanvasElement, onFinishedLoading: () => void) {
         const sRGB = Filament.RgbType.sRGB;
         window["vec3"] = glm.vec3; // tslint:disable-line
 
-        this.canvas = canvas;
-        this.engine = Filament.Engine.create(canvas);
+        this.canvas2d = canvas2d;
+        this.canvas3d = canvas3d;
+
+        // this.canvas2d.getContext("2d"); // TODO: use this
+
+        this.engine = Filament.Engine.create(canvas3d);
         this.scene = this.engine.createScene();
         this.swapChain = this.engine.createSwapChain();
         this.renderer = this.engine.createRenderer();
@@ -96,8 +101,8 @@ export class Display {
         const Fov = Filament.Camera$Fov;
 
         const dpr: number = window.devicePixelRatio;
-        const width: number = this.canvas.width = this.canvas.clientWidth * dpr;
-        const height: number = this.canvas.height = this.canvas.clientHeight * dpr;
+        const width: number = this.canvas3d.width = this.canvas3d.clientWidth * dpr;
+        const height: number = this.canvas3d.height = this.canvas3d.clientHeight * dpr;
         this.view.setViewport([0, 0, width, height]);
 
         const aspect: number = width / height;
