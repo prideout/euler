@@ -36,19 +36,9 @@ a, a:visited, a:hover {
     color: #8a8a8a;
 }
 
-@font-face {
-    font-family: "circular";
-    src: url("circular-book.woff") format('woff');
-}
-
-@font-face {
-    font-family: "circular-bold";
-    src: url("circular-bold.woff") format('woff');
-}
-
 html,
 body {
-    font-family: "circular", sans-serif;
+    font-family: "Lexend Deca", sans-serif;
     height: 100%;
 }
 
@@ -110,7 +100,7 @@ canvas {
 }
 
 mathspan {
-    font-family: sans-serif;
+    font-family: serif;
     font-weight: bold;
 }
 
@@ -140,7 +130,8 @@ mathspan {
     text-align: center;
     padding: 1rem;
     font-size: 16px;
-    font-family: "circular-bold";
+    font-weight: bold;
+    font-family: "Lexend Deca";
     background-color: #3b3b3b;
     color: white;
 
