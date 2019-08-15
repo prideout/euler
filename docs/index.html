@@ -19,6 +19,7 @@
                 <p class="intro__dek">
                     Chrome / Android is recommended for viewing this page because it uses WebGL 2.
                 </p>
+                <!-- move to last panel
                 <p>
                     I highly recommend <i>Euler's Gem</i> by David Richeson. It's up there with <i>The Knot Book</i>
                     (Colin Adams) on my list of favorite math books. They both occupy the sweet spot between pop sci and
@@ -27,39 +28,46 @@
                 <p>
                     <i>Euler's Gem</i> barely mentions the identity that Euler is probably most well known for, and that
                     entranced me when I was in school: <mathspan><i>e<sup> iπ</sup></i> = -1</mathspan>.
+                    In a sense this equation not only represents
+                    the inception of graph theory, but also topology. The right-hand side is known as the <i>Euler
+                    Characteristic</i>. In generalized form, this is represented by <mathspan>χ</mathspan>:
                 </p>
-                <!-- $\small{e^{i\pi } + 1 = 0}$ -->
+                <mathspan>V - E + F = χ</mathspan>
                 <p>
-                    Instead, the book pivots around an equation that you might know from graph theory, which is a field
-                    that didn't exist until Euler came along:
+                    For a graph that wraps a sphere (i.e. an inflated convex polyhedron), <mathspan>χ=2</mathspan>.
+                    However if you draw a graph that wraps a torus, you'll find that <mathspan>χ=0</mathspan>. Thus,
+                    <mathspan>χ</mathspan> is a topological invariant.
+                </p>
+                <p>
+                    David Richeson's excellent book <i>Euler's Gem</i> describes several results that arise from Euler's
+                    polyhedron formula, including the fact that there are exactly 5 Platonic solids. It also describes
+                    several ways of proving the polyhedron formula. The one I enjoyed reading the most was Legendre's
+                    proof, which is purely geometrical and leverages some interesting properties of geodesic triangles.
+                </p>
+                <p>
+                    By the way, 3blue1brown has a a great video on the polyhedron formula <a href="TODO">here</a>, as
+                    well as <a href="TODO">this</a> video about the surface of a sphere, which brings us to the first
+                    step...
+                </p>
+                -->
+                <p>
+                    This page uses continuous scrollytelling to present a variation of Legendre's proof for the
+                    following formula.
                 </p>
                 <mathspan>V - E + F = 2</mathspan>
                 <!-- $V - E + F = 2$ -->
                 <p>
                     For any convex polyhedron (or planar graph), the number of vertices minus the number of edges plus
-                    the number of faces is 2. I remember thinking this was "neat" when I was a student, but I didn't see
-                    the beauty in it until reading the book.
+                    the number of faces is 2. Leonhard Euler discovered this in 1752 although Descartes discovered a
+                    variation over 100 years earlier.
                 </p>
                 <p>
-                    The right-hand side of the polyhedron formula is known as the <i>Euler Characteristic</i>. In
-                    generalized form, this is represented by <mathspan>χ</mathspan>:
-                </p>
-                <mathspan>V - E + F = χ</mathspan>
-                <p>
-                    For a graph that wraps a sphere (i.e. a convex polyhedron), <mathspan>χ=2</mathspan>. However if you
-                    draw a graph that wraps a torus, you'll find that <mathspan>χ=0</mathspan>. Thus,
-                    <mathspan>χ</mathspan> is a topological invariant. Euler himself didn't make these discoveries, but
-                    he made the first step that led to them.
+                    This equation makes it easy to prove that there only 5 Platonic solids, but perhaps its real beauty
+                    lies in how it connects disparate fields of mathematics. These connections are suggested by
+                    Legendre's proof, which is purely geometrical and leverages some interesting properties of geodesic
+                    triangles.
                 </p>
                 <p>
-                    <i>Euler's Gem</i> describes several results that arise from Euler's polyhedron formula, including
-                    the fact that there are exactly 5 Platonic solids. It also describes several ways of proving the
-                    polyhedron formula. The one I enjoyed reading the most was Legendre's proof, which is purely
-                    geometrical and leverages some interesting properties of geodesic triangles.
-                </p>
-                <p>
-                    In this page I will present a variation of Legendre's proof using scrollytelling, TypeScript, and my
-                    favorite library for making 3D graphics, <a href="https://github.com/google/filament">Filament</a>.
                     Scroll down at your own pace, but try not to go too fast, otherwise you'll skip over the animation.
                     The proof is divided into 5 steps:
                 </p>
@@ -71,9 +79,8 @@
                     <li><!--a href="#part5"-->The Conclusion<!--/a--></li>
                 </ol>
                 <p>
-                    By the way, 3blue1brown has a a great video on the polyhedron formula <a href="TODO">here</a>, as
-                    well as <a href="TODO">this</a> video about the surface of a sphere, which brings us to the first
-                    step...
+                    After the proof I'll give some recommendations for further reading. By the way, this was built
+                    using TypeScript and <a href="https://github.com/google/filament">Filament</a>. Enjoy!
                 </p>
             </section>
 

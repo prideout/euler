@@ -13,28 +13,44 @@ To publish:
 
 Todo:
 
+    canvas2d
+        Set up normalized coord system (no need for 3D math)
+        https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/transform
+        Draw a horiz line halfway
+
     Debug mode
-        canvas2d should draw a horiz line halfway
         yarn build:release should remove the HUD and horiz line
 
-    Drawing text
-        Use the HUD to test a normalized coord system (no need for 3D math)
-        https://webglfundamentals.org/webgl/lessons/webgl-text-canvas2d.html
+    Part 3
+        Use the HUD to find the 3 points of interest (no need for 3D math)
+        Draw R G B lunes
+        Add new steps for Girard's theorem
+        Lines should have extensions that fade away (to show they are great circles)
+
+    Part 4
+        Spherical polygons
+    
+    Part 5
+        Draw a soccer ball with cylinders, use morphing to inflate?
+        Inflation and Conclusion
 
     Part 1
         Refactor to use timeline notation and should be pushed up (earlier)
 
-    Part 3
-        Lines should have extensions that fade away (to show they are great circles)
-
     animation.ts should just be values (no Filament-specific stuff)
 
     Get rid of d3
+
     Load tiny skybox
-    Fix links to 3dblue1brown
+
+    Move commented-out intro stuff to conclusion, fix links to 3dblue1brown, etc.
+
     Data-oriented timeline, generalize to google/scrollytelling
         mobile-friendly template for scrollytelling
+
     Backup images for safari
+        Dig up your iPhone
+
     Maybe handle resizes?
 
 Tweet:
