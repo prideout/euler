@@ -16,8 +16,8 @@ const SCROLL_INVALID = 9999;
 class App {
     private readonly canvas2d: HTMLCanvasElement;
     private readonly canvas3d: HTMLCanvasElement;
-    private debugging = false;
     private readonly display: Display;
+    private frameCount = 0;
     private readonly scrollable: HTMLElement;
     private scrollTop = SCROLL_INVALID;
     private readonly steps: d3.Selection<HTMLElement, number, d3.BaseType, unknown>;
@@ -36,8 +36,8 @@ class App {
         const article = scrolly.select("article");
         this.steps = article.selectAll(".step");
 
-        const el = document.getElementsByClassName("container")[0] as HTMLElement;
-        el.style.height = `${window.innerHeight}px`;
+        const container = document.getElementsByClassName("sticky-container")[0] as HTMLElement;
+        container.style.height = `${window.innerHeight}px`;
 
         this.timeline.update(0, 0);
         this.display.update(0);
@@ -51,19 +51,6 @@ class App {
         window.requestAnimationFrame(this.tick);
     }
 
-    public debug() {
-        this.debugging = true;
-        const print = (label: string, el: HTMLElement) => {
-            const rect = el.getBoundingClientRect();
-            console.info(`${label} top = ${rect.top}`);
-        };
-        d3.select("#debug-guide").style("border-top", "dashed 2px black");
-        print("    canvas", document.getElementById("canvas3d")[0]);
-        print("   scrolly", document.getElementById("scrolly"));
-        print("      main", document.getElementsByTagName("main")[0]);
-        print("scrollable", document.getElementById("scrollable-content"));
-    }
-
     private doTick() {
         const scrollTop = document.getElementById("scrolly").getBoundingClientRect().top;
         if (scrollTop === this.scrollTop) {
@@ -73,6 +60,8 @@ class App {
 
         this.scrollTop = scrollTop;
         this.display.render();
+        this.frameCount += 1;
+        document.getElementById("frameCount").innerText = this.frameCount.toString();
 
         if (this.scrollable.getBoundingClientRect().top < 0) {
             this.scrollable.scrollIntoView();
@@ -80,7 +69,6 @@ class App {
             return;
         }
 
-        const app = this;
         const canvasBox = this.canvas3d.getBoundingClientRect();
         const midway = (canvasBox.top + canvasBox.bottom) / 2;
 
@@ -94,34 +82,17 @@ class App {
             };
         };
 
-        if (this.debugging) {
-            d3.select("#debug-guide").style("top", `${midway}px`);
-        }
-
-        let currentStep = 0;
         let currentProgress = 0;
-
         this.steps.style("border", function() {
             const progress = getStepProgress(this);
             if (progress.active) {
                 currentProgress = progress.percentage;
             }
-            if (!app.debugging) {
-                return "none";
-            }
-            if (this.classList.contains("final")) {
-                return "solid 2px black";
-            }
-            if (this.classList.contains("blank")) {
-                return "none";
-            }
-            if (!progress.active) {
-                return "solid 3px rgba(0,0,0,0)";
-            }
-            const gray = progress.percentage * 255;
-            return `solid 3px rgba(${gray}, ${gray}, ${gray}, 1.0)`;
+            return "none";
         });
+        document.getElementById("progress").innerText = (100 * currentProgress).toFixed(0);
 
+        let currentStep = 0;
         this.steps.classed("is-active", function(datum, index): boolean {
             const stepBox = this.getBoundingClientRect();
             if (stepBox.top > midway) {
@@ -133,6 +104,7 @@ class App {
             currentStep = index;
             return true;
         });
+        document.getElementById("step").innerText = currentStep.toString();
 
         // Force a re-draw if the timeline requests it.
         if (this.timeline.update(currentStep, currentProgress)) {

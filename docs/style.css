@@ -72,7 +72,7 @@ article {
     margin: 0 auto;
 }
 
-canvas {
+.sticky-container {
     position: sticky;
     left: 0;
     top: 0;
@@ -81,12 +81,28 @@ canvas {
     height: 512px; /* changed at run time */
 }
 
-#debug-guide {
-    position: fixed;
-    left: 0;
-    height: 10px;
+.canvas-stack {
     width: 100%;
-    top: 10px; /* changed at run time */
+    height: 100%;
+    position: relative;
+}
+
+.canvas-stack > * {
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+}
+
+#canvas3d { z-index: 0; }
+#canvas2d { z-index: 1; }
+
+#hud {
+    z-index: 100;
+    padding: 10px;
+    font-size: 14px;
+    text-shadow: white 0px 0 10px;
 }
 
 .step {

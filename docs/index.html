@@ -78,8 +78,16 @@
             </section>
 
             <section id="scrolly">
-                <canvas class="container" id="canvas3d"></canvas>
-                <div id="debug-guide"></div>
+                <div class="sticky-container">
+                    <div class="canvas-stack">
+                        <canvas id="canvas3d"></canvas>
+                        <canvas id="canvas2d"></canvas>
+                        <div id="hud">
+                            <span id="frameCount"></span> frames</br>
+                            <span id="step"></span> :: <span id="progress"></span>%
+                        </div>
+                    </div>
+                </div>
                 <article>
 
                     <div id="part1" class="step" style="height:calc(4 * 512px + 20px + 32px + 12px)">

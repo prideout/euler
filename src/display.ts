@@ -9,6 +9,7 @@ export class Display {
     private readonly camera: Filament.Camera;
     private readonly canvas2d: HTMLCanvasElement;
     private readonly canvas3d: HTMLCanvasElement;
+    private readonly context2d: CanvasRenderingContext2D;
     private currentStep = 0;
     private readonly engine: Filament.Engine;
     private readonly indirectLight: Filament.IndirectLight;
@@ -25,7 +26,7 @@ export class Display {
         this.canvas2d = canvas2d;
         this.canvas3d = canvas3d;
 
-        // this.canvas2d.getContext("2d"); // TODO: use this
+        this.context2d = this.canvas2d.getContext("2d");
 
         this.engine = Filament.Engine.create(canvas3d);
         this.scene = this.engine.createScene();
@@ -95,15 +96,22 @@ export class Display {
         const vp = this.animation.viewpoint;
         this.camera.lookAt(vp.eye, vp.center, vp.up);
         this.renderer.render(this.swapChain, this.view);
+
+        this.context2d.clearRect(0, 0, this.canvas2d.width, this.canvas2d.height);
+        this.context2d.font = "48px serif";
+        this.context2d.fillText("2d test", 200, 200);
     }
 
     public resize() {
         const Fov = Filament.Camera$Fov;
 
-        const dpr: number = window.devicePixelRatio;
-        const width: number = this.canvas3d.width = this.canvas3d.clientWidth * dpr;
-        const height: number = this.canvas3d.height = this.canvas3d.clientHeight * dpr;
+        const dpr = window.devicePixelRatio;
+        const width = this.canvas3d.width = this.canvas3d.clientWidth * dpr;
+        const height = this.canvas3d.height = this.canvas3d.clientHeight * dpr;
         this.view.setViewport([0, 0, width, height]);
+
+        this.canvas2d.width = width;
+        this.canvas2d.height = height;
 
         const aspect: number = width / height;
         const fov: number = aspect < 1 ? Fov.HORIZONTAL : Fov.VERTICAL;

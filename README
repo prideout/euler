@@ -7,13 +7,12 @@ To build and run the web app:
 Todo:
 
     Debug mode
-        show a HUD that has frameNumber and currentProgress.toFixed(2)
-        make this default to "on" with "yarn build"
+        canvas2d should draw a horiz line halfway
+        yarn build:release should remove the HUD and horiz line
 
     Drawing text
         Use the HUD to test a normalized coord system (no need for 3D math)
         https://webglfundamentals.org/webgl/lessons/webgl-text-canvas2d.html
-        Display has a context2d
 
     Part 1
         Refactor to use timeline notation and should be pushed up (earlier)
@@ -28,6 +27,8 @@ Todo:
     Fix links to 3dblue1brown
     Data-oriented timeline, generalize to google/scrollytelling
         mobile-friendly template for scrollytelling
+    Backup images for safari
+    Maybe handle resizes?
 
 Tweet:
 
