@@ -19,15 +19,12 @@ export class Display {
     private readonly swapChain: Filament.SwapChain;
     private readonly view: Filament.View;
 
-    public constructor(canvas2d: HTMLCanvasElement, canvas3d: HTMLCanvasElement, onFinishedLoading: () => void) {
-        const sRGB = Filament.RgbType.sRGB;
-        window["vec3"] = glm.vec3; // tslint:disable-line
+    public constructor() {
 
-        this.canvas2d = canvas2d;
-        this.canvas3d = canvas3d;
-
+        this.canvas2d = document.getElementById("canvas2d") as HTMLCanvasElement;
+        this.canvas3d = document.getElementById("canvas3d") as HTMLCanvasElement;
         this.context2d = this.canvas2d.getContext("2d");
-        this.engine = Filament.Engine.create(canvas3d);
+        this.engine = Filament.Engine.create(this.canvas3d);
         this.scene = this.engine.createScene();
         this.swapChain = this.engine.createSwapChain();
         this.renderer = this.engine.createRenderer();
@@ -35,23 +32,22 @@ export class Display {
         this.view = this.engine.createView();
         this.view.setCamera(this.camera);
         this.view.setScene(this.scene);
-
         this.animation.transformManager = this.engine.getTransformManager();
-
         const step1Material = this.engine.createMaterial(urls.step1Material);
         const step1CylinderBackMaterial = this.engine.createMaterial(urls.step1CylinderBackMaterial);
         const step1CylinderFrontMaterial = this.engine.createMaterial(urls.step1CylinderFrontMaterial);
         const step2Material = this.engine.createMaterial(urls.step2Material);
         const step3Material = this.engine.createMaterial(urls.step3Material);
 
-        const mats: Filament.MaterialInstance[] = [];
+        const mats: Filament.MaterialInstance[] = [
+            this.animation.step1Material = step1Material.createInstance(),
+            this.animation.step1CylinderBackMaterial = step1CylinderBackMaterial.createInstance(),
+            this.animation.step1CylinderFrontMaterial = step1CylinderFrontMaterial.createInstance(),
+            this.animation.step2Material = step2Material.createInstance(),
+            this.animation.step3Material = step3Material.createInstance(),
+        ];
 
-        mats[0] = this.animation.step1Material = step1Material.createInstance();
-        mats[1] = this.animation.step1CylinderBackMaterial = step1CylinderBackMaterial.createInstance();
-        mats[2] = this.animation.step1CylinderFrontMaterial = step1CylinderFrontMaterial.createInstance();
-        mats[3] = this.animation.step2Material = step2Material.createInstance();
-        mats[4] = this.animation.step3Material = step3Material.createInstance();
-
+        const sRGB = Filament.RgbType.sRGB;
         for (const mat of mats) {
             mat.setColor3Parameter("baseColor", sRGB, [0.0, 0.4, 0.8]);
             mat.setFloatParameter("roughness", 0.5);
@@ -100,20 +96,27 @@ export class Display {
         const height = this.canvas2d.height;
 
         this.context2d.setTransform(1, 0, 0, 1, 0, 0);
-        this.context2d.translate(width / 2.0, height / 2.0);
-        this.context2d.scale(width / 2.0, width / 2.0);
+        this.context2d.clearRect(0, 0, width, height);
+        this.context2d.font = "48px 'Lexend Deca', sans-serif";
+        for (const span of this.animation.textSpans) {
+            const x = width / 2 + span.x * width / 2;
+            const y = height / 2 + span.y * width / 2;
+            // TODO: honor span.opacity
+            this.context2d.fillText(span.text, x, y);
+        }
 
-        this.context2d.clearRect(-1, -1, 2, 2);
-        this.context2d.beginPath();
-        this.context2d.moveTo(-1, 0);
-        this.context2d.lineTo(+1, 0);
-        this.context2d.lineWidth = 0.01;
-        this.context2d.setLineDash([0.01, 0.02]);
-        this.context2d.stroke();
-
-        this.context2d.setTransform(1, 0, 0, 1, 0, 0);
-        this.context2d.font = "48px serif";
-        this.context2d.fillText("A B C", 100, 100);
+        // Draw horizontal guide line for step transitions.
+        const debugging = true;
+        if (debugging) {
+            this.context2d.translate(width / 2.0, height / 2.0);
+            this.context2d.scale(width / 2.0, width / 2.0);
+            this.context2d.beginPath();
+            this.context2d.moveTo(-1, 0);
+            this.context2d.lineTo(+1, 0);
+            this.context2d.lineWidth = 0.01;
+            this.context2d.setLineDash([0.01, 0.02]);
+            this.context2d.stroke();
+        }
     }
 
     public resize() {

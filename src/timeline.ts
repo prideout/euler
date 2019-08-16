@@ -20,6 +20,17 @@ export class Timeline {
         this.animation = animation;
     }
 
+    public enterStep3() {
+        this.animation.textSpans.length = 3;
+        this.animation.textSpans[0] = { opacity: 1.0, text: "A", x: -0.65, y: -0.22 };
+        this.animation.textSpans[1] = { opacity: 0.5, text: "B", x: +0.48, y: -0.14 };
+        this.animation.textSpans[2] = { opacity: 1.0, text: "C", x: -0.15, y: +0.54 };
+    }
+
+    public exitStep3() {
+        this.animation.textSpans.length = 0;
+    }
+
     public update(step: number, progress: number): boolean {
         const updateFn = this[`updateStep${step + 1}`] as (progress: number) => boolean;
         const exitFn = this[`exitStep${this.previousStep + 1}`] as () => void;
@@ -29,7 +40,7 @@ export class Timeline {
                 exitFn.apply(this);
             }
             if (enterFn) {
-                exitFn.apply(this);
+                enterFn.apply(this);
             }
             this.previousStep = step;
         }

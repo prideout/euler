@@ -1,43 +1,45 @@
 import * as d3 from "d3";
 import * as Filament from "filament";
-import { glMatrix } from "gl-matrix";
+import { glMatrix, vec3 } from "gl-matrix";
 
+import { Animation } from "./animation";
 import { Display } from "./display";
 import { Timeline } from "./timeline";
 import * as urls from "./urls";
 
 Filament.init(urls.initialAssets, () => {
     glMatrix.setMatrixArrayType(Array);
+    window["vec3"] = vec3;      // tslint:disable-line
     window["app"] = new App();  // tslint:disable-line
 });
 
 const SCROLL_INVALID = 9999;
 
 class App {
-    private readonly canvas2d: HTMLCanvasElement;
-    private readonly canvas3d: HTMLCanvasElement;
+    private readonly animation: Animation;
+    private readonly container: HTMLElement;
     private readonly display: Display;
     private frameCount = 0;
     private readonly scrollable: HTMLElement;
     private scrollTop = SCROLL_INVALID;
     private readonly steps: d3.Selection<HTMLElement, number, d3.BaseType, unknown>;
+    private readonly textSpansHud: HTMLDivElement;
     private readonly tick: () => void;
     private readonly timeline: Timeline;
 
     public constructor() {
         this.tick = this.doTick.bind(this) as (() => void);
-        this.canvas2d = document.getElementById("canvas2d") as HTMLCanvasElement;
-        this.canvas3d = document.getElementById("canvas3d") as HTMLCanvasElement;
         this.scrollable = document.getElementById("scrollable-content");
-        this.display = new Display(this.canvas2d, this.canvas3d, () => { /* no-op */ });
-        this.timeline = new Timeline(this.display.getAnimation());
+        this.display = new Display();
+        this.animation = this.display.getAnimation();
+        this.timeline = new Timeline(this.animation);
         const main = d3.select("main");
         const scrolly = main.select("#scrolly");
         const article = scrolly.select("article");
         this.steps = article.selectAll(".step");
 
-        const container = document.getElementsByClassName("sticky-container")[0] as HTMLElement;
-        container.style.height = `${window.innerHeight}px`;
+        this.container = document.getElementsByClassName("sticky-container")[0] as HTMLElement;
+        this.container.style.height = `${window.innerHeight}px`;
 
         this.timeline.update(0, 0);
         this.display.update(0);
@@ -46,6 +48,16 @@ class App {
         window.addEventListener("resize", () => {
             this.requestRedraw();
             this.display.resize();
+        });
+
+        this.textSpansHud = document.getElementById("textSpansHud") as HTMLDivElement;
+        this.textSpansHud.addEventListener("input", (ev) => {
+            const el = ev.target as HTMLInputElement;
+            const spanindex = parseInt(el.dataset.spanindex, 10);
+            const value = parseFloat(el.value);
+            const field = el.dataset.field;
+            this.animation.textSpans[spanindex][field] = value;
+            this.requestRedraw();
         });
 
         window.requestAnimationFrame(this.tick);
@@ -69,7 +81,22 @@ class App {
             return;
         }
 
-        const canvasBox = this.canvas3d.getBoundingClientRect();
+        const hud = this.textSpansHud;
+        if (hud.childElementCount !== 3 * this.animation.textSpans.length) {
+            hud.innerHTML = "";
+            let index = 0;
+            const inputAttribs = 'type="number" min="-1" max="+1" step=".01"';
+            for (const span of this.animation.textSpans) {
+                const dataAttribs = `data-spanindex="${index}"`;
+                hud.innerHTML += span.text;
+                hud.innerHTML += `<input ${inputAttribs} ${dataAttribs} data-field="x" value="${span.x}">`;
+                hud.innerHTML += `<input ${inputAttribs} ${dataAttribs} data-field="y" value="${span.y}">`;
+                hud.innerHTML += "<br>";
+                index += 1;
+            }
+        }
+
+        const canvasBox = this.container.getBoundingClientRect();
         const midway = (canvasBox.top + canvasBox.bottom) / 2;
 
         const getStepProgress = (el: HTMLElement) => {

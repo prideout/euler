@@ -13,13 +13,11 @@ To publish:
 
 Todo:
 
-    timeline should add / remove to animation.textSpans
-
     Debug mode
         yarn build:release should remove the HUD and horiz line
 
     Part 3
-        Use the HUD to find the 3 points of interest (no need for 3D math)
+        Opacity for text.
         Draw R G B lunes
         Add new steps for Girard's theorem
         Lines should have extensions that fade away (to show they are great circles)
@@ -41,7 +39,7 @@ Todo:
 
     Load tiny skybox
 
-    Move commented-out intro stuff to conclusion, fix links to 3dblue1brown, etc.
+    Move commented-out intro stuff to conclusion, fix links to 3blue1brown, etc.
 
     Data-oriented timeline, generalize to google/scrollytelling
         mobile-friendly template for scrollytelling

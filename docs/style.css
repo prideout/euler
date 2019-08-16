@@ -105,6 +105,10 @@ article {
     text-shadow: white 0px 0 10px;
 }
 
+#hud input {
+    width: 60px;
+}
+
 .step {
     margin: 0;
     border: none;
