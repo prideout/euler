@@ -27,7 +27,6 @@ export class Display {
         this.canvas3d = canvas3d;
 
         this.context2d = this.canvas2d.getContext("2d");
-
         this.engine = Filament.Engine.create(canvas3d);
         this.scene = this.engine.createScene();
         this.swapChain = this.engine.createSwapChain();
@@ -98,8 +97,16 @@ export class Display {
         this.renderer.render(this.swapChain, this.view);
 
         this.context2d.clearRect(0, 0, this.canvas2d.width, this.canvas2d.height);
-        this.context2d.font = "48px serif";
-        this.context2d.fillText("2d test", 200, 200);
+        this.context2d.beginPath();
+        this.context2d.moveTo(-1, 0);
+        this.context2d.lineTo(+1, 0);
+        this.context2d.lineWidth = 0.01;
+        this.context2d.setLineDash([0.01, 0.02]);
+        this.context2d.stroke();
+
+        this.context2d.font = "0.1px serif";
+        this.context2d.lineWidth = 0.01;
+        this.context2d.fillText("A B C", 0.2, 0.2);
     }
 
     public resize() {
@@ -112,6 +119,9 @@ export class Display {
 
         this.canvas2d.width = width;
         this.canvas2d.height = height;
+        this.context2d.setTransform(1, 0, 0, 1, 0, 0);
+        this.context2d.translate(width / 2.0, height / 2.0);
+        this.context2d.scale(width / 2.0, width / 2.0);
 
         const aspect: number = width / height;
         const fov: number = aspect < 1 ? Fov.HORIZONTAL : Fov.VERTICAL;
