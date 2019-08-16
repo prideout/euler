@@ -14,7 +14,8 @@
         "typedef": false,
         "newline-before-return": false,
         "variable-name": false,
-        "binary-expression-operand-order": false
+        "binary-expression-operand-order": false,
+        "strict-boolean-expressions": {"options": ["allow-undefined-union"]}
     },
     "rulesDirectory": []
 }

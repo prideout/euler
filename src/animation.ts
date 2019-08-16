@@ -7,6 +7,13 @@ export class Viewpoint {
     public up: glm.vec3 = glm.vec3.fromValues(0, 1, 0);
 }
 
+export class TextSpan {
+    public opacity: number;
+    public text: string;
+    public x: number;
+    public y: number;
+}
+
 export class Animation {
     public backCylinderEntity: Filament.Entity;
     public frontCylinderEntity: Filament.Entity;
@@ -16,6 +23,7 @@ export class Animation {
     public step1Material: Filament.MaterialInstance;
     public step2Material: Filament.MaterialInstance;
     public step3Material: Filament.MaterialInstance;
+    public readonly textSpans: TextSpan[] = [];
     public transformManager: Filament.TransformManager;
-    public viewpoint = new Viewpoint();
+    public readonly viewpoint = new Viewpoint();
 }

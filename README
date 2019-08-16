@@ -13,9 +13,7 @@ To publish:
 
 Todo:
 
-    canvas2d
-        Why is font size not consistent with Firefox?
-        https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/transform
+    timeline should add / remove to animation.textSpans
 
     Debug mode
         yarn build:release should remove the HUD and horiz line
@@ -37,6 +35,7 @@ Todo:
         Refactor to use timeline notation and should be pushed up (earlier)
 
     animation.ts should just be values (no Filament-specific stuff)
+        and should be renamed to Scene
 
     Get rid of d3
 

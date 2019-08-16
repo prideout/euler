@@ -14,23 +14,33 @@ const smoothstep = (edge0: number, edge1: number, x: number): number => {
 
 export class Timeline {
     private readonly animation: Animation;
+    private previousStep = -1;
 
     public constructor(animation: Animation) {
         this.animation = animation;
     }
 
     public update(step: number, progress: number): boolean {
-        switch (step) {
-            case 0: return this.updateStep1(progress);
-            case 1: return this.updateStep2(progress);
-            case 2: return this.updateStep3(progress);
-            default:
-                this.animation.step1Material.setFloatParameter("gridlines", 0.0);
-                return this.updateStep1(0);
+        const updateFn = this[`updateStep${step + 1}`] as (progress: number) => boolean;
+        const exitFn = this[`exitStep${this.previousStep + 1}`] as () => void;
+        const enterFn = this[`enterStep${step + 1}`] as () => void;
+        if (step !== this.previousStep) {
+            if (exitFn) {
+                exitFn.apply(this);
+            }
+            if (enterFn) {
+                exitFn.apply(this);
+            }
+            this.previousStep = step;
         }
+        if (updateFn) {
+            return updateFn.apply(this, [progress]) as boolean;
+        }
+        this.animation.step1Material.setFloatParameter("gridlines", 0.0);
+        return this.updateStep1(0);
     }
 
-    private updateStep1(progress: number): boolean {
+    public updateStep1(progress: number): boolean {
         const sRGBA = Filament.RgbaType.sRGB;
         const tcm = this.animation.transformManager;
         const fadeIn = smoothstep(.2, .3, progress);
@@ -67,7 +77,7 @@ export class Timeline {
         return false;
     }
 
-    private updateStep2(progress: number) {
+    public updateStep2(progress: number) {
         const A = smoothstep(0.00, 0.18, progress); // Fade in the great circle and change the camera
         const B = smoothstep(0.18, 0.41, progress); // Fade in the second great circle and lune
         const C = smoothstep(0.41, 0.57, progress); // Widen lune to entire sphere
@@ -85,7 +95,7 @@ export class Timeline {
         return false;
     }
 
-    private updateStep3(progress: number) {
+    public updateStep3(progress: number) {
 
         this.animation.step1Material.setFloatParameter("gridlines", 0.0);
         this.updateStep1(0);
