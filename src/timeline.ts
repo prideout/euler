@@ -22,9 +22,9 @@ export class Timeline {
 
     public enterStep3() {
         this.animation.textSpans.length = 3;
-        this.animation.textSpans[0] = { opacity: 1.0, text: "A", x: -0.65, y: -0.22 };
-        this.animation.textSpans[1] = { opacity: 0.5, text: "B", x: +0.46, y: -0.13 };
-        this.animation.textSpans[2] = { opacity: 1.0, text: "C", x: -0.15, y: +0.54 };
+        this.animation.textSpans[0] = { opacity: 1.0, text: "A", x: -0.63, y: -0.22 };
+        this.animation.textSpans[1] = { opacity: 1.0, text: "B", x: +0.48, y: -0.13 };
+        this.animation.textSpans[2] = { opacity: 1.0, text: "C", x: -0.13, y: +0.54 };
     }
 
     public exitStep3() {
@@ -125,6 +125,11 @@ export class Timeline {
 
         this.animation.step3Material.setFloatParameter("fadeInTriangle", A * (1 - F));
         this.animation.step3Material.setFloatParameter("triangleExpansion", B2 * (1 - C));
+
+        const textOpacity = D * (1 - F);
+        this.animation.textSpans[0].opacity = textOpacity;
+        this.animation.textSpans[1].opacity = textOpacity;
+        this.animation.textSpans[2].opacity = textOpacity;
 
         return false;
     }

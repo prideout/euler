@@ -13,8 +13,6 @@ To publish:
 
 Todo:
 
-    Use context2d "measure text" for proper centering
-
     Debug mode
         yarn build:release should remove the HUD and horiz line
 
