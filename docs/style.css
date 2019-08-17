@@ -95,11 +95,7 @@ article {
     position: absolute;
 }
 
-#canvas3d { z-index: 0; }
-#canvas2d { z-index: 1; }
-
 #hud {
-    z-index: 100;
     padding: 10px;
     font-size: 14px;
     text-shadow: white 0px 0 10px;

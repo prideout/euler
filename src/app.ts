@@ -56,9 +56,7 @@ class App {
             this.display.resize();
         });
 
-        if (this.production) {
-            document.getElementById("hud").remove();
-        } else {
+        if (!this.production) {
             document.getElementById("hud").style.display = "block";
             document.getElementById("textSpansHud").addEventListener("input", (ev) => {
                 const el = ev.target as HTMLInputElement;
