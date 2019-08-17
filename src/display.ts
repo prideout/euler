@@ -95,7 +95,7 @@ export class Display {
 
         const width = this.canvas2d.width;
         const height = this.canvas2d.height;
-        const fontSize = height / 36;
+        const fontSize = width / 36;
 
         this.context2d.setTransform(1, 0, 0, 1, 0, 0);
         this.context2d.clearRect(0, 0, width, height);

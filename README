@@ -8,7 +8,7 @@ To publish:
 
     yarn build:release
     git update-index --no-skip-worktree docs/main.js*
-    git commit && git push
+    git commit -a -m 'Publish' && git push
     git update-index --skip-worktree docs/main.js*
 
 Todo:
