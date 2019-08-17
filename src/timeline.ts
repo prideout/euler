@@ -116,20 +116,26 @@ export class Timeline {
         const B1 = smoothstep(0.23, 0.31, progress); // Change the camera to see polar triangle
         const C =  smoothstep(0.31, 0.35, progress); // Shrink triangle back and revert the cam
         const D =  smoothstep(0.35, 0.38, progress); // Fade in letters A B C
-        const E =  smoothstep(0.38, 0.45, progress); // Fade in three double lunes sequentially
-        const E0 = smoothstep(0.45, 0.53, progress); // Fade out three double lunes sequentially
-        const E1 = smoothstep(0.53, 0.60, progress); // Fade in three double lunes simultaneously
-        const E2 = smoothstep(0.60, 0.66, progress); // Rotate to see antipode
-        const E3 = smoothstep(0.60, 0.82, progress); // Rotate back to normal
-        const F =  smoothstep(0.96, 1.00, progress); // Fade everything out and change the camera
+        const E =  smoothstep(0.38, 0.53, progress); // Fade in and out three double lunes sequentially
+        const F = smoothstep(0.53, 0.60, progress); // Fade in three double lunes simultaneously
+        const G = smoothstep(0.60, 0.66, progress); // Rotate to see antipode
+        const H = smoothstep(0.60, 0.82, progress); // Rotate back to normal
+        const I =  smoothstep(0.96, 1.00, progress); // Fade everything out and change the camera
 
-        const cam0 = (d3.interpolate([0, 0, 3], [0, 1, 3]))(A * (1 - F));
+        const cam0 = (d3.interpolate([0, 0, 3], [0, 1, 3]))(A * (1 - I));
         const cam =  (d3.interpolate(cam0, [2, 2, 2]))(B1 * (1 - C));
         glm.vec3.copy(this.animation.viewpoint.eye, cam);
 
-        this.animation.step3Material.setFloatParameter("fadeInTriangle", A * (1 - F));
+        this.animation.step3Material.setFloatParameter("fadeInTriangle", A * (1 - I));
         this.animation.step3Material.setFloatParameter("triangleExpansion", B2 * (1 - C));
-        this.animation.step3Material.setFloatParameter("fadeInLunes", E * (1 - F));
+
+        const EA = Math.sin(clamp(E  * 3 - 0, 0, 1) * Math.PI);
+        const EB = Math.sin(clamp(E  * 3 - 1, 0, 1) * Math.PI);
+        const EC = Math.sin(clamp(E  * 3 - 2, 0, 1) * Math.PI);
+
+        this.animation.step3Material.setFloatParameter("fadeInLuneA", EA);
+        this.animation.step3Material.setFloatParameter("fadeInLuneB", EB);
+        this.animation.step3Material.setFloatParameter("fadeInLuneC", EC);
 
         const textOpacity = D * (1 - F);
         this.animation.textSpans[0].opacity = textOpacity;

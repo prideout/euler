@@ -10,7 +10,9 @@ material {
 
         { type : float,  name : fadeInTriangle },
         { type : float,  name : triangleExpansion },
-        { type : float,  name : fadeInLunes },
+        { type : float,  name : fadeInLuneA },
+        { type : float,  name : fadeInLuneB },
+        { type : float,  name : fadeInLuneC },
 
         { type : float,  name : clearCoat },
         { type : float,  name : clearCoatRoughness }
@@ -80,22 +82,23 @@ fragment {
         // Double Lune formed by Angle A
         float redLune1 = (insideA && insideB) ? 1.0 : 0.0;
         float redLune2 = (!insideA && !insideB) ? 1.0 : 0.0;
-        totalLuneColor += vec3(1, 0, 0) * redLune1;
-        totalLuneColor += vec3(1, 0, 0) * redLune2;
-
-        // Double Lune formed by Angle C
-        float grnLune1 = (insideB && insideC) ? 1.0 : 0.0;
-        float grnLune2 = (!insideB && !insideC) ? 1.0 : 0.0;
-        totalLuneColor += vec3(0, 1, 0) * grnLune1;
-        totalLuneColor += vec3(0, 1, 0) * grnLune2;
+        totalLuneColor += vec3(materialParams.fadeInLuneA, 0, 0) * redLune1;
+        totalLuneColor += vec3(materialParams.fadeInLuneA, 0, 0) * redLune2;
 
         // Double Lune formed by Angle B
-        float bluLune1 = (insideA && insideC) ? 1.0 : 0.0;
-        float bluLune2 = (!insideA && !insideC) ? 1.0 : 0.0;
-        totalLuneColor += vec3(0, 0, 1) * bluLune1;
-        totalLuneColor += vec3(0, 0, 1) * bluLune2;
+        float grnLune1 = (insideA && insideC) ? 1.0 : 0.0;
+        float grnLune2 = (!insideA && !insideC) ? 1.0 : 0.0;
+        totalLuneColor += vec3(0, materialParams.fadeInLuneB, 0) * grnLune1;
+        totalLuneColor += vec3(0, materialParams.fadeInLuneB, 0) * grnLune2;
 
-        material.baseColor.rgb = mix(material.baseColor.rgb, totalLuneColor, materialParams.fadeInLunes * 0.8);
+        // Double Lune formed by Angle C
+        float bluLune1 = (insideB && insideC) ? 1.0 : 0.0;
+        float bluLune2 = (!insideB && !insideC) ? 1.0 : 0.0;
+        totalLuneColor += vec3(0, 0, materialParams.fadeInLuneC) * bluLune1;
+        totalLuneColor += vec3(0, 0, materialParams.fadeInLuneC) * bluLune2;
+
+        float maxLune = max(max(totalLuneColor.r, totalLuneColor.g), totalLuneColor.b);
+        material.baseColor.rgb = mix(material.baseColor.rgb, totalLuneColor, 0.8 * maxLune);
 
         float fadeIn = materialParams.fadeInTriangle;
         float aDrawTime = clamp((fadeIn * 3.0 - 0.0), 0.0, 1.0);

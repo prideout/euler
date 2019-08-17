@@ -14,8 +14,6 @@ To publish:
 Todo:
 
     Part 3
-        Split apart "fadeInLunes" into three uniforms
-        Lines should have extensions that fade away (to show they are great circles)
 
     Part 4
         Spherical polygons
