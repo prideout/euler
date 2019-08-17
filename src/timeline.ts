@@ -111,13 +111,17 @@ export class Timeline {
         this.animation.step1Material.setFloatParameter("gridlines", 0.0);
         this.updateStep1(0);
 
-        const A = smoothstep(0.00, 0.18, progress); // Draw the geodesic triangle and change the camera
-        const B2 = smoothstep(0.30, 0.35, progress); // Expand triangle to 90-90-90
-        const B1 = smoothstep(0.35, 0.42, progress); // Change the camera to see polar triangle
-        const C = smoothstep(0.50, 0.55, progress); // Shrink triangle back and revert the cam
-        const D = smoothstep(0.55, 0.65, progress); // Fade in letters A B C
-        const E = smoothstep(0.65, 0.88, progress); // Fade in three double lunes
-        const F = smoothstep(0.88, 1.00, progress); // Fade everything out and change the camera
+        const A =  smoothstep(0.00, 0.11, progress); // Draw the geodesic triangle and change the camera
+        const B2 = smoothstep(0.17, 0.23, progress); // Expand triangle to 90-90-90
+        const B1 = smoothstep(0.23, 0.31, progress); // Change the camera to see polar triangle
+        const C =  smoothstep(0.31, 0.35, progress); // Shrink triangle back and revert the cam
+        const D =  smoothstep(0.35, 0.38, progress); // Fade in letters A B C
+        const E =  smoothstep(0.38, 0.45, progress); // Fade in three double lunes sequentially
+        const E0 = smoothstep(0.45, 0.53, progress); // Fade out three double lunes sequentially
+        const E1 = smoothstep(0.53, 0.60, progress); // Fade in three double lunes simultaneously
+        const E2 = smoothstep(0.60, 0.66, progress); // Rotate to see antipode
+        const E3 = smoothstep(0.60, 0.82, progress); // Rotate back to normal
+        const F =  smoothstep(0.96, 1.00, progress); // Fade everything out and change the camera
 
         const cam0 = (d3.interpolate([0, 0, 3], [0, 1, 3]))(A * (1 - F));
         const cam =  (d3.interpolate(cam0, [2, 2, 2]))(B1 * (1 - C));
