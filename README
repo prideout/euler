@@ -13,9 +13,6 @@ To publish:
 
 Todo:
 
-    Debug mode
-        yarn build:release should remove the HUD and horiz line
-
     Part 3
         Draw R G B lunes
         Add new steps for Girard's theorem

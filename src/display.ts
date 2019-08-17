@@ -13,14 +13,15 @@ export class Display {
     private currentStep = 0;
     private readonly engine: Filament.Engine;
     private readonly indirectLight: Filament.IndirectLight;
+    private readonly production: boolean;
     private readonly renderer: Filament.Renderer;
     private readonly scene: Filament.Scene;
     private readonly skybox: Filament.Skybox;
     private readonly swapChain: Filament.SwapChain;
     private readonly view: Filament.View;
 
-    public constructor() {
-
+    public constructor(production: boolean) {
+        this.production = production;
         this.canvas2d = document.getElementById("canvas2d") as HTMLCanvasElement;
         this.canvas3d = document.getElementById("canvas3d") as HTMLCanvasElement;
         this.context2d = this.canvas2d.getContext("2d");
@@ -111,8 +112,7 @@ export class Display {
         this.context2d.fillStyle = "rgba(0, 0, 0, 1)";
 
         // Draw horizontal guide line for step transitions.
-        const debugging = true;
-        if (debugging) {
+        if (!this.production) {
             this.context2d.translate(width / 2.0, height / 2.0);
             this.context2d.scale(width / 2.0, width / 2.0);
             this.context2d.beginPath();

@@ -1,4 +1,5 @@
 const path = require('path');
+const webpack = require('webpack');
 
 'use strict';
 
@@ -38,5 +39,11 @@ module.exports = {
         assetFilter: function(assetFilename) {
             return false;
         }
-    }
+    },
+
+    plugins: [
+        new webpack.DefinePlugin({
+            "BUILD_COMMAND": JSON.stringify(process.env.npm_lifecycle_event),
+        })
+    ]
 };

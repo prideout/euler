@@ -103,6 +103,7 @@ article {
     padding: 10px;
     font-size: 14px;
     text-shadow: white 0px 0 10px;
+    display: none;
 }
 
 #hud input {

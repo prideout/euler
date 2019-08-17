@@ -13,6 +13,8 @@ Filament.init(urls.initialAssets, () => {
     window["app"] = new App();  // tslint:disable-line
 });
 
+declare const BUILD_COMMAND: string;
+
 const SCROLL_INVALID = 9999;
 
 class App {
@@ -20,17 +22,21 @@ class App {
     private readonly container: HTMLElement;
     private readonly display: Display;
     private frameCount = 0;
+    private readonly production: boolean;
     private readonly scrollable: HTMLElement;
     private scrollTop = SCROLL_INVALID;
     private readonly steps: d3.Selection<HTMLElement, number, d3.BaseType, unknown>;
-    private readonly textSpansHud: HTMLDivElement;
     private readonly tick: () => void;
     private readonly timeline: Timeline;
 
     public constructor() {
+
+        this.production = BUILD_COMMAND.indexOf("release") > -1;
+        console.info(this.production ? "Production mode" : "Development mode");
+
         this.tick = this.doTick.bind(this) as (() => void);
         this.scrollable = document.getElementById("scrollable-content");
-        this.display = new Display();
+        this.display = new Display(this.production);
         this.animation = this.display.getAnimation();
         this.timeline = new Timeline(this.animation);
         const main = d3.select("main");
@@ -50,15 +56,19 @@ class App {
             this.display.resize();
         });
 
-        this.textSpansHud = document.getElementById("textSpansHud") as HTMLDivElement;
-        this.textSpansHud.addEventListener("input", (ev) => {
-            const el = ev.target as HTMLInputElement;
-            const spanindex = parseInt(el.dataset.spanindex, 10);
-            const value = parseFloat(el.value);
-            const field = el.dataset.field;
-            this.animation.textSpans[spanindex][field] = value;
-            this.requestRedraw();
-        });
+        if (this.production) {
+            document.getElementById("hud").remove();
+        } else {
+            document.getElementById("hud").style.display = "block";
+            document.getElementById("textSpansHud").addEventListener("input", (ev) => {
+                const el = ev.target as HTMLInputElement;
+                const spanindex = parseInt(el.dataset.spanindex, 10);
+                const value = parseFloat(el.value);
+                const field = el.dataset.field;
+                this.animation.textSpans[spanindex][field] = value;
+                this.requestRedraw();
+            });
+        }
 
         window.requestAnimationFrame(this.tick);
     }
@@ -73,27 +83,11 @@ class App {
         this.scrollTop = scrollTop;
         this.display.render();
         this.frameCount += 1;
-        document.getElementById("frameCount").innerText = this.frameCount.toString();
 
         if (this.scrollable.getBoundingClientRect().top < 0) {
             this.scrollable.scrollIntoView();
             window.requestAnimationFrame(this.tick);
             return;
-        }
-
-        const hud = this.textSpansHud;
-        if (hud.childElementCount !== 3 * this.animation.textSpans.length) {
-            hud.innerHTML = "";
-            let index = 0;
-            const inputAttribs = 'type="number" min="-1" max="+1" step=".01"';
-            for (const span of this.animation.textSpans) {
-                const dataAttribs = `data-spanindex="${index}"`;
-                hud.innerHTML += span.text;
-                hud.innerHTML += `<input ${inputAttribs} ${dataAttribs} data-field="x" value="${span.x}">`;
-                hud.innerHTML += `<input ${inputAttribs} ${dataAttribs} data-field="y" value="${span.y}">`;
-                hud.innerHTML += "<br>";
-                index += 1;
-            }
         }
 
         const canvasBox = this.container.getBoundingClientRect();
@@ -117,7 +111,6 @@ class App {
             }
             return "none";
         });
-        document.getElementById("progress").innerText = (100 * currentProgress).toFixed(0);
 
         let currentStep = 0;
         this.steps.classed("is-active", function(datum, index): boolean {
@@ -131,7 +124,26 @@ class App {
             currentStep = index;
             return true;
         });
-        document.getElementById("step").innerText = currentStep.toString();
+
+        if (!this.production) {
+            document.getElementById("step").innerText = currentStep.toString();
+            document.getElementById("progress").innerText = (100 * currentProgress).toFixed(0);
+            document.getElementById("frameCount").innerText = this.frameCount.toString();
+            const hud = document.getElementById("textSpansHud") as HTMLDivElement;
+            if (hud.childElementCount !== 3 * this.animation.textSpans.length) {
+                hud.innerHTML = "";
+                let index = 0;
+                const inputAttribs = 'type="number" min="-1" max="+1" step=".01"';
+                for (const span of this.animation.textSpans) {
+                    const dataAttribs = `data-spanindex="${index}"`;
+                    hud.innerHTML += span.text;
+                    hud.innerHTML += `<input ${inputAttribs} ${dataAttribs} data-field="x" value="${span.x}">`;
+                    hud.innerHTML += `<input ${inputAttribs} ${dataAttribs} data-field="y" value="${span.y}">`;
+                    hud.innerHTML += "<br>";
+                    index += 1;
+                }
+            }
+        }
 
         // Force a re-draw if the timeline requests it.
         if (this.timeline.update(currentStep, currentProgress)) {
