@@ -95,11 +95,11 @@ export class Display {
 
         const width = this.canvas2d.width;
         const height = this.canvas2d.height;
-        const size = 24 * window.devicePixelRatio;
+        const fontSize = height / 36;
 
         this.context2d.setTransform(1, 0, 0, 1, 0, 0);
         this.context2d.clearRect(0, 0, width, height);
-        this.context2d.font = `${size}px 'Lexend Deca', sans-serif`;
+        this.context2d.font = `${fontSize}px 'Lexend Deca', sans-serif`;
         this.context2d.textAlign = "center";
 
         for (const span of this.animation.textSpans) {
