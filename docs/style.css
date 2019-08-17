@@ -112,12 +112,12 @@ article {
     height: 512px;
 }
 
-.step p {
-    background-color: rgba(255, 255, 255, 0.5);
+.step > div > * {
+    background-color: rgba(255, 255, 255, 0.7);
     padding: 6px 12px 6px 12px;
 }
 
-.step div {
+.step > div {
     height: 512px;
     font-size: 18px;
     text-align: justify;
@@ -127,6 +127,14 @@ article {
 mathspan {
     font-family: serif;
     font-weight: bold;
+}
+
+mathspan.centered {
+    text-align: center;
+    display: block;
+    margin-top: 12px;
+    margin-bottom: 12px;
+    font-size: 20px;
 }
 
 .step.blank {

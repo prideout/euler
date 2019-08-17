@@ -14,7 +14,6 @@ To publish:
 Todo:
 
     Part 3
-        Fix up (hopefully via simplification) the styling for the "Recall the" div.
         Split apart "fadeInLunes" into three uniforms
         Lines should have extensions that fade away (to show they are great circles)
 
