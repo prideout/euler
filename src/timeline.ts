@@ -117,9 +117,9 @@ export class Timeline {
         const C =  smoothstep(0.31, 0.35, progress); // Shrink triangle back and revert the cam
         const D =  smoothstep(0.35, 0.38, progress); // Fade in letters A B C
         const E =  smoothstep(0.38, 0.53, progress); // Fade in and out three double lunes sequentially
-        const F = smoothstep(0.53, 0.60, progress); // Fade in three double lunes simultaneously
-        const G = smoothstep(0.60, 0.66, progress); // Rotate to see antipode
-        const H = smoothstep(0.60, 0.82, progress); // Rotate back to normal
+        const F =  smoothstep(0.53, 0.60, progress); // Fade in three double lunes simultaneously
+        const G =  smoothstep(0.60, 0.66, progress); // Rotate to see antipode
+        const H =  smoothstep(0.60, 0.82, progress); // Rotate back to normal
         const I =  smoothstep(0.96, 1.00, progress); // Fade everything out and change the camera
 
         const cam0 = (d3.interpolate([0, 0, 3], [0, 1, 3]))(A * (1 - I));
@@ -136,6 +136,12 @@ export class Timeline {
         this.animation.step3Material.setFloatParameter("fadeInLuneA", EA);
         this.animation.step3Material.setFloatParameter("fadeInLuneB", EB);
         this.animation.step3Material.setFloatParameter("fadeInLuneC", EC);
+
+        if (F > 0 && F <= 1) {
+            this.animation.step3Material.setFloatParameter("fadeInLuneA", F * (1 - I));
+            this.animation.step3Material.setFloatParameter("fadeInLuneB", F * (1 - I));
+            this.animation.step3Material.setFloatParameter("fadeInLuneC", F * (1 - I));
+        }
 
         const textOpacity = D * (1 - F);
         this.animation.textSpans[0].opacity = textOpacity;
