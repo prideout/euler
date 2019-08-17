@@ -22,9 +22,9 @@ export class Timeline {
 
     public enterStep3() {
         this.animation.textSpans.length = 3;
-        this.animation.textSpans[0] = { opacity: 1.0, text: "A", x: -0.61, y: -0.20 };
-        this.animation.textSpans[1] = { opacity: 1.0, text: "B", x: +0.48, y: -0.13 };
-        this.animation.textSpans[2] = { opacity: 1.0, text: "C", x: -0.13, y: +0.54 };
+        this.animation.textSpans[0] = { opacity: 1.0, text: "a", x: -0.61, y: -0.20 };
+        this.animation.textSpans[1] = { opacity: 1.0, text: "b", x: +0.48, y: -0.13 };
+        this.animation.textSpans[2] = { opacity: 1.0, text: "c", x: -0.13, y: +0.54 };
     }
 
     public exitStep3() {
