@@ -10,6 +10,7 @@ material {
 
         { type : float,  name : fadeInTriangle },
         { type : float,  name : triangleExpansion },
+        { type : float,  name : fadeInLunes },
 
         { type : float,  name : clearCoat },
         { type : float,  name : clearCoatRoughness }
@@ -66,9 +67,35 @@ fragment {
         kPlaneB.xyz = normalize(mix(kPlaneB.xyz, vec3(1.0, 0.0, 0.0), materialParams.triangleExpansion));
         kPlaneC.xyz = normalize(mix(kPlaneC.xyz, vec3(0.0, 1.0, 0.0), materialParams.triangleExpansion));
 
-        const vec4 kColorA = vec4(0.0, 0.0, 0.0, 1.0); // vec4(0.8, 0.0, 0.0, 1.0);
-        const vec4 kColorB = vec4(0.0, 0.0, 0.0, 1.0); // vec4(0.0, 0.8, 0.0, 1.0);
-        const vec4 kColorC = vec4(0.0, 0.0, 0.0, 1.0); // vec4(0.0, 0.0, 0.8, 1.0);
+        const vec4 kColorA = vec4(0.0, 0.0, 0.0, 1.0);
+        const vec4 kColorB = vec4(0.0, 0.0, 0.0, 1.0);
+        const vec4 kColorC = vec4(0.0, 0.0, 0.0, 1.0);
+
+        bool insideA = dot(wpos, kPlaneA) > 0.0;
+        bool insideB = dot(wpos, kPlaneB) > 0.0;
+        bool insideC = dot(wpos, kPlaneC) > 0.0;
+
+        vec3 totalLuneColor = vec3(0, 0, 0);
+
+        // Double Lune formed by Angle A
+        float redLune1 = (insideA && insideB) ? 1.0 : 0.0;
+        float redLune2 = (!insideA && !insideB) ? 1.0 : 0.0;
+        totalLuneColor += vec3(1, 0, 0) * redLune1;
+        totalLuneColor += vec3(1, 0, 0) * redLune2;
+
+        // Double Lune formed by Angle C
+        float grnLune1 = (insideB && insideC) ? 1.0 : 0.0;
+        float grnLune2 = (!insideB && !insideC) ? 1.0 : 0.0;
+        totalLuneColor += vec3(0, 1, 0) * grnLune1;
+        totalLuneColor += vec3(0, 1, 0) * grnLune2;
+
+        // Double Lune formed by Angle B
+        float bluLune1 = (insideA && insideC) ? 1.0 : 0.0;
+        float bluLune2 = (!insideA && !insideC) ? 1.0 : 0.0;
+        totalLuneColor += vec3(0, 0, 1) * bluLune1;
+        totalLuneColor += vec3(0, 0, 1) * bluLune2;
+
+        material.baseColor.rgb = mix(material.baseColor.rgb, totalLuneColor, materialParams.fadeInLunes * 0.8);
 
         float fadeIn = materialParams.fadeInTriangle;
         float aDrawTime = clamp((fadeIn * 3.0 - 0.0), 0.0, 1.0);
@@ -99,9 +126,7 @@ fragment {
             material.baseColor = mix(material.baseColor, kColorC, a);
         }
 
-        bool insideA = dot(wpos, kPlaneA) > 0.0;
-        bool insideB = dot(wpos, kPlaneB) > 0.0;
-        bool insideC = dot(wpos, kPlaneC) > 0.0;
+        // Dark filled area of triangle
         float alpha = (insideA && insideB && insideC) ? 0.5 : 1.0;
         material.baseColor.rgb *= mix(1.0, alpha, cDrawTime);
 

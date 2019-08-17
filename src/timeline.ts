@@ -125,6 +125,7 @@ export class Timeline {
 
         this.animation.step3Material.setFloatParameter("fadeInTriangle", A * (1 - F));
         this.animation.step3Material.setFloatParameter("triangleExpansion", B2 * (1 - C));
+        this.animation.step3Material.setFloatParameter("fadeInLunes", E * (1 - F));
 
         const textOpacity = D * (1 - F);
         this.animation.textSpans[0].opacity = textOpacity;
