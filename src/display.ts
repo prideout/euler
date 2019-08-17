@@ -13,6 +13,7 @@ export class Display {
     private currentStep = 0;
     private readonly engine: Filament.Engine;
     private readonly indirectLight: Filament.IndirectLight;
+    private readonly projection = glm.mat4.create();
     private readonly renderer: Filament.Renderer;
     private readonly scene: Filament.Scene;
     private readonly skybox: Filament.Skybox;
@@ -99,9 +100,22 @@ export class Display {
         this.context2d.setTransform(1, 0, 0, 1, 0, 0);
         this.context2d.clearRect(0, 0, width, height);
         this.context2d.font = `${size}px 'Lexend Deca', sans-serif`;
+
+        const src = glm.vec4.fromValues(0, 0, 1, 1);
+        const dst = glm.vec4.create();
+
         for (const span of this.animation.textSpans) {
-            const x = width / 2 + span.x * width / 2;
-            const y = height / 2 + span.y * width / 2;
+
+            // The glm library uses a vertical FOV so we transpose X & Y.
+            src[0] = span.y;
+            src[1] = span.x;
+
+            glm.vec4.transformMat4(dst, src, this.projection);
+            let x = -0.5 * dst[1] / dst[3];
+            let y = -0.5 * dst[0] / dst[3];
+
+            x = width / 2 + span.x * width / 2;
+            y = height / 2 + span.y * width / 2;
             this.context2d.fillStyle = `rgba(0, 0, 0, ${span.opacity})`;
             this.context2d.fillText(span.text, x, y);
         }
@@ -137,8 +151,12 @@ export class Display {
         this.context2d.scale(width / 2.0, width / 2.0);
 
         const aspect: number = width / height;
-        const fov: number = aspect < 1 ? Fov.HORIZONTAL : Fov.VERTICAL;
-        this.camera.setProjectionFov(45, aspect, 1.0, 20000.0, fov);
+        const fov = 45;
+        const near = 1.0;
+        const far = 20000.0;
+        this.camera.setProjectionFov(fov, aspect, near, far, Fov.HORIZONTAL);
+
+        glm.mat4.perspective(this.projection, fov * Math.PI / 180, aspect, near, far);
     }
 
     public update(step: number) {

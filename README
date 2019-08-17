@@ -13,11 +13,14 @@ To publish:
 
 Todo:
 
+    Text positioning
+        Proper 3D math for the plane at Z = 0
+        Use context2d "measure text" for proper centering
+
     Debug mode
         yarn build:release should remove the HUD and horiz line
 
     Part 3
-        Does text position vary with window size / firefox?
         Draw R G B lunes
         Add new steps for Girard's theorem
         Lines should have extensions that fade away (to show they are great circles)
