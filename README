@@ -17,7 +17,7 @@ Todo:
         yarn build:release should remove the HUD and horiz line
 
     Part 3
-        Opacity for text.
+        Does text position vary with window size / firefox?
         Draw R G B lunes
         Add new steps for Girard's theorem
         Lines should have extensions that fade away (to show they are great circles)

@@ -94,16 +94,19 @@ export class Display {
 
         const width = this.canvas2d.width;
         const height = this.canvas2d.height;
+        const size = 24 * window.devicePixelRatio;
 
         this.context2d.setTransform(1, 0, 0, 1, 0, 0);
         this.context2d.clearRect(0, 0, width, height);
-        this.context2d.font = "48px 'Lexend Deca', sans-serif";
+        this.context2d.font = `${size}px 'Lexend Deca', sans-serif`;
         for (const span of this.animation.textSpans) {
             const x = width / 2 + span.x * width / 2;
             const y = height / 2 + span.y * width / 2;
-            // TODO: honor span.opacity
+            this.context2d.fillStyle = `rgba(0, 0, 0, ${span.opacity})`;
             this.context2d.fillText(span.text, x, y);
         }
+
+        this.context2d.fillStyle = "rgba(0, 0, 0, 1)";
 
         // Draw horizontal guide line for step transitions.
         const debugging = true;

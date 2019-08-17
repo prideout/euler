@@ -23,7 +23,7 @@ export class Timeline {
     public enterStep3() {
         this.animation.textSpans.length = 3;
         this.animation.textSpans[0] = { opacity: 1.0, text: "A", x: -0.65, y: -0.22 };
-        this.animation.textSpans[1] = { opacity: 0.5, text: "B", x: +0.48, y: -0.14 };
+        this.animation.textSpans[1] = { opacity: 0.5, text: "B", x: +0.46, y: -0.13 };
         this.animation.textSpans[2] = { opacity: 1.0, text: "C", x: -0.15, y: +0.54 };
     }
 
