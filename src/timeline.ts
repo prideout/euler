@@ -1,5 +1,4 @@
 import * as d3 from "d3";
-import * as Filament from "filament";
 import * as glm from "gl-matrix";
 
 import { Scene } from "./scene";
@@ -13,8 +12,8 @@ const smoothstep = (edge0: number, edge1: number, x: number): number => {
 };
 
 export class Timeline {
-    private readonly scene: Scene;
     private previousStep = -1;
+    private readonly scene: Scene;
 
     public constructor(scene: Scene) {
         this.scene = scene;
@@ -31,6 +30,7 @@ export class Timeline {
         this.scene.textSpans.length = 0;
     }
 
+    // Returns true to force a redraw.
     public update(step: number, progress: number): boolean {
         const updateFn = this[`updateStep${step + 1}`] as (progress: number) => boolean;
         const exitFn = this[`exitStep${this.previousStep + 1}`] as () => void;
@@ -47,13 +47,10 @@ export class Timeline {
         if (updateFn) {
             return updateFn.apply(this, [progress]) as boolean;
         }
-        this.scene.step1Material.setFloatParameter("gridlines", 0.0);
         return this.updateStep1(0);
     }
 
     public updateStep1(progress: number): boolean {
-        const sRGBA = Filament.RgbaType.sRGB;
-        const tcm = this.scene.transformManager;
         const fadeIn = smoothstep(.2, .3, progress);
         const fadeOut = 1.0 - smoothstep(.7, .8, progress);
         const cylinderPresence = fadeIn * fadeOut;
@@ -70,20 +67,12 @@ export class Timeline {
         glm.mat4.multiply(m1, m1, m3);
         glm.mat4.multiply(m1, m1, m2);
 
-        const front = tcm.getInstance(this.scene.frontCylinderEntity);
-        tcm.setTransform(front, m1);
-        front.delete();
-        const back = tcm.getInstance(this.scene.backCylinderEntity);
-        tcm.setTransform(back, m1);
-        back.delete();
+        glm.mat4.copy(this.scene.cylinderTransform, m1);
 
-        const sphereGridlines = smoothstep(.5, .7, progress) * smoothstep(1., .9, progress);
-        const cylinderGridlines = smoothstep(.4, .5, progress) * smoothstep(.7, .5, progress);
+        this.scene.sphereGridlines = smoothstep(.5, .7, progress) * smoothstep(1., .9, progress);
+        this.scene.cylinderGridlines = smoothstep(.4, .5, progress) * smoothstep(.7, .5, progress);
 
-        this.scene.step1Material.setFloatParameter("gridlines", sphereGridlines);
-        this.scene.step1CylinderFrontMaterial.setFloatParameter("gridlines", cylinderGridlines);
-        this.scene.step1CylinderFrontMaterial.setColor4Parameter("baseColor", sRGBA, [0.0, 0.0, 0.0, 0.0]);
-        this.scene.step1CylinderBackMaterial.setColor4Parameter("baseColor",  sRGBA, [0.0, 0.0, 0.0, 0.0]);
+        this.scene.baseColor = [0.0, 0.0, 0.0, 0.0];
 
         return false;
     }
@@ -99,18 +88,14 @@ export class Timeline {
         const cameraFn = d3.interpolate([0, 0, 3], [0, 1, 3]);
         glm.vec3.copy(this.scene.viewpoint.eye, cameraFn(A * (1 - F)));
 
-        this.scene.step2Material.setFloatParameter("greatCircle", A * (1 - F));
-        this.scene.step2Material.setFloatParameter("luneAlpha", B * (1 - F));
-        this.scene.step2Material.setFloatParameter("luneExpansion", C * (1 - D));
-        this.scene.step2Material.setFloatParameter("antipodeAlpha", E * (1 - F));
+        this.scene.greatCircle = A * (1 - F);
+        this.scene.luneAlpha = B * (1 - F);
+        this.scene.luneExpansion = C * (1 - D);
+        this.scene.antipodeAlpha = E * (1 - F);
         return false;
     }
 
     public updateStep3(progress: number) {
-
-        this.scene.step1Material.setFloatParameter("gridlines", 0.0);
-        this.updateStep1(0);
-
         const A =  smoothstep(0.00, 0.11, progress); // Draw the geodesic triangle and change the camera
         const B2 = smoothstep(0.17, 0.23, progress); // Expand triangle to 90-90-90
         const B1 = smoothstep(0.23, 0.31, progress); // Change the camera to see polar triangle
@@ -128,22 +113,22 @@ export class Timeline {
         const cam =  (d3.interpolate(cam1, [0, -1, 3]))(G * (1 - H));
         glm.vec3.copy(this.scene.viewpoint.eye, cam);
 
-        this.scene.step3Material.setFloatParameter("rotation", G * (1 - H) * Math.PI);
-        this.scene.step3Material.setFloatParameter("fadeInTriangle", A * (1 - I));
-        this.scene.step3Material.setFloatParameter("triangleExpansion", B2 * (1 - C));
+        this.scene.rotation = G * (1 - H) * Math.PI;
+        this.scene.fadeInTriangle = A * (1 - I);
+        this.scene.triangleExpansion = B2 * (1 - C);
 
         const EA = Math.sin(clamp(E  * 3 - 0, 0, 1) * Math.PI);
         const EB = Math.sin(clamp(E  * 3 - 1, 0, 1) * Math.PI);
         const EC = Math.sin(clamp(E  * 3 - 2, 0, 1) * Math.PI);
 
-        this.scene.step3Material.setFloatParameter("fadeInLuneA", EA);
-        this.scene.step3Material.setFloatParameter("fadeInLuneB", EB);
-        this.scene.step3Material.setFloatParameter("fadeInLuneC", EC);
+        this.scene.fadeInLuneA = EA;
+        this.scene.fadeInLuneB = EB;
+        this.scene.fadeInLuneC = EC;
 
         if (F > 0 && F <= 1) {
-            this.scene.step3Material.setFloatParameter("fadeInLuneA", F * (1 - I));
-            this.scene.step3Material.setFloatParameter("fadeInLuneB", F * (1 - I));
-            this.scene.step3Material.setFloatParameter("fadeInLuneC", F * (1 - I));
+            this.scene.fadeInLuneA = F * (1 - I);
+            this.scene.fadeInLuneB = F * (1 - I);
+            this.scene.fadeInLuneC = F * (1 - I);
         }
 
         const textOpacity = D * (1 - F) + H2 * (1 - I);

@@ -1,4 +1,3 @@
-import * as Filament from "filament";
 import * as glm from "gl-matrix";
 
 export class Viewpoint {
@@ -15,16 +14,20 @@ export class TextSpan {
 }
 
 export class Scene {
-    public backCylinderEntity: Filament.Entity;
-    public frontCylinderEntity: Filament.Entity;
+    public antipodeAlpha = 0;
+    public baseColor = [0, 0, 0, 0];
+    public cylinderGridlines = 0;
+    public readonly cylinderTransform = glm.mat4.create();
+    public fadeInLuneA = 0;
+    public fadeInLuneB = 0;
+    public fadeInLuneC = 0;
+    public fadeInTriangle = 0;
+    public greatCircle = 0;
+    public luneAlpha = 0;
+    public luneExpansion = 0;
     public rotation = 0;
-    public sphereEntity: Filament.Entity;
-    public step1CylinderBackMaterial: Filament.MaterialInstance;
-    public step1CylinderFrontMaterial: Filament.MaterialInstance;
-    public step1Material: Filament.MaterialInstance;
-    public step2Material: Filament.MaterialInstance;
-    public step3Material: Filament.MaterialInstance;
+    public sphereGridlines = 0;
     public readonly textSpans: TextSpan[] = [];
-    public transformManager: Filament.TransformManager;
+    public triangleExpansion = 0;
     public readonly viewpoint = new Viewpoint();
 }

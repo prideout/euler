@@ -13,10 +13,9 @@ To publish:
 
 Todo:
 
-    animation.ts should just be values (no Filament-specific stuff)
-        and should be renamed to Scene
-
     Get rid of d3
+
+    Refactor Part 1 to use timeline notation and should be pushed up (earlier)
 
     Part 4
         Spherical polygons: write out all the verbiage
@@ -24,9 +23,6 @@ Todo:
     Part 5
         Draw a soccer ball with cylinders, use morphing to inflate?
         Inflation and Conclusion
-
-    Part 1
-        Refactor to use timeline notation and should be pushed up (earlier)
 
     Load tiny skybox
 

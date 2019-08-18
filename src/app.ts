@@ -2,8 +2,8 @@ import * as d3 from "d3";
 import * as Filament from "filament";
 import { glMatrix, vec3 } from "gl-matrix";
 
-import { Scene } from "./scene";
 import { Display } from "./display";
+import { Scene } from "./scene";
 import { Timeline } from "./timeline";
 import * as urls from "./urls";
 
@@ -18,11 +18,11 @@ declare const BUILD_COMMAND: string;
 const SCROLL_INVALID = 9999;
 
 class App {
-    private readonly scene: Scene;
     private readonly container: HTMLElement;
     private readonly display: Display;
     private frameCount = 0;
     private readonly production: boolean;
+    private readonly scene = new Scene();
     private readonly scrollable: HTMLElement;
     private scrollTop = SCROLL_INVALID;
     private readonly steps: d3.Selection<HTMLElement, number, d3.BaseType, unknown>;
@@ -36,8 +36,7 @@ class App {
 
         this.tick = this.doTick.bind(this) as (() => void);
         this.scrollable = document.getElementById("scrollable-content");
-        this.display = new Display(this.production);
-        this.scene = this.display.getAnimation();
+        this.display = new Display(this.production, this.scene);
         this.timeline = new Timeline(this.scene);
         const main = d3.select("main");
         const scrolly = main.select("#scrolly");
