@@ -17,6 +17,7 @@ export class TextSpan {
 export class Animation {
     public backCylinderEntity: Filament.Entity;
     public frontCylinderEntity: Filament.Entity;
+    public rotation = 0;
     public sphereEntity: Filament.Entity;
     public step1CylinderBackMaterial: Filament.MaterialInstance;
     public step1CylinderFrontMaterial: Filament.MaterialInstance;

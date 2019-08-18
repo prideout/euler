@@ -13,11 +13,13 @@ To publish:
 
 Todo:
 
-    Part 3
-        To see camera, spin the sphere instead of moving camera
+    animation.ts should just be values (no Filament-specific stuff)
+        and should be renamed to Scene
+
+    Get rid of d3
 
     Part 4
-        Spherical polygons
+        Spherical polygons: write out all the verbiage
     
     Part 5
         Draw a soccer ball with cylinders, use morphing to inflate?
@@ -26,20 +28,14 @@ Todo:
     Part 1
         Refactor to use timeline notation and should be pushed up (earlier)
 
-    animation.ts should just be values (no Filament-specific stuff)
-        and should be renamed to Scene
-
-    Get rid of d3
-
     Load tiny skybox
 
     Move commented-out intro stuff to conclusion, fix links to 3blue1brown, etc.
 
-    Data-oriented timeline, generalize to google/scrollytelling
+    Data-oriented timeline, generalize to google/scrollytelling/euler
         mobile-friendly template for scrollytelling
 
     Backup images for safari
-        Dig up your iPhone
 
     Maybe handle resizes?
 

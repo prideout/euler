@@ -13,6 +13,7 @@ material {
         { type : float,  name : fadeInLuneA },
         { type : float,  name : fadeInLuneB },
         { type : float,  name : fadeInLuneC },
+        { type : float,  name : rotation },
 
         { type : float,  name : clearCoat },
         { type : float,  name : clearCoatRoughness }
@@ -60,10 +61,10 @@ fragment {
         material.baseColor.a = 1.0;
 
         vec4 wpos = vec4(getWorldPosition() + getWorldOffset(), 1.0);
-
-        vec4 kPlaneA = vec4(normalize(vec3(-0.1, -0.7, +0.5)), 0.0);
-        vec4 kPlaneB = vec4(normalize(vec3(+0.7, +0.7, +0.3)), 0.0);
-        vec4 kPlaneC = vec4(normalize(vec3(-0.6, +0.6, +0.1)), 0.0);
+        mat4 mat = rotationY(materialParams.rotation);
+        vec4 kPlaneA = mat * vec4(normalize(vec3(-0.1, -0.7, +0.5)), 0.0);
+        vec4 kPlaneB = mat * vec4(normalize(vec3(+0.7, +0.7, +0.3)), 0.0);
+        vec4 kPlaneC = mat * vec4(normalize(vec3(-0.6, +0.6, +0.1)), 0.0);
 
         kPlaneA.xyz = normalize(mix(kPlaneA.xyz, vec3(0.0, 0.0, 1.0), materialParams.triangleExpansion));
         kPlaneB.xyz = normalize(mix(kPlaneB.xyz, vec3(1.0, 0.0, 0.0), materialParams.triangleExpansion));

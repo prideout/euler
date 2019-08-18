@@ -119,14 +119,16 @@ export class Timeline {
         const E =  smoothstep(0.38, 0.53, progress); // Fade in and out three double lunes sequentially
         const F =  smoothstep(0.53, 0.60, progress); // Fade in three double lunes simultaneously
         const G =  smoothstep(0.60, 0.66, progress); // Rotate to see antipode
-        const H =  smoothstep(0.60, 0.82, progress); // Rotate back to normal
+        const H =  smoothstep(0.70, 0.82, progress); // Rotate back to normal
+        const H2 =  smoothstep(0.82, 0.89, progress); // Fade in letters A B C again
         const I =  smoothstep(0.96, 1.00, progress); // Fade everything out and change the camera
 
         const cam0 = (d3.interpolate([0, 0, 3], [0, 1, 3]))(A * (1 - I));
         const cam1 =  (d3.interpolate(cam0, [2, 2, 2]))(B1 * (1 - C));
-        const cam =  (d3.interpolate(cam1, [0, 1, -6]))(G * (1 - I)); // s/I/H/
+        const cam =  (d3.interpolate(cam1, [0, -1, 3]))(G * (1 - H));
         glm.vec3.copy(this.animation.viewpoint.eye, cam);
 
+        this.animation.step3Material.setFloatParameter("rotation", G * (1 - H) * Math.PI);
         this.animation.step3Material.setFloatParameter("fadeInTriangle", A * (1 - I));
         this.animation.step3Material.setFloatParameter("triangleExpansion", B2 * (1 - C));
 
@@ -144,7 +146,7 @@ export class Timeline {
             this.animation.step3Material.setFloatParameter("fadeInLuneC", F * (1 - I));
         }
 
-        const textOpacity = D * (1 - F);
+        const textOpacity = D * (1 - F) + H2 * (1 - I);
         this.animation.textSpans[0].opacity = textOpacity;
         this.animation.textSpans[1].opacity = textOpacity;
         this.animation.textSpans[2].opacity = textOpacity;
