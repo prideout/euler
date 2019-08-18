@@ -123,7 +123,8 @@ export class Timeline {
         const I =  smoothstep(0.96, 1.00, progress); // Fade everything out and change the camera
 
         const cam0 = (d3.interpolate([0, 0, 3], [0, 1, 3]))(A * (1 - I));
-        const cam =  (d3.interpolate(cam0, [2, 2, 2]))(B1 * (1 - C));
+        const cam1 =  (d3.interpolate(cam0, [2, 2, 2]))(B1 * (1 - C));
+        const cam =  (d3.interpolate(cam1, [0, 1, -6]))(G * (1 - I)); // s/I/H/
         glm.vec3.copy(this.animation.viewpoint.eye, cam);
 
         this.animation.step3Material.setFloatParameter("fadeInTriangle", A * (1 - I));
