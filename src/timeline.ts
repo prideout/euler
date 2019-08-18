@@ -1,4 +1,3 @@
-import * as d3 from "d3";
 import * as glm from "gl-matrix";
 
 import { Scene } from "./scene";
@@ -56,8 +55,7 @@ export class Timeline {
         const cylinderPresence = fadeIn * fadeOut;
         let cylinderZ = -0.5 + (1.0 - cylinderPresence);
 
-        const cameraFn = d3.interpolate([0, 0, 3], [0, 1.5, 3.5]);
-        glm.vec3.copy(this.scene.viewpoint.eye, cameraFn(cylinderPresence));
+        glm.vec3.lerp(this.scene.viewpoint.eye, [0, 0, 3], [0, 1.5, 3.5], cylinderPresence);
 
         cylinderZ = mix(cylinderZ, -4.0, smoothstep(0.9, 1.0, progress));
 
@@ -85,8 +83,7 @@ export class Timeline {
         const E = smoothstep(0.72, 0.88, progress); // Fade in antipode
         const F = smoothstep(0.88, 1.00, progress); // Fade out the double-lune and change the camera
 
-        const cameraFn = d3.interpolate([0, 0, 3], [0, 1, 3]);
-        glm.vec3.copy(this.scene.viewpoint.eye, cameraFn(A * (1 - F)));
+        glm.vec3.lerp(this.scene.viewpoint.eye, [0, 0, 3], [0, 1, 3], A * (1 - F));
 
         this.scene.greatCircle = A * (1 - F);
         this.scene.luneAlpha = B * (1 - F);
@@ -108,10 +105,12 @@ export class Timeline {
         const H2 =  smoothstep(0.82, 0.89, progress); // Fade in letters A B C again
         const I =  smoothstep(0.96, 1.00, progress); // Fade everything out and change the camera
 
-        const cam0 = (d3.interpolate([0, 0, 3], [0, 1, 3]))(A * (1 - I));
-        const cam1 =  (d3.interpolate(cam0, [2, 2, 2]))(B1 * (1 - C));
-        const cam =  (d3.interpolate(cam1, [0, -1, 3]))(G * (1 - H));
-        glm.vec3.copy(this.scene.viewpoint.eye, cam);
+        const cam0 = glm.vec3.create();
+        const cam1 = glm.vec3.create();
+
+        glm.vec3.lerp(cam0, [0, 0, 3], [0, 1, 3], A * (1 - I));
+        glm.vec3.lerp(cam1, cam0, [2, 2, 2], B1 * (1 - C));
+        glm.vec3.lerp(this.scene.viewpoint.eye, cam1, [0, -1, 3], G * (1 - H));
 
         this.scene.rotation = G * (1 - H) * Math.PI;
         this.scene.fadeInTriangle = A * (1 - I);
