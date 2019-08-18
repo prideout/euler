@@ -14,7 +14,7 @@ export class TextSpan {
     public y: number;
 }
 
-export class Animation {
+export class Scene {
     public backCylinderEntity: Filament.Entity;
     public frontCylinderEntity: Filament.Entity;
     public rotation = 0;

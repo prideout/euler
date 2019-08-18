@@ -2,7 +2,7 @@ import * as d3 from "d3";
 import * as Filament from "filament";
 import { glMatrix, vec3 } from "gl-matrix";
 
-import { Animation } from "./animation";
+import { Scene } from "./scene";
 import { Display } from "./display";
 import { Timeline } from "./timeline";
 import * as urls from "./urls";
@@ -18,7 +18,7 @@ declare const BUILD_COMMAND: string;
 const SCROLL_INVALID = 9999;
 
 class App {
-    private readonly animation: Animation;
+    private readonly scene: Scene;
     private readonly container: HTMLElement;
     private readonly display: Display;
     private frameCount = 0;
@@ -37,8 +37,8 @@ class App {
         this.tick = this.doTick.bind(this) as (() => void);
         this.scrollable = document.getElementById("scrollable-content");
         this.display = new Display(this.production);
-        this.animation = this.display.getAnimation();
-        this.timeline = new Timeline(this.animation);
+        this.scene = this.display.getAnimation();
+        this.timeline = new Timeline(this.scene);
         const main = d3.select("main");
         const scrolly = main.select("#scrolly");
         const article = scrolly.select("article");
@@ -63,7 +63,7 @@ class App {
                 const spanindex = parseInt(el.dataset.spanindex, 10);
                 const value = parseFloat(el.value);
                 const field = el.dataset.field;
-                this.animation.textSpans[spanindex][field] = value;
+                this.scene.textSpans[spanindex][field] = value;
                 this.requestRedraw();
             });
         }
@@ -128,11 +128,11 @@ class App {
             document.getElementById("progress").innerText = (100 * currentProgress).toFixed(0);
             document.getElementById("frameCount").innerText = this.frameCount.toString();
             const hud = document.getElementById("textSpansHud") as HTMLDivElement;
-            if (hud.childElementCount !== 3 * this.animation.textSpans.length) {
+            if (hud.childElementCount !== 3 * this.scene.textSpans.length) {
                 hud.innerHTML = "";
                 let index = 0;
                 const inputAttribs = 'type="number" min="-1" max="+1" step=".01"';
-                for (const span of this.animation.textSpans) {
+                for (const span of this.scene.textSpans) {
                     const dataAttribs = `data-spanindex="${index}"`;
                     hud.innerHTML += span.text;
                     hud.innerHTML += `<input ${inputAttribs} ${dataAttribs} data-field="x" value="${span.x}">`;
