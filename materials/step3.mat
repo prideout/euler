@@ -66,13 +66,11 @@ fragment {
         vec4 kPlaneB = mat * vec4(normalize(vec3(+0.7, +0.7, +0.3)), 0.0);
         vec4 kPlaneC = mat * vec4(normalize(vec3(-0.6, +0.6, +0.1)), 0.0);
 
-        kPlaneA.xyz = normalize(mix(kPlaneA.xyz, vec3(0.0, 0.0, 1.0), materialParams.triangleExpansion));
-        kPlaneB.xyz = normalize(mix(kPlaneB.xyz, vec3(1.0, 0.0, 0.0), materialParams.triangleExpansion));
-        kPlaneC.xyz = normalize(mix(kPlaneC.xyz, vec3(0.0, 1.0, 0.0), materialParams.triangleExpansion));
+        kPlaneA.xyz = normalize(mix(kPlaneA.xyz, vec3(0, 0, 1), materialParams.triangleExpansion));
+        kPlaneB.xyz = normalize(mix(kPlaneB.xyz, vec3(1, 0, 0), materialParams.triangleExpansion));
+        kPlaneC.xyz = normalize(mix(kPlaneC.xyz, vec3(0, 1, 0), materialParams.triangleExpansion));
 
-        const vec4 kColorA = vec4(0.0, 0.0, 0.0, 1.0);
-        const vec4 kColorB = vec4(0.0, 0.0, 0.0, 1.0);
-        const vec4 kColorC = vec4(0.0, 0.0, 0.0, 1.0);
+        const vec4 kLineColor = vec4(0.0, 0.0, 0.0, 1.0);
 
         bool insideA = dot(wpos, kPlaneA) > 0.0;
         bool insideB = dot(wpos, kPlaneB) > 0.0;
@@ -111,7 +109,7 @@ fragment {
             float d2 = dot(wpos, vec4(kPlaneA.xyz, kPlaneA.w - T));
             float d3 = getEndcaps(wpos, kPlaneB, kPlaneC, aDrawTime);
             float a = step(d2, 0.0) * step(0.0, d1) * d3;
-            material.baseColor = mix(material.baseColor, kColorA, a);
+            material.baseColor = mix(material.baseColor, kLineColor, a);
         }
 
         {
@@ -119,7 +117,7 @@ fragment {
             float d2 = dot(wpos, vec4(kPlaneB.xyz, kPlaneB.w - T));
             float d3 = getEndcaps(wpos, kPlaneA, kPlaneC, bDrawTime);
             float a = step(d2, 0.0) * step(0.0, d1) * d3;
-            material.baseColor = mix(material.baseColor, kColorB, a);
+            material.baseColor = mix(material.baseColor, kLineColor, a);
         }
 
         {
@@ -127,7 +125,7 @@ fragment {
             float d2 = dot(wpos, vec4(kPlaneC.xyz, kPlaneC.w - T));
             float d3 = getEndcaps(wpos, kPlaneA, kPlaneB, cDrawTime);
             float a = step(d2, 0.0) * step(0.0, d1) * d3;
-            material.baseColor = mix(material.baseColor, kColorC, a);
+            material.baseColor = mix(material.baseColor, kLineColor, a);
         }
 
         // Dark filled area of triangle
