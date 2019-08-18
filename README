@@ -13,8 +13,6 @@ To publish:
 
 Todo:
 
-    Get rid of d3
-
     Refactor Part 1 to use timeline notation and should be pushed up (earlier)
 
     Part 4
@@ -32,6 +30,11 @@ Todo:
         mobile-friendly template for scrollytelling
 
     Backup images for safari
+
+    Polish
+        Rename urls to assets
+        Add a copyright to each file
+        Add comment block to each class
 
     Maybe handle resizes?
 

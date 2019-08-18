@@ -1,4 +1,3 @@
-import * as d3 from "d3";
 import * as Filament from "filament";
 import { glMatrix, vec3 } from "gl-matrix";
 
@@ -25,7 +24,7 @@ class App {
     private readonly scene = new Scene();
     private readonly scrollable: HTMLElement;
     private scrollTop = SCROLL_INVALID;
-    private readonly steps: d3.Selection<HTMLElement, number, d3.BaseType, unknown>;
+    private readonly steps: HTMLElement[];
     private readonly tick: () => void;
     private readonly timeline: Timeline;
 
@@ -38,10 +37,9 @@ class App {
         this.scrollable = document.getElementById("scrollable-content");
         this.display = new Display(this.production, this.scene);
         this.timeline = new Timeline(this.scene);
-        const main = d3.select("main");
-        const scrolly = main.select("#scrolly");
-        const article = scrolly.select("article");
-        this.steps = article.selectAll(".step");
+
+        const steps = document.getElementsByClassName("step");
+        this.steps = [].slice.call(steps) as HTMLElement[];
 
         this.container = document.getElementsByClassName("sticky-container")[0] as HTMLElement;
         this.container.style.height = `${window.innerHeight}px`;
@@ -101,26 +99,26 @@ class App {
         };
 
         let currentProgress = 0;
-        this.steps.style("border", function() {
-            const progress = getStepProgress(this);
+        for (const el of this.steps) {
+            const progress = getStepProgress(el);
             if (progress.active) {
                 currentProgress = progress.percentage;
             }
-            return "none";
-        });
+        }
 
         let currentStep = 0;
-        this.steps.classed("is-active", function(datum, index): boolean {
-            const stepBox = this.getBoundingClientRect();
-            if (stepBox.top > midway) {
-                return false;
-            }
-            if (stepBox.bottom < midway) {
-                return false;
+        let index = 0;
+        for (const el of this.steps) {
+            const stepBox = el.getBoundingClientRect();
+            if (stepBox.top > midway || stepBox.bottom < midway) {
+                el.classList.remove("is-active");
+                index += 1;
+                continue;
             }
             currentStep = index;
-            return true;
-        });
+            index += 1;
+            el.classList.add("is-active");
+        }
 
         if (!this.production) {
             document.getElementById("step").innerText = currentStep.toString();
@@ -129,7 +127,7 @@ class App {
             const hud = document.getElementById("textSpansHud") as HTMLDivElement;
             if (hud.childElementCount !== 3 * this.scene.textSpans.length) {
                 hud.innerHTML = "";
-                let index = 0;
+                index = 0;
                 const inputAttribs = 'type="number" min="-1" max="+1" step=".01"';
                 for (const span of this.scene.textSpans) {
                     const dataAttribs = `data-spanindex="${index}"`;

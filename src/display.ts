@@ -17,7 +17,7 @@ export class Display {
     private readonly indirectLight: Filament.IndirectLight;
     private readonly production: boolean;
     private readonly renderer: Filament.Renderer;
-    private readonly scene;
+    private readonly scene: Scene;
     private readonly skybox: Filament.Skybox;
     private readonly sphereEntity: Filament.Entity;
     private readonly step1CylinderBackMaterial: Filament.MaterialInstance;
