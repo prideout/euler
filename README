@@ -2,7 +2,7 @@ To build and run the web app:
 
     yarn install
     yarn build
-    yarn run http-server docs
+    yarn run http-server -p 8080 docs
 
 To publish:
 

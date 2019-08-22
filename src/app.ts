@@ -79,12 +79,6 @@ class App {
         this.display.render();
         this.frameCount += 1;
 
-        if (this.scrollable.getBoundingClientRect().top < 0) {
-            this.scrollable.scrollIntoView();
-            window.requestAnimationFrame(this.tick);
-            return;
-        }
-
         const canvasBox = this.container.getBoundingClientRect();
         const midway = (canvasBox.top + canvasBox.bottom) / 2;
 
