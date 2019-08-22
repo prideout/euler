@@ -13,19 +13,21 @@
     html { overflow:hidden }
     body { height:100% }
     h1 { font-family: "Alegreya" }
-    div.container  {
+    .container  {
         height:100%;
         overflow-y: scroll;
         position: relative;
         border: solid 4px blue;
         font-family: "Lexend Deca";
     }
-    div.chart  {
+    .chart  {
         position: fixed;
         width: 100%;
         top: 50%;
         transform: translate(0%, -50%);
+        text-align: center;
         background: rgba(100, 100, 100, 0.5);
+        z-index: -1;
     }
 </style>
 </head>

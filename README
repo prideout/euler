@@ -13,48 +13,54 @@ To publish:
 
 Todo:
 
-    Create example_segmented_panels.html
-        ul {
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-        }
+    Fork example_segmented.html into example_segmented_sticky_fullsize.html
+        First, replace img with svg
+        Then add some JavaScript for the "fullscreen"
+
+    Add an index (examples.html)
 
     Add animation to all examples using the Scrollytelling class described below.
 
     example_sticky_chart_d3.html
         https://observablehq.com/@d3/programmatic-zoom
 
-    terms
+    terms (defn list)
 
         container
-            height:100%;
-            overflow-y: scroll;
-            position: relative;
+            The outermost DOM element of concern for a single scrollytelling story. Style must include
+            `overflow-y: scroll` and `position: relative`.
         guideline
-            A virtual line that is stretched horizontally over the middle of the container and does not scroll with its
+            Virtual line stretched horizontally over the middle of the container and does not scroll with its
             content. As panels cross the guideline they trigger scrolltelling events.
-        panels
-            DOM elements that are part of a vertical sequence that trigger scrolltelling events as they cross the guideline.
+        panel
+            One of several block-level DOM elements that form a storytelling sequence. Panels trigger scrollytelling
+            events as they cross the guideline.
         chart
-            Floating content for data visualization, either sticky or always centered. Typically a <svg> or <canvas>
+            Floating area designated for data visualization, either sticky or always centered. Typically this is an
+            `<svg>` or `<canvas>`. Has a low `z-order` to allow explanatory text to flow past.
+        fullsize chart
+            Large chart encompassing the entire background; dimensions are the same as the browser window at load-time.
         panel segments
-            Vertical regions that visually divide a long panel into multiple pieces.
+            Vertical divisions that divide long panels into multiple pieces but do not trigger scrollytelling events.
         active panel
             The panel (if any) that currently overlaps the guideline.
         progress value
-            Percentage in [0,1] that represents the vertical position of active panel relative to the guideline. When
-            the top of the panel aligns with the guideline, the progress value is 0. When the bottom of the panel aligns
-            with the guideline, the progress value is 1.
+            Percentage in [0,1] that represents the vertical position of the active panel relative to the guideline.
+            When the top of the panel aligns with the guideline, the progress value is 0. When the bottom of the panel
+            aligns with the guideline, the progress value is 1.
+        developer HUD
+            Heads-up-display for development purposes. This an overlay over the container that displays the guideline,
+            active panel index, and progress value.
 
     new Scrollytelling({
         containerSelector: ".container",
         chartSelector: ".chart",
-        panelsSelector: ".panels p",
+        panelSelector: ".panels p",
         enterHandler: () => {},
         exitHandler: () => {},
         progressHandler: () => {},
-        enableHud: true
+        developerHud: true,
+        fullsizeChart: true
     })
 
     Refactor Part 1 to use timeline notation and should be pushed up (earlier)
