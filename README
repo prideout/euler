@@ -13,6 +13,47 @@ To publish:
 
 Todo:
 
+    Create example_sticky_chart.html
+        Try using sticky
+        Can it stick to the center? might need to use transform
+        https://developer.mozilla.org/en-US/docs/Web/CSS/position#Sticky_positioning
+
+    Create example_segmented_panels.html
+
+    Add animation to all examples using the Scrollytelling class described below.
+
+    terms
+
+        container
+            height:100%;
+            overflow-y: scroll;
+            position: relative;
+        guideline
+            A virtual line that is stretched horizontally over the middle of the container and does not scroll with its
+            content. As panels cross the guideline they trigger scrolltelling events.
+        panels
+            DOM elements that are part of a vertical sequence that trigger scrolltelling events as they cross the guideline.
+        chart
+            Floating content for data visualization, either sticky or always centered. Typically a <svg> or <canvas>
+        panel segments
+            Vertical regions that visually divide a long panel into multiple pieces.
+        active panel
+            The panel (if any) that currently overlaps the guideline.
+        progress value
+            Percentage in [0,1] that represents the vertical position of active panel relative to the guideline. When
+            the top of the panel aligns with the guideline, the progress value is 0. When the bottom of the panel aligns
+            with the guideline, the progress value is 1.
+
+    new Scrollytelling({
+        containerSelector: ".container",
+        chartSelector: ".chart",
+        panelsSelector: ".panels p",
+        enterHandler: () => {},
+        exitHandler: () => {},
+        progressHandler: () => {},
+        enableHud: true
+    })
+
     Refactor Part 1 to use timeline notation and should be pushed up (earlier)
 
     Part 4
