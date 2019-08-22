@@ -13,14 +13,17 @@ To publish:
 
 Todo:
 
-    Create example_sticky_chart.html
-        Try using sticky
-        Can it stick to the center? might need to use transform
-        https://developer.mozilla.org/en-US/docs/Web/CSS/position#Sticky_positioning
-
     Create example_segmented_panels.html
+        ul {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
 
     Add animation to all examples using the Scrollytelling class described below.
+
+    example_sticky_chart_d3.html
+        https://observablehq.com/@d3/programmatic-zoom
 
     terms
 

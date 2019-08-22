@@ -21,19 +21,16 @@
         font-family: "Lexend Deca";
     }
     div.chart  {
-        position: fixed;
+        position: sticky;
         width: 100%;
-        top: 50%;
-        transform: translate(0%, -50%);
+        height: 200px;
+        top: calc(50% - 100px);
         background: rgba(100, 100, 100, 0.5);
     }
 </style>
 </head>
 <body>
 <div class="container">
-<div class="chart">
-    <img src="https://picsum.photos/400/200">
-</div>
 <div>
     <h1>Animal Farm</h1>
     <p>
@@ -81,6 +78,9 @@
     warmest place, and finally squeezed herself in between Boxer and Clover; there she purred contentedly throughout
     Major's speech without listening to a word of what he was saying.
     </p>
+    <div class="chart">
+        <img src="https://picsum.photos/400/200">
+    </div>
     <p>
     All the animals were now present except Moses, the tame raven, who slept on a perch behind the back door. When Major
     saw that they had all made themselves comfortable and were waiting attentively, he cleared his throat and began:
