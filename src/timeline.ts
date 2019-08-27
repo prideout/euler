@@ -50,28 +50,25 @@ export class Timeline {
     }
 
     public updateStep1(progress: number): boolean {
-        const fadeIn = smoothstep(.2, .3, progress);
-        const fadeOut = 1.0 - smoothstep(.7, .8, progress);
-        const cylinderPresence = fadeIn * fadeOut;
-        let cylinderZ = -0.5 + (1.0 - cylinderPresence);
+        const A = smoothstep(0.16, 0.29, progress); // Move cylinder up and camera out.
+        const B = smoothstep(0.28, 0.42, progress); // Fade in cylinder gridlines.
+        const C = smoothstep(0.42, 0.66, progress); // Crossfade gridlines from cylinder to sphere.
+        const D = smoothstep(0.66, 0.90, progress); // Move cylinder down and camera in.
+        const E = smoothstep(0.95, 1.00, progress); // Fade out gridlines, move cylinder up & out.
 
-        glm.vec3.lerp(this.scene.viewpoint.eye, [0, 0, 3], [0, 1.5, 3.5], cylinderPresence);
+        glm.vec3.lerp(this.scene.viewpoint.eye, [0, 0, 3], [0, 1.5, 3.5], A * (1 - D));
 
-        cylinderZ = mix(cylinderZ, -4.0, smoothstep(0.9, 1.0, progress));
-
+        const cylinderZ = mix(-0.5 + (1.0 - A * (1 - D)), -4.0, E);
         const m1 = glm.mat4.fromRotation(glm.mat4.create(), Math.PI / 2, [1, 0, 0]);
         const m2 = glm.mat4.fromTranslation(glm.mat4.create(), [0, 0, cylinderZ]);
         const m3 = glm.mat4.fromScaling(glm.mat4.create(), [1, 1, 2]);
         glm.mat4.multiply(m1, m1, m3);
         glm.mat4.multiply(m1, m1, m2);
-
         glm.mat4.copy(this.scene.cylinderTransform, m1);
 
-        this.scene.sphereGridlines = smoothstep(.5, .7, progress) * smoothstep(1., .9, progress);
-        this.scene.cylinderGridlines = smoothstep(.4, .5, progress) * smoothstep(.7, .5, progress);
-
+        this.scene.sphereGridlines = C * (1 - E);
+        this.scene.cylinderGridlines = B * (1 - C);
         this.scene.baseColor = [0.0, 0.0, 0.0, 0.0];
-
         return false;
     }
 
@@ -102,7 +99,7 @@ export class Timeline {
         const F =  smoothstep(0.53, 0.60, progress); // Fade in three double lunes simultaneously
         const G =  smoothstep(0.60, 0.66, progress); // Rotate to see antipode
         const H =  smoothstep(0.70, 0.82, progress); // Rotate back to normal
-        const H2 =  smoothstep(0.82, 0.89, progress); // Fade in letters A B C again
+        const H2 = smoothstep(0.82, 0.89, progress); // Fade in letters A B C again
         const I =  smoothstep(0.96, 1.00, progress); // Fade everything out and change the camera
 
         const cam0 = glm.vec3.create();

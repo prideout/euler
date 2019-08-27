@@ -7,6 +7,8 @@
         // This must be consistent with tsconfig.json:
         "paths": {
             "filament": ["filament/filament"]
-        }
+        },
+
+        "target": "es2015"
     }
 }
