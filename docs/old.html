@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Euler's Gem</title>
+    <link href="favicon.png" rel="icon" type="image/x-icon" />
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://fonts.googleapis.com/css?family=Alegreya" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Lexend Deca" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div id="scrollable-content">
+        <main>
+            <section id="intro">
+                <h1 class="intro__hed">Euler's Polyhedron Formula</h1>
+                <p class="intro__dek">
+                    Chrome / Android is recommended for viewing this page because it uses WebGL 2.
+                </p>
+                <!-- move to last panel
+                <p>
+                    I highly recommend <i>Euler's Gem</i> by David Richeson. It's up there with <i>The Knot Book</i>
+                    (Colin Adams) on my list of favorite math books. They both occupy the sweet spot between pop sci and
+                    textbook.
+                </p>
+                <p>
+                    <i>Euler's Gem</i> barely mentions the identity that Euler is probably most well known for, and that
+                    entranced me when I was in school: <mathspan><i>e<sup> iπ</sup></i> = -1</mathspan>.
+                    In a sense this equation not only represents
+                    the inception of graph theory, but also topology. The right-hand side is known as the <i>Euler
+                    Characteristic</i>. In generalized form, this is represented by <mathspan>χ</mathspan>:
+                </p>
+                <mathspan>V - E + F = χ</mathspan>
+                <p>
+                    For a graph that wraps a sphere (i.e. an inflated convex polyhedron), <mathspan>χ=2</mathspan>.
+                    However if you draw a graph that wraps a torus, you'll find that <mathspan>χ=0</mathspan>. Thus,
+                    <mathspan>χ</mathspan> is a topological invariant.
+                </p>
+                <p>
+                    David Richeson's excellent book <i>Euler's Gem</i> describes several results that arise from Euler's
+                    polyhedron formula, including the fact that there are exactly 5 Platonic solids. It also describes
+                    several ways of proving the polyhedron formula. The one I enjoyed reading the most was Legendre's
+                    proof, which is purely geometrical and leverages some interesting properties of geodesic triangles.
+                </p>
+                <p>
+                    By the way, 3blue1brown has a a great video on the polyhedron formula <a href="TODO">here</a>, as
+                    well as <a href="TODO">this</a> video about the surface of a sphere, which brings us to the first
+                    step...
+                </p>
+                -->
+                <p>
+                    This page uses continuous scrollytelling to present a variation of Legendre's proof for the
+                    following formula.
+                </p>
+                <mathspan>V - E + F = 2</mathspan>
+                <!-- $V - E + F = 2$ -->
+                <p>
+                    For any convex polyhedron (or planar graph), the number of vertices minus the number of edges plus
+                    the number of faces is 2. Leonhard Euler discovered this in 1752 although Descartes discovered a
+                    variation over 100 years earlier.
+                </p>
+                <p>
+                    This equation makes it easy to prove that there only 5 Platonic solids, but perhaps its real beauty
+                    lies in how it connects disparate fields of mathematics. These connections are suggested by
+                    Legendre's proof, which is purely geometrical and leverages some interesting properties of geodesic
+                    triangles.
+                </p>
+                <p>
+                    Scroll down at your own pace, but try not to go too fast, otherwise you'll skip over the animation.
+                    The proof is divided into 5 steps:
+                </p>
+                <ol>
+                    <li><!--a href="#part1"--> Surface Area of Sphere <!--/a--></li>
+                    <li><!--a href="#part2"--> Area of Double Lune <!--/a--></li>
+                    <li><!--a href="#part3"--> Girard's Theorem <!--/a--></li>
+                    <li><!--a href="#part4"--> Spherical Polygons <!--/a--></li>
+                    <li><!--a href="#part5"--> The Conclusion <!--/a--></li>
+                </ol>
+                <p>
+                    After the proof I'll give some recommendations for further reading. By the way, this was built
+                    using TypeScript and <a href="https://github.com/google/filament">Filament</a>. Enjoy!
+                </p>
+            </section>
+
+            <section id="scrolly">
+                <div class="sticky-container">
+                    <div class="canvas-stack">
+                        <canvas id="canvas3d"></canvas>
+                        <canvas id="canvas2d"></canvas>
+                        <div id="hud">
+                            <span id="frameCount"></span> frames</br>
+                            <span id="step"></span> :: <span id="progress"></span>%
+                            <div id="textSpansHud"></div>
+                        </div>
+                    </div>
+                </div>
+                <article>
+
+                    <div id="part1" class="step" style="height:calc(4 * 512px + 20px + 32px + 12px)">
+                        <h2>Part 1: Surface Area of Sphere</h2>
+                        <div>
+                            <p>
+                                The surface area of a sphere can be derived with freshman calculus, but it was
+                                discovered by Archimedes long before the invention of calculus.
+                            </p>
+                        </div>
+                        <div>
+                            <p>
+                                Archimedes realized that the surface area of a sphere is equal to the area of its
+                                smallest enclosing cylinder, which is <mathspan>4πr<sup>2</sup></mathspan>. This is
+                                somewhat intuitive if you think about lat-long rectangles.
+                            </p>
+                        </div>
+                        <div>
+                            <p>
+                                At the equator, lat-long rectangles are fat and short. Closer to the poles they are tall
+                                and thin. As they move closer to the poles, they become tall at the same rate at which
+                                they become thin, so their area remains constant.
+                            </p>
+                        </div>
+                        <div>
+                            <p>
+                                Going forward, we'll keep things simple by focusing on a sphere whose radius is 1. The
+                                surface area of this sphere is <mathspan>4π</mathspan>.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div id="part2" class="step" style="height:calc(4 * 512px + 20px + 32px + 12px)">
+                        <h2>Part 2: Area of a Double Lune</h2>
+                        <div>
+                            <p>
+                                <i>Great circles</i> are lines on the surface of a sphere that divide the sphere in
+                                half. If you place your car anywhere on a sphere's surface, then continuously drive
+                                without turning the steering wheel, you'll always inscribe a great circle. Any portion
+                                of a great circle is called a <i>geodesic path</i>.
+                            </p>
+                        </div>
+                        <div>
+                            <p>
+                                The region on a sphere between two great circles is called a "lune". Let's figure out
+                                the surface area of a lune bounded by <mathspan>θ</mathspan> radians.
+                            </p>
+                        </div>
+                        <div>
+                            <p>
+                                If <mathspan>θ</mathspan> is <mathspan>π</mathspan> radians, the lune encompasses one
+                                hemisphere. Since the area of a hemisphere is <mathspan>2π</mathspan>, the area of the
+                                lune is <mathspan>2θ</mathspan>.
+                            </p>
+                            <p>
+                                This is one reason why radians are more elegant than degrees!
+                            </p>
+                        </div>
+                        <div>
+                            <p>
+                                The surface area of a lune plus its antipode is <mathspan>4θ</mathspan>. Let's call this
+                                a <i>double lune</i>.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div id="part3" class="step" style="height:calc(7 * 512px + 20px + 32px + 12px)">
+                        <h2>Part 3: Girard's Theorem</h2>
+                        <div>
+                            <p>
+                                Spherical triangles are inscribed by geodesic lines (i.e. portions of great circles).
+                                Unlike a planar triangle, the area of a spherical triangle can be determined solely
+                                from its angles. With planar triangles, the sum of the three angles is always 
+                                <mathspan>π</mathspan> radians. Not so with spherical triangles!
+                            </p>
+                        </div>
+                        <div>
+                            <p>
+                                For example, consider the triangle that encompasses one-eighth of the sphere surface,
+                                which has three 90° angles, or <mathspan>π/2</mathspan> radians each. Clearly these do
+                                not add up to <mathspan>π</mathspan>.
+                            </p>
+                        </div>
+                        <div>
+                            <p>
+                                Let's figure out the area of any geodesic triangle with angles <mathspan>a</mathspan>,
+                                <mathspan>b</mathspan>, and <mathspan>c</mathspan>.
+                            </p>
+                        </div>
+                        <div>
+                            <p>
+                                Each corner in the triangle corresponds to a double lune on the surface.
+                                We can visualize each double lune with one of the additive primary colors.
+                            </p>
+                        </div>
+                        <div>
+                            <p>
+                                The sum of the lune areas can be visualized by adding up their respective colors.
+                                <br>
+                                <br>
+                                Notice that the total area of the lunes is equivalent to the surface of the entire
+                                sphere, except that the triangle and its antipode are each counted an additional 2x times.
+                            </p>
+                        </div>
+                        <div>
+                            <div>
+                                Recall that:
+                                <ul>
+                                    <li>The surface area of the unit sphere is <mathspan>4π</mathspan>.</li>
+                                    <li>The surface area of each double lune is <mathspan>4θ</mathspan>.</li>
+                                </ul>
+                                Moreover, we now know that:
+                                <ul>
+                                    <li>
+                                        The surface area of the sphere is equal to the area of all the triangle's double
+                                        lunes, minus 4x the area of the triangle.
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div>
+                            <p>
+                                Therefore, if the area of geodesic triangle <mathspan>abc</mathspan> is
+                                <mathspan>A</mathspan>, then:
+                                <mathspan class="centered">4π = 4a + 4b + 4c - 4A</mathspan>
+                                Or, more simply stated:
+                                <mathspan class="centered">A = a + b + c - π</mathspan>
+                                This formula was independently discovered by Albert Girard (1595-1632) and Thomas
+                                Harriot (1560-1621).
+                            </p>
+                        </div>
+                        </div>
+
+                    <div id="part4" class="step">
+                        <h2>Part 4: Spherical Polygons</h2>
+                    </div>
+
+                    <div id="part5" class="step">
+                        <h2>Part 5: The Conclusion</h2>
+                    </div>
+
+                    <div class="step final" style="height:200px">
+                        <p>
+                            Thanks for reading the proof! Take a look at the code if you're interested in how I made
+                            this.
+                            <br>
+                            <br>
+                            GitHub Project: <a href="">prideout/euler</a>
+                            <hr>
+                            <a href="https://prideout.net">
+                                <img src="https://prideout.net/assets/PublishedLogo.svg" style="height:64px">
+                            </a>
+                        </p>
+                    </div>
+
+                    <div class="step blank"></div>
+                    <div class="step blank"></div>
+
+                </article>
+
+            </section>
+        </main>
+        <script src="main.js"></script>
+    </div>
+</body>
+
+</html>

@@ -27,12 +27,7 @@ module.exports = {
     },
 
     resolve: {
-        extensions: [ '.ts', '.tsx', '.js' ],
-
-        // This must be consistent with tsconfig.json:
-        alias: {
-          'filament': path.resolve(__dirname, 'filament/filament'),
-        }
+        extensions: [ '.ts', '.tsx', '.js' ]
     },
 
     performance: {

@@ -1,14 +1,7 @@
 {
+    "exclude": ["src/old_app.ts"],
     "compilerOptions": {
-        //"sourceMap": true,
-        "inlineSourceMap": false,
-        "baseUrl": "./",
-
-        // This must be consistent with tsconfig.json:
-        "paths": {
-            "filament": ["filament/filament"]
-        },
-
+        "moduleResolution": "node",
         "target": "es2015"
     }
 }
