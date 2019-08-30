@@ -29,6 +29,12 @@ export class Display {
     private readonly view: Filament.View;
 
     public constructor(production: boolean, scene: Scene) {
+
+        glm.glMatrix.setMatrixArrayType(Array);
+
+        // tslint:disable-next-line: no-string-literal
+        window["vec3"] = glm.vec3;
+
         this.production = production;
         this.scene = scene;
         this.canvas2d = document.getElementById("canvas2d") as HTMLCanvasElement;

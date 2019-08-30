@@ -1,67 +1,61 @@
+import * as Filament from "filament";
+
 import { Display } from "./display";
+import { Scene } from "./scene";
 import { Story } from "./scrollytell";
+import { Timeline } from "./timeline";
+import * as urls from "./urls";
 
 declare const BUILD_COMMAND: string;
 
 export class App {
-    private readonly context2d: CanvasRenderingContext2D;
-    private frame = 0;
-    private readonly height: number;
+    public readonly story: Story;
+
+    private display: Display;
     private readonly production: boolean;
-    private readonly story: Story;
-    private readonly tick: () => void;
-    private readonly width: number;
+    private readonly scene = new Scene();
+    private timeline: Timeline;
 
     public constructor() {
-
         this.production = BUILD_COMMAND.indexOf("release") > -1;
         console.info(this.production ? "Production mode" : "Development mode");
 
         this.story = new Story({
             chartSelector: ".chart",
             containerSelector: ".container",
-            developerHud: !this.production,
-            fullsizeChart: true,
             panelSelector: ".panel",
             segmentSelector: "segment",
+            developerHud: !this.production,
+            fullsizeChart: true,
+            progressHandler: (story) => {
+                if (this.display) {
+                    const panel = story.getActivePanelIndex();
+                    const progress = story.getProgressValue();
+                    this.render(panel, progress);
+                }
+            },
         });
 
-        this.tick = this.render.bind(this) as (() => void);
-
-        const checkbox = document.getElementById("show_hud") as HTMLInputElement;
-        const canvas2d = document.getElementById("canvas2d") as HTMLCanvasElement;
-        const canvas3d = document.getElementById("canvas3d") as HTMLCanvasElement;
-
-        const dpr = window.devicePixelRatio;
-        const width = canvas2d.clientWidth * dpr;
-        const height = canvas2d.clientHeight * dpr;
-
-        this.width = canvas3d.width = canvas2d.width = width;
-        this.height = canvas3d.height = canvas2d.height = height;
-
-        this.context2d = canvas2d.getContext("2d");
-        this.context2d.lineWidth = 3;
-
-        window.requestAnimationFrame(this.tick);
+        Filament.init(urls.initialAssets, () => {
+            this.display = new Display(this.production, this.scene);
+            this.timeline = new Timeline(this.scene);
+            this.timeline.update(0, 0);
+            this.display.update(0);
+            this.display.resize();
+            this.display.render();
+        });
     }
 
-    private render() {
-        const t = this.frame * 0.05;
-        const x0 = this.width / 2 - Math.sin(t) * this.width / 2;
-        const x1 = this.width / 2 + Math.sin(t) * this.width / 2;
-        this.context2d.clearRect(0, 0, this.width, this.height);
-        this.context2d.beginPath();
-        this.context2d.moveTo(x1, 0);
-        this.context2d.lineTo(x0, this.height);
-        this.context2d.moveTo(x1, this.height);
-        this.context2d.lineTo(x0, 0);
-        this.context2d.stroke();
-        this.frame += 1;
-        window.requestAnimationFrame(this.tick);
+    private render(panel: number, progress: number) {
+        if (panel > -1) {
+            this.timeline.update(panel, progress);
+            this.display.update(panel);
+        }
+        this.display.render();
     }
 }
 
 window.onload = () => {
     // tslint:disable-next-line: no-string-literal
-    window["app"] = new App();
+    const app = window["app"] = new App();
 };

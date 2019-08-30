@@ -4,6 +4,7 @@
         "tslint:all"
     ],
     "rules": {
+        "object-literal-sort-keys": false,
         "prefer-method-signature": false,
         "comment-format": false,
         "no-console" : false,
