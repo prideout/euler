@@ -18,11 +18,11 @@ geometrical and leverages some interesting properties of geodesic triangles.
 Scroll down at your own pace, but try not to go too fast, otherwise you'll skip over the animation. The proof is divided
 into 5 steps:
 
-1. Surface Area of Sphere
-1. Area of Double Lune
-1. Girard's Theorem
-1. Spherical Polygons
-1. The Conclusion
+1. [Surface Area of Sphere](#h0)
+1. [Area of Double Lune](#h1)
+1. [Girard's Theorem](#h2)
+1. [Spherical Polygons](#h3)
+1. [The Conclusion](#h4)
 
 </div>
 
@@ -114,7 +114,7 @@ Lorem Ipsum
 
 Lorem Ipsum
 
-<segment>
+<segment class="final">
 
 The polyhedron formula is also known as *Euler's Characteristic Formula* because the right-hand side of the equation is
 actually a "characteristic" of the sphere's topology. If we were to inscribe the graph on a torus instead of a sphere,

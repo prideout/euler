@@ -12,7 +12,7 @@ const renderer = new marked.Renderer();
 // Detect if we're inside a fancy segment.
 renderer.html = (html) => {
     const trimmed = html.toString().trim();
-    if (trimmed === "<segment>") {
+    if (trimmed.startsWith("<segment")) {
         inSegment = true;
         return `${trimmed}<div>`;
     }
@@ -35,12 +35,14 @@ const isWrapping = (text: string, tag: string): boolean => {
 };
 
 // Wrap each h2 section with a panel div.
+let h2index = 0;
 renderer.heading = (text, level) => {
-    const h = `<h${level}>${text}</h${level}>\n`;
     const d = '\n<div class="panel">';
     if (level !== 2) {
-        return h;
+        return `<h${level}>${text}</h${level}>\n`;
     }
+    const h = `<h2 id="h${h2index}">${text}</h${level}>\n`;
+    h2index = h2index + 1;
     if (text === "last") {
         return "</div>";
     }

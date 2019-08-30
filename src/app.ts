@@ -24,7 +24,7 @@ export class App {
             chartSelector: ".chart",
             containerSelector: ".container",
             panelSelector: ".panel",
-            segmentSelector: "segment,segment:last-child>*",
+            segmentSelector: "segment",
             developerHud: !this.production,
             fullsizeChart: true,
             progressHandler: (story) => {
@@ -42,7 +42,7 @@ export class App {
             this.timeline.update(0, 0);
             this.display.update(0);
             this.display.resize();
-            this.display.render();
+            this.story.refresh();
         });
 
         // Ideally this would allow up/down arrows to work but it doesn't seem reliable:

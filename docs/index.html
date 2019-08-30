@@ -19,11 +19,11 @@
 <p>This equation makes it easy to prove that there only 5 Platonic solids, but perhaps its real beauty lies in how it connects disparate fields of mathematics. These connections are suggested by Legendre&#39;s proof, which is purely geometrical and leverages some interesting properties of geodesic triangles.</p>
 <p>Scroll down at your own pace, but try not to go too fast, otherwise you&#39;ll skip over the animation. The proof is divided into 5 steps:</p>
 <ol>
-<li>Surface Area of Sphere</li>
-<li>Area of Double Lune</li>
-<li>Girard&#39;s Theorem</li>
-<li>Spherical Polygons</li>
-<li>The Conclusion</li>
+<li><a href="#h0">Surface Area of Sphere</a></li>
+<li><a href="#h1">Area of Double Lune</a></li>
+<li><a href="#h2">Girard&#39;s Theorem</a></li>
+<li><a href="#h3">Spherical Polygons</a></li>
+<li><a href="#h4">The Conclusion</a></li>
 </ol>
 </div><div class="chart constrain">
     <div>
@@ -33,7 +33,7 @@
 </div>
 
 <div class="panel">
-<h2>Part 1: Surface Area of Sphere</h2>
+<h2 id="h0">Part 1: Surface Area of Sphere</h2>
 <segment><p>The surface area of a sphere can be derived with freshman calculus, but it was discovered by Archimedes long before the invention of calculus.</p></segment>
 <segment><p>Archimedes realized that the surface area of a sphere is equal to the area of its smallest enclosing cylinder, which is <strong>4πr<sup>2</sup></strong>. This is somewhat intuitive if you think about lat-long rectangles.</p></segment>
 <segment><p>At the equator, lat-long rectangles are fat and short. Closer to the poles they are tall and thin. As they move closer to the poles, they become tall at the same rate at which they become thin, so their area remains constant.</p></segment>
@@ -41,7 +41,7 @@
 </div>
 
 <div class="panel">
-<h2>Part 2: Area of a Double Lune</h2>
+<h2 id="h1">Part 2: Area of a Double Lune</h2>
 <segment><p><em>Great circles</em> are lines on the surface of a sphere that divide the sphere in half. If you place your car anywhere on a sphere&#39;s surface, then continuously drive without turning the steering wheel, you&#39;ll always inscribe a great circle. Any portion of a great circle is called a <em>geodesic path</em>.</p></segment>
 <segment><p>The region on a sphere between two great circles is called a &quot;lune&quot;. Let&#39;s figure out the surface area of a lune bounded by <strong>θ</strong> radians.</p></segment>
 <segment><p>If <strong>θ</strong> is <strong>π</strong> radians, the lune encompasses one hemisphere. Since the area of a hemisphere is <strong>2π</strong>, the area of the lune is <strong>2θ</strong>.</p></segment>
@@ -50,7 +50,7 @@
 </div>
 
 <div class="panel">
-<h2>Part 3: Girard&#39;s Theorem</h2>
+<h2 id="h2">Part 3: Girard&#39;s Theorem</h2>
 <segment><p>Spherical triangles are inscribed by geodesic lines (i.e. portions of great circles). Unlike a planar triangle, the area of a spherical triangle can be determined solely from its angles. With planar triangles, the sum of the three angles is always <strong>π</strong> radians. Not so with spherical triangles!</p></segment>
 <segment><p>For example, consider the triangle that encompasses one-eighth of the sphere surface, which has three 90° angles, or <strong>π/2</strong> radians each. Clearly these do not add up to <strong>π</strong>.</p></segment>
 <segment><p>Let&#39;s figure out the area of any geodesic triangle with angles <strong>a</strong>, <strong>b</strong>, and <strong>c</strong>.</p></segment>
@@ -78,18 +78,18 @@ triangle.</li>
 </div></segment></div>
 
 <div class="panel">
-<h2>Part 4: Spherical Polygons</h2>
+<h2 id="h3">Part 4: Spherical Polygons</h2>
 <segment><p>Lorem Ipsum</p></segment>
 <segment><p>Lorem Ipsum</p></segment>
 </div>
 
 <div class="panel">
-<h2>Part 5: The Conclusion</h2>
+<h2 id="h4">Part 5: The Conclusion</h2>
 <segment><p>Lorem Ipsum</p></segment>
 <segment><p>Lorem Ipsum</p></segment>
-<segment><div><p>The formula is sometimes known as <em>Euler&#39;s Characteristic Formula</em> because the right-hand side of the equation is actually a &quot;characteristic&quot; of the sphere&#39;s topology. If we were to inscribe the graph on a torus instead of a sphere, the Euler characteristic would be 0 rather than 2.</p>
+<segment class="final"><div><p>The polyhedron formula is also known as <em>Euler&#39;s Characteristic Formula</em> because the right-hand side of the equation is actually a &quot;characteristic&quot; of the sphere&#39;s topology. If we were to inscribe the graph on a torus instead of a sphere, the Euler characteristic would be 0 rather than 2.</p>
 <p>To learn more about this, I recommend David Richeson&#39;s excellent book <a href="https://www.amazon.com/Eulers-Gem-Polyhedron-Formula-Topology/dp/0691154570"><em>Euler&#39;s Gem</em></a>, which was the inspiration for this page.</p>
-<p>Also the inimitable 3blue1brown has a great video on the polyhedron formula <a href="https://www.youtube.com/watch?v=-9OUyo8NFZg">here</a>, as well as <a href="https://www.youtube.com/watch?v=GNcFjFmqEc8">this</a> video about the surface are of a sphere.</p>
+<p>Also the inimitable 3blue1brown has a great video on the polyhedron formula <a href="https://www.youtube.com/watch?v=-9OUyo8NFZg">here</a>, as well as <a href="https://www.youtube.com/watch?v=GNcFjFmqEc8">this</a> video about the surface area of a sphere.</p>
 <hr>
 <p>Thanks for reading the proof! Take a look at the code if you&#39;re interested in how I made this. <br> <br> GitHub Projects:</p>
 <ul>
