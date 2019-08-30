@@ -1,20 +1,29 @@
 import { Display } from "./display";
 import { Story } from "./scrollytell";
 
+declare const BUILD_COMMAND: string;
+
 export class App {
     private readonly context2d: CanvasRenderingContext2D;
     private frame = 0;
     private readonly height: number;
+    private readonly production: boolean;
     private readonly story: Story;
     private readonly tick: () => void;
     private readonly width: number;
 
     public constructor() {
+
+        this.production = BUILD_COMMAND.indexOf("release") > -1;
+        console.info(this.production ? "Production mode" : "Development mode");
+
         this.story = new Story({
             chartSelector: ".chart",
             containerSelector: ".container",
+            developerHud: !this.production,
             fullsizeChart: true,
             panelSelector: ".panel",
+            segmentSelector: "segment",
         });
 
         this.tick = this.render.bind(this) as (() => void);
@@ -22,10 +31,6 @@ export class App {
         const checkbox = document.getElementById("show_hud") as HTMLInputElement;
         const canvas2d = document.getElementById("canvas2d") as HTMLCanvasElement;
         const canvas3d = document.getElementById("canvas3d") as HTMLCanvasElement;
-
-        checkbox.addEventListener("click", () => {
-            this.story.showDeveloperHud(checkbox.checked);
-        });
 
         const dpr = window.devicePixelRatio;
         const width = canvas2d.clientWidth * dpr;

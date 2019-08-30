@@ -27,6 +27,7 @@ interface IConfig {
     readonly fullsizeChart?: boolean;
     readonly panelSelector: string;
     readonly progressHandler?: (story: Story, progress: number) => void;
+    readonly segmentSelector?: string;
 }
 
 /**
@@ -78,8 +79,7 @@ export class Story {
             const height = this.container.getBoundingClientRect().height;
             this.chart.style.height = `${height}px`;
             this.chart.style.top = "0";
-
-            const segments: NodeListOf<HTMLElement> = document.querySelectorAll("segment");
+            const segments: NodeListOf<HTMLElement> = document.querySelectorAll(config.segmentSelector);
             for (const segment of segments) {
                 segment.style.height = `${height}px`;
             }

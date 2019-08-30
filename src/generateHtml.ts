@@ -76,14 +76,11 @@ const generatedHtml = `<!DOCTYPE html>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link href="favicon.png" rel="icon" type="image/x-icon" />
 <link href="https://fonts.googleapis.com/css?family=Alegreya" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css?family=Lexend Deca" rel="stylesheet">
 <link href="style.css" rel="stylesheet">
 </head>
 <body>
 <div class="container constrain">
 <div>
-&nbsp;<input id="show_hud" type="checkbox" name="show_hud">
-<label for="show_hud">Show Scrollytell HUD</label>
 ${innerHtml}
 </div>
 </div>

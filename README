@@ -13,11 +13,7 @@ To publish:
 
 Todo:
 
-    Replace index.html with index2.html
-
-    "segmentSelector" and propagate this back to the lib
-
-    Remove checkbox in favor of the build arg
+    Propagate segmentSelector back to the lib
 
     Load up Filament instead of silly crosshairs
 

@@ -8,7 +8,7 @@
   "scripts": {
     "build": "webpack --mode development",
     "build:release": "webpack --mode production",
-    "build:html": "ts-node 'src/generateHtml.ts' 'src/verbiage.md' 'docs/index2.html'",
+    "build:html": "ts-node 'src/generateHtml.ts' 'src/verbiage.md' 'docs/index.html'",
     "build:shaders": "ls -1 materials/*.mat | sed -e 's/\\.mat$//' | xargs -I % ${npm_package_config_matc} -o docs/%.filamat %.mat"
   },
   "devDependencies": {
