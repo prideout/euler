@@ -5,7 +5,9 @@ const webpack = require('webpack');
 
 module.exports = {
     devtool: 'source-map',
-    entry: './src/app.ts',
+    entry: {
+        main: './src/app.ts'
+    },
 
     // We do not actually use the following modules, but emscripten emits JS bindings that
     // conditionally uses them. Therefore we need to tell webpack to skip over their "require"
@@ -22,7 +24,10 @@ module.exports = {
 
     module: {
         rules: [
-            { test: /\.tsx?$/, loader: 'ts-loader' }
+            {
+                test: /\.tsx?$/,
+                loader: 'ts-loader'
+            }
         ]
     },
 

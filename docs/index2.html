@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>The Polyhedron Formula</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link href="favicon.png" rel="icon" type="image/x-icon" />
+<link href="https://fonts.googleapis.com/css?family=Alegreya" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css?family=Lexend Deca" rel="stylesheet">
+<link href="style.css" rel="stylesheet">
+</head>
+<body>
+<div class="container constrain">
+<div>
+&nbsp;<input id="show_hud" type="checkbox" name="show_hud">
+<label for="show_hud">Show Scrollytell HUD</label>
+<h1>Euler&#39;s Polyhedron Formula</h1>
+<p class="center"><em>Chrome / Android is recommended for viewing this page because it uses WebGL 2.</em></p>
+<p>This page uses continuous scrollytelling to present a variation of Legendre&#39;s proof for the following formula.</p>
+<p class="center"><strong>V - E + F = 2</strong></p>
+<p>For any convex polyhedron (or planar graph), the number of vertices minus the number of edges plus the number of faces is 2. Leonhard Euler discovered this in 1752 although Descartes discovered a variation over 100 years earlier.</p>
+<p>This equation makes it easy to prove that there only 5 Platonic solids, but perhaps its real beauty lies in how it connects disparate fields of mathematics. These connections are suggested by Legendre&#39;s proof, which is purely geometrical and leverages some interesting properties of geodesic triangles.</p>
+<p>Scroll down at your own pace, but try not to go too fast, otherwise you&#39;ll skip over the animation. The proof is divided into 5 steps:</p>
+<ol>
+<li>Surface Area of Sphere</li>
+<li>Area of Double Lune</li>
+<li>Girard&#39;s Theorem</li>
+<li>Spherical Polygons</li>
+<li>The Conclusion</li>
+</ol>
+<div class="chart constrain">
+    <div>
+        <canvas id="canvas3d"></canvas>
+        <canvas id="canvas2d"></canvas>
+    </div>
+</div>
+
+<div class="panel">
+<h2>Part 1: Surface Area of Sphere</h2>
+<segment><p>The surface area of a sphere can be derived with freshman calculus, but it was discovered by Archimedes long before the invention of calculus.</p></segment>
+<segment><p>Archimedes realized that the surface area of a sphere is equal to the area of its smallest enclosing cylinder, which is <strong>4πr<sup>2</sup></strong>. This is somewhat intuitive if you think about lat-long rectangles.</p></segment>
+<segment><p>At the equator, lat-long rectangles are fat and short. Closer to the poles they are tall and thin. As they move closer to the poles, they become tall at the same rate at which they become thin, so their area remains constant.</p></segment>
+<segment><p>Going forward, we&#39;ll keep things simple by focusing on a sphere whose radius is 1. The surface area of this sphere is <strong>4π</strong>.</p></segment>
+</div>
+
+<div class="panel">
+<h2>Part 2: Area of a Double Lune</h2>
+<segment><p><em>Great circles</em> are lines on the surface of a sphere that divide the sphere in half. If you place your car anywhere on a sphere&#39;s surface, then continuously drive without turning the steering wheel, you&#39;ll always inscribe a great circle. Any portion of a great circle is called a <em>geodesic path</em>.</p></segment>
+<segment><p>The region on a sphere between two great circles is called a &quot;lune&quot;. Let&#39;s figure out the surface area of a lune bounded by <strong>θ</strong> radians.</p></segment>
+<segment><p>If <strong>θ</strong> is <strong>π</strong> radians, the lune encompasses one hemisphere. Since the area of a hemisphere is <strong>2π</strong>, the area of the lune is <strong>2θ</strong>.</p></segment>
+<segment><p>This is one reason why radians are more elegant than degrees!</p></segment>
+<segment><p>The surface area of a lune plus its antipode is <strong>4θ</strong>. Let&#39;s call this a <em>double lune</em>.</p></segment>
+</div>
+
+<div class="panel">
+<h2>Part 3: Girard&#39;s Theorem</h2>
+<segment><p>Spherical triangles are inscribed by geodesic lines (i.e. portions of great circles). Unlike a planar triangle, the area of a spherical triangle can be determined solely from its angles. With planar triangles, the sum of the three angles is always <strong>π</strong> radians. Not so with spherical triangles!</p></segment>
+<segment><p>For example, consider the triangle that encompasses one-eighth of the sphere surface, which has three 90° angles, or <strong>π/2</strong> radians each. Clearly these do not add up to <strong>π</strong>.</p></segment>
+<segment><p>Let&#39;s figure out the area of any geodesic triangle with angles <strong>a</strong>, <strong>b</strong>, and <strong>c</strong>.</p></segment>
+<segment><p>Each corner in the triangle corresponds to a double lune on the surface. We can visualize each double lune with one of the additive primary colors.</p></segment>
+<segment><p>The sum of the lune areas can be visualized by adding up their respective colors. <br><br> Notice that the total area of the lunes is equivalent to the surface of the entire sphere, except that the triangle and its antipode are each counted an additional 2x times.</p></segment>
+<segment><div><p>Recall that:</p>
+<ul>
+<li>The surface area of the unit sphere is <strong>4π</strong>.</li>
+<li>The surface area of each double lune is <strong>4θ</strong>.</li>
+</ul>
+<p>Moreover, we now know that:</p>
+<ul>
+<li>The surface area of the sphere is equal to the area of all the triangle&#39;s double lunes, minus 4x the area of the
+triangle.</li>
+</ul>
+<p>Therefore, if the area of geodesic triangle <strong>abc</strong> is <strong>A</strong>, then:</p>
+<ul>
+<li><strong>4π = 4a + 4b + 4c - 4A</strong></li>
+</ul>
+<p>Or, more simply stated:</p>
+<ul>
+<li><strong>A = a + b + c - π</strong></li>
+</ul>
+<p>This formula was independently discovered by Albert Girard (1595-1632) and Thomas Harriot (1560-1621).</p>
+</div></segment></div>
+
+<div class="panel">
+<h2>Part 4: Spherical Polygons</h2>
+<segment><p>Lorem Ipsum</p></segment>
+</div>
+
+<div class="panel">
+<h2>Part 5: The Conclusion</h2>
+<segment><p>Lorem Ipsum</p></segment>
+</div>
+
+</div>
+</div>
+<script src="main.js" type="module"></script>
+</body>

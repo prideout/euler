@@ -13,6 +13,14 @@ To publish:
 
 Todo:
 
+    Replace index.html with index2.html
+
+    "segmentSelector" and propagate this back to the lib
+
+    Remove checkbox in favor of the build arg
+
+    Load up Filament instead of silly crosshairs
+
     Part 4
         Spherical polygons: write out all the verbiage
     

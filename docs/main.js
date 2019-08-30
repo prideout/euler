@@ -204,6 +204,10 @@ class Story {
             const height = this.container.getBoundingClientRect().height;
             this.chart.style.height = `${height}px`;
             this.chart.style.top = "0";
+            const segments = document.querySelectorAll("segmenty");
+            for (const segment of segments) {
+                segment.style.height = `${height}px`;
+            }
         }
         if (config.developerHud) {
             this.showDeveloperHud(true);
@@ -304,7 +308,7 @@ class Story {
         // when there is no active panel).
         if (progressChanged || panelChanged) {
             this.frameCount += 1;
-            if (this.config.progressHandler && this.progressValue !== -1) {
+            if (this.config.progressHandler) {
                 this.config.progressHandler(this, this.progressValue);
             }
         }

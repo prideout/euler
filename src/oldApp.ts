@@ -9,7 +9,7 @@ import * as urls from "./urls";
 Filament.init(urls.initialAssets, () => {
     glMatrix.setMatrixArrayType(Array);
     window["vec3"] = vec3;      // tslint:disable-line
-    window["app"] = new App();  // tslint:disable-line
+    window["oldapp"] = new OldApp();  // tslint:disable-line
 });
 
 declare const BUILD_COMMAND: string;

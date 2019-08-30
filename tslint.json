@@ -4,15 +4,19 @@
         "tslint:all"
     ],
     "rules": {
+        "prefer-method-signature": false,
+        "comment-format": false,
         "no-console" : false,
         "no-this-assignment": false,
         "max-classes-per-file": false,
         "completed-docs": false,
         "newline-per-chained-call": false,
         "no-magic-numbers": false,
+        "no-parameter-reassignment": false,
         "number-literal-format": false,
         "typedef": false,
         "newline-before-return": false,
+        "prefer-template": false,
         "variable-name": false,
         "binary-expression-operand-order": false,
         "strict-boolean-expressions": {"options": ["allow-undefined-union"]}
