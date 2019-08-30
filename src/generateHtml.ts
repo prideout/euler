@@ -71,7 +71,7 @@ const innerHtml = marked(markdownSource, { renderer }) + "</div>\n";
 const generatedHtml = `<!DOCTYPE html>
 <html lang="en">
 <head>
-<title>The Polyhedron Formula</title>
+<title>Euler's Polyhedron Formula</title>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link href="favicon.png" rel="icon" type="image/x-icon" />

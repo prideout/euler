@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<title>The Polyhedron Formula</title>
+<title>Euler's Polyhedron Formula</title>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link href="favicon.png" rel="icon" type="image/x-icon" />
@@ -13,7 +13,7 @@
 <div>
 <h1>Euler&#39;s Polyhedron Formula</h1>
 <p class="center"><em>Chrome / Android is recommended for viewing this page because it uses WebGL 2.</em></p>
-<p>This page uses continuous scrollytelling to present a variation of Legendre&#39;s proof for the following formula.</p>
+<div class="intro"><p>This page uses continuous scrollytelling to present a variation of Legendre&#39;s proof for the following formula.</p>
 <p class="center"><strong>V - E + F = 2</strong></p>
 <p>For any convex polyhedron (or planar graph), the number of vertices minus the number of edges plus the number of faces is 2. Leonhard Euler discovered this in 1752 although Descartes discovered a variation over 100 years earlier.</p>
 <p>This equation makes it easy to prove that there only 5 Platonic solids, but perhaps its real beauty lies in how it connects disparate fields of mathematics. These connections are suggested by Legendre&#39;s proof, which is purely geometrical and leverages some interesting properties of geodesic triangles.</p>
@@ -25,7 +25,7 @@
 <li>Spherical Polygons</li>
 <li>The Conclusion</li>
 </ol>
-<div class="chart constrain">
+</div><div class="chart constrain">
     <div>
         <canvas id="canvas3d"></canvas>
         <canvas id="canvas2d"></canvas>
@@ -80,12 +80,26 @@ triangle.</li>
 <div class="panel">
 <h2>Part 4: Spherical Polygons</h2>
 <segment><p>Lorem Ipsum</p></segment>
+<segment><p>Lorem Ipsum</p></segment>
 </div>
 
 <div class="panel">
 <h2>Part 5: The Conclusion</h2>
 <segment><p>Lorem Ipsum</p></segment>
-</div>
+<segment><p>Lorem Ipsum</p></segment>
+<segment><div><p>The polyhedron formula is also known as <em>Euler&#39;s Characteristic Formula</em> because the right-hand side of the equation is actually a &quot;characteristic&quot; of the sphere&#39;s topology. If we were to inscribe the graph on a torus instead of a sphere, the Euler characteristic would be 0 rather than 2.</p>
+<p>To learn more about this, I recommend David Richeson&#39;s excellent book <a href="https://www.amazon.com/Eulers-Gem-Polyhedron-Formula-Topology/dp/0691154570"><em>Euler&#39;s Gem</em></a>, which was the inspiration for this page.</p>
+<p>Also the inimitable 3blue1brown has a great video on the polyhedron formula <a href="https://www.youtube.com/watch?v=-9OUyo8NFZg">here</a>, as well as <a href="https://www.youtube.com/watch?v=GNcFjFmqEc8">this</a> video about the surface area of a sphere.</p>
+<hr>
+<p>Thanks for reading the proof! Take a look at the code if you&#39;re interested in how I made this. <br> <br> GitHub Projects:</p>
+<ul>
+<li><a href="https://github.com/prideout/euler">prideout/euler</a></li>
+<li><a href="https://github.com/google/filament">google/filament</a></li>
+<li><a href="https://github.com/google/scrollytell">google/scrollytell</a></li>
+</ul>
+<a href="https://prideout.net">
+<img src="https://prideout.net/assets/PublishedLogo.svg" style="height:64px">
+</a></div></segment></div>
 
 </div>
 </div>

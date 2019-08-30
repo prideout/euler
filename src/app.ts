@@ -20,11 +20,14 @@ export class App {
         this.production = BUILD_COMMAND.indexOf("release") > -1;
         console.info(this.production ? "Production mode" : "Development mode");
 
+        const el: HTMLElement = document.querySelector(".container");
+        el.focus();
+
         this.story = new Story({
             chartSelector: ".chart",
             containerSelector: ".container",
             panelSelector: ".panel",
-            segmentSelector: "segment",
+            segmentSelector: "segment,segment:last-child>*",
             developerHud: !this.production,
             fullsizeChart: true,
             progressHandler: (story) => {

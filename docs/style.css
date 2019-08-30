@@ -63,6 +63,12 @@ canvas {
 .center {
     text-align: center;
 }
+.panel p {
+    text-align: justify;
+    -webkit-hyphens: auto;
+    -moz-hyphens: auto;
+    hyphens: auto;
+}
 .panel > h2 {
     height: inherit;
     background: rgba(255, 200, 0, 0.7);
@@ -76,4 +82,15 @@ segment > * {
     background: rgba(255, 255, 255, 0.7);
     margin: 0 auto 0 auto;
     padding: 10px;
+}
+.intro {
+    padding: 10px;
+    font-size: 18px;
+}
+a, a:visited {
+    text-decoration: none;
+    color: #06c;
+}
+a:hover {
+    font-weight: bold;
 }

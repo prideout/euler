@@ -2,6 +2,8 @@
 
 *Chrome / Android is recommended for viewing this page because it uses WebGL 2.*
 
+<div class="intro">
+
 This page uses continuous scrollytelling to present a variation of Legendre's proof for the following formula.
 
 **V - E + F = 2**
@@ -21,6 +23,8 @@ into 5 steps:
 1. Girard's Theorem
 1. Spherical Polygons
 1. The Conclusion
+
+</div>
 
 <div class="chart constrain">
     <div>
@@ -102,6 +106,43 @@ This formula was independently discovered by Albert Girard (1595-1632) and Thoma
 
 Lorem Ipsum
 
+Lorem Ipsum
+
 ## Part 5: The Conclusion
 
 Lorem Ipsum
+
+Lorem Ipsum
+
+<segment>
+
+The polyhedron formula is also known as *Euler's Characteristic Formula* because the right-hand side of the equation is
+actually a "characteristic" of the sphere's topology. If we were to inscribe the graph on a torus instead of a sphere,
+the Euler characteristic would be 0 rather than 2.
+
+To learn more about this, I recommend David Richeson's excellent book [*Euler's Gem*][1], which was the inspiration for
+this page.
+
+Also the inimitable 3blue1brown has a great video on the polyhedron formula [here][2], as well as [this][3] video about
+the surface area of a sphere.
+
+---
+
+Thanks for reading the proof! Take a look at the code if you're interested in how I made
+this.
+<br>
+<br>
+GitHub Projects:
+ - <a href="https://github.com/prideout/euler">prideout/euler</a>
+ - <a href="https://github.com/google/filament">google/filament</a>
+ - <a href="https://github.com/google/scrollytell">google/scrollytell</a>
+
+<a href="https://prideout.net">
+<img src="https://prideout.net/assets/PublishedLogo.svg" style="height:64px">
+</a>
+
+</segment>
+
+[1]: https://www.amazon.com/Eulers-Gem-Polyhedron-Formula-Topology/dp/0691154570
+[2]: https://www.youtube.com/watch?v=-9OUyo8NFZg
+[3]: https://www.youtube.com/watch?v=GNcFjFmqEc8
