@@ -114,7 +114,7 @@ Lorem Ipsum
 
 Lorem Ipsum
 
-<segment class="final">
+<segment>
 
 The polyhedron formula is also known as *Euler's Characteristic Formula* because the right-hand side of the equation is
 actually a "characteristic" of the sphere's topology. If we were to inscribe the graph on a torus instead of a sphere,
@@ -126,10 +126,11 @@ this page.
 Also the inimitable 3blue1brown has a great video on the polyhedron formula [here][2], as well as [this][3] video about
 the surface area of a sphere.
 
----
+</segment>
 
-Thanks for reading the proof! Take a look at the code if you're interested in how I made
-this.
+<segment>
+
+Thanks for reading the proof! Take a look at the code if you're interested in how this was made.
 <br>
 <br>
 GitHub Projects:
