@@ -20,9 +20,6 @@ export class App {
         this.production = BUILD_COMMAND.indexOf("release") > -1;
         console.info(this.production ? "Production mode" : "Development mode");
 
-        const el: HTMLElement = document.querySelector(".container");
-        el.focus();
-
         this.story = new Story({
             chartSelector: ".chart",
             containerSelector: ".container",
@@ -47,6 +44,10 @@ export class App {
             this.display.resize();
             this.display.render();
         });
+
+        // Ideally this would allow up/down arrows to work but it doesn't seem reliable:
+        const el: HTMLElement = document.querySelector(".container");
+        el.focus();
     }
 
     private render(panel: number, progress: number) {

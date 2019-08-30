@@ -79,7 +79,7 @@ const generatedHtml = `<!DOCTYPE html>
 <link href="style.css" rel="stylesheet">
 </head>
 <body>
-<div class="container constrain">
+<div class="container constrain" tabindex="0">
 <div>
 ${innerHtml}
 </div>
