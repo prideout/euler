@@ -63,12 +63,12 @@ canvas {
 .center {
     text-align: center;
 }
-.panel p {
+/* .panel p {
     text-align: justify;
     -webkit-hyphens: auto;
     -moz-hyphens: auto;
     hyphens: auto;
-}
+} */
 .panel > h2 {
     height: inherit;
     background: rgba(255, 200, 0, 0.7);

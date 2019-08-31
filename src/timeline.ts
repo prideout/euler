@@ -73,12 +73,12 @@ export class Timeline {
     }
 
     public updateStep2(progress: number) {
-        const A = smoothstep(0.00, 0.18, progress); // Fade in the great circle and change the camera
-        const B = smoothstep(0.18, 0.41, progress); // Fade in the second great circle and lune
-        const C = smoothstep(0.41, 0.57, progress); // Widen lune to entire sphere
-        const D = smoothstep(0.57, 0.72, progress); // Narrow lune back down
-        const E = smoothstep(0.72, 0.88, progress); // Fade in antipode
-        const F = smoothstep(0.88, 1.00, progress); // Fade out the double-lune and change the camera
+        const A = smoothstep(0.00, 0.11, progress); // Fade in the great circle and change the camera
+        const B = smoothstep(0.18, 0.22, progress); // Fade in the second great circle and lune
+        const C = smoothstep(0.31, 0.51, progress); // Widen lune to entire sphere
+        const D = smoothstep(0.61, 0.71, progress); // Narrow lune back down
+        const E = smoothstep(0.72, 0.81, progress); // Fade in antipode
+        const F = smoothstep(0.90, 1.00, progress); // Fade out the double-lune and change the camera
 
         glm.vec3.lerp(this.scene.viewpoint.eye, [0, 0, 3], [0, 1, 3], A * (1 - F));
 
@@ -90,17 +90,17 @@ export class Timeline {
     }
 
     public updateStep3(progress: number) {
-        const A =  smoothstep(0.00, 0.11, progress); // Draw the geodesic triangle and change the camera
+        const A =  smoothstep(0.00, 0.08, progress); // Draw the geodesic triangle and change the camera
         const B2 = smoothstep(0.17, 0.23, progress); // Expand triangle to 90-90-90
-        const B1 = smoothstep(0.23, 0.31, progress); // Change the camera to see polar triangle
-        const C =  smoothstep(0.31, 0.35, progress); // Shrink triangle back and revert the cam
-        const D =  smoothstep(0.35, 0.38, progress); // Fade in letters A B C
-        const E =  smoothstep(0.38, 0.53, progress); // Fade in and out three double lunes sequentially
-        const F =  smoothstep(0.53, 0.60, progress); // Fade in three double lunes simultaneously
-        const G =  smoothstep(0.60, 0.66, progress); // Rotate to see antipode
-        const H =  smoothstep(0.70, 0.82, progress); // Rotate back to normal
-        const H2 = smoothstep(0.82, 0.89, progress); // Fade in letters A B C again
-        const I =  smoothstep(0.96, 1.00, progress); // Fade everything out and change the camera
+        const B1 = smoothstep(0.23, 0.26, progress); // Change the camera to see polar triangle
+        const C =  smoothstep(0.35, 0.40, progress); // Shrink triangle back and revert the cam
+        const D =  smoothstep(0.40, 0.42, progress); // Fade in letters A B C
+        const E =  smoothstep(0.52, 0.63, progress); // Fade in and out three double lunes sequentially
+        const F =  smoothstep(0.63, 0.69, progress); // Fade in three double lunes simultaneously
+        const G =  smoothstep(0.69, 0.75, progress); // Rotate to see antipode
+        const H =  smoothstep(0.75, 0.77, progress); // Rotate back to normal
+        const H2 = smoothstep(0.77, 0.92, progress); // Fade in letters A B C again
+        const I =  smoothstep(0.92, 1.00, progress); // Fade everything out and change the camera
 
         const cam0 = glm.vec3.create();
         const cam1 = glm.vec3.create();

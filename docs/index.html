@@ -19,11 +19,11 @@
 <p>This equation makes it easy to prove that there only 5 Platonic solids, but perhaps its real beauty lies in how it connects disparate fields of mathematics. These connections are suggested by Legendre&#39;s proof, which is purely geometrical and leverages some interesting properties of geodesic triangles.</p>
 <p>Scroll down at your own pace, but try not to go too fast, otherwise you&#39;ll skip over the animation. The proof is divided into 5 steps:</p>
 <ol>
-<li><a href="#h0">Surface Area of Sphere</a></li>
-<li><a href="#h1">Area of Double Lune</a></li>
-<li><a href="#h2">Girard&#39;s Theorem</a></li>
-<li><a href="#h3">Spherical Polygons</a></li>
-<li><a href="#h4">The Conclusion</a></li>
+<li>Surface Area of Sphere</li>
+<li>Area of Double Lune</li>
+<li>Girard&#39;s Theorem</li>
+<li>Spherical Polygons</li>
+<li>The Conclusion</li>
 </ol>
 </div><div class="chart constrain">
     <div>
@@ -79,19 +79,32 @@ triangle.</li>
 
 <div class="panel">
 <h2 id="h3">Part 4: Spherical Polygons</h2>
-<segment><p>Lorem Ipsum</p></segment>
-<segment><p>Lorem Ipsum</p></segment>
-</div>
+<segment><p>Now that we know how to compute the area of a geodesic triangle, can we figure out how to compute the area of a geodesic polygon?</p></segment>
+<segment><p>Yes, we can! Every n-gon can be decomposed into <strong>n-2</strong> triangles.</p></segment>
+<segment><p>The sum of all angles of the polygon is equivalent to the sum of all angles of its constituent triangles. Since each inner triangle has area <strong>(angle sum)-π</strong>, the area of the n-gon must be <strong>(angle sum)-(n-2)π</strong>.</p></segment>
+<segment><div><p>Stated another way:</p>
+<p><strong>A = (a + b + c + d + ...) - nπ + 2π</strong>.</p>
+<p>To portray this formula visually, we&#39;ve inscribed the components of the formula onto the sphere. This will be useful later in the proof.</p>
+</div></segment></div>
 
 <div class="panel">
 <h2 id="h4">Part 5: The Conclusion</h2>
-<segment><p>Lorem Ipsum</p></segment>
-<segment><p>Lorem Ipsum</p></segment>
-<segment class="final"><div><p>The polyhedron formula is also known as <em>Euler&#39;s Characteristic Formula</em> because the right-hand side of the equation is actually a &quot;characteristic&quot; of the sphere&#39;s topology. If we were to inscribe the graph on a torus instead of a sphere, the Euler characteristic would be 0 rather than 2.</p>
+<segment><p>Now that we have a few tools under our belt, let&#39;s consider a convex polyhedron.</p></segment>
+<segment><p>What happens when we inflate the polyhedron to meet its enclosing sphere? The sum of the areas of all the resulting geodesic polygons should be equivalent to the surface area of the sphere!</p></segment>
+<segment><p>Next, apply the visual method for computing polygon area. Each vertex contributes a total of <strong>2π</strong> radians, each edge contributes <strong>-2π</strong> (one for each side), and each face contributes <strong>2π</strong>.</p></segment>
+<segment><div><p>Thus,</p>
+<ul>
+<li><strong>Surface area of sphere = 4π = 2πV - 2πE + 2πF</strong></li>
+</ul>
+<p>Or, more simply stated:</p>
+<ul>
+<li><strong>V - E + F = 2</strong></li>
+</ul>
+<p>Et Voilà!</p>
+</div></segment><segment><div><p>The polyhedron formula is also known as <em>Euler&#39;s Characteristic Formula</em> because the right-hand side of the equation is actually a &quot;characteristic&quot; of the sphere&#39;s topology. If we were to inscribe the graph on a torus instead of a sphere, the Euler characteristic would be 0 rather than 2.</p>
 <p>To learn more about this, I recommend David Richeson&#39;s excellent book <a href="https://www.amazon.com/Eulers-Gem-Polyhedron-Formula-Topology/dp/0691154570"><em>Euler&#39;s Gem</em></a>, which was the inspiration for this page.</p>
 <p>Also the inimitable 3blue1brown has a great video on the polyhedron formula <a href="https://www.youtube.com/watch?v=-9OUyo8NFZg">here</a>, as well as <a href="https://www.youtube.com/watch?v=GNcFjFmqEc8">this</a> video about the surface area of a sphere.</p>
-<hr>
-<p>Thanks for reading the proof! Take a look at the code if you&#39;re interested in how I made this. <br> <br> GitHub Projects:</p>
+</div></segment><segment><div><p>Thanks for reading the proof! Take a look at the code if you&#39;re interested in how this was made. <br> <br> GitHub Projects:</p>
 <ul>
 <li><a href="https://github.com/prideout/euler">prideout/euler</a></li>
 <li><a href="https://github.com/google/filament">google/filament</a></li>

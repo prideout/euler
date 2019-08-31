@@ -18,11 +18,11 @@ geometrical and leverages some interesting properties of geodesic triangles.
 Scroll down at your own pace, but try not to go too fast, otherwise you'll skip over the animation. The proof is divided
 into 5 steps:
 
-1. [Surface Area of Sphere](#h0)
-1. [Area of Double Lune](#h1)
-1. [Girard's Theorem](#h2)
-1. [Spherical Polygons](#h3)
-1. [The Conclusion](#h4)
+1. Surface Area of Sphere
+1. Area of Double Lune
+1. Girard's Theorem
+1. Spherical Polygons
+1. The Conclusion
 
 </div>
 
@@ -104,15 +104,46 @@ This formula was independently discovered by Albert Girard (1595-1632) and Thoma
 
 ## Part 4: Spherical Polygons
 
-Lorem Ipsum
+Now that we know how to compute the area of a geodesic triangle, can we figure out how to compute
+the area of a geodesic polygon?
 
-Lorem Ipsum
+Yes, we can! Every n-gon can be decomposed into **n-2** triangles.
+
+The sum of all angles of the polygon is equivalent to the sum of all angles of its constituent triangles. Since
+each inner triangle has area **(angle sum)-π**, the area of the n-gon must be **(angle sum)-(n-2)π**.
+
+<segment>
+
+Stated another way:
+
+**A = (a + b + c + d + ...) - nπ + 2π**.
+
+To portray this formula visually, we've inscribed the components of the formula onto the sphere. This will be useful
+later in the proof.
+
+</segment>
 
 ## Part 5: The Conclusion
 
-Lorem Ipsum
+Now that we have a few tools under our belt, let's consider a convex polyhedron.
 
-Lorem Ipsum
+What happens when we inflate the polyhedron to meet its enclosing sphere? The sum of the areas of all the resulting
+geodesic polygons should be equivalent to the surface area of the sphere!
+
+Next, apply the visual method for computing polygon area. Each vertex contributes a total of **2π** radians, each edge
+contributes **-2π** (one for each side), and each face contributes **2π**.
+
+<segment>
+
+Thus,
+- **Surface area of sphere = 4π = 2πV - 2πE + 2πF**
+
+Or, more simply stated:
+- **V - E + F = 2**
+
+Et Voilà!
+
+</segment>
 
 <segment>
 

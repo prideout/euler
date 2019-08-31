@@ -29,5 +29,6 @@
     "markdown-loader": "^5.1.0",
     "marked": "^0.7.0",
     "ts-node": "^8.3.0"
-  }
+  },
+  "license": "MIT"
 }
