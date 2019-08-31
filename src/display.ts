@@ -25,6 +25,7 @@ export class Display {
     private readonly step1Material: Filament.MaterialInstance;
     private readonly step2Material: Filament.MaterialInstance;
     private readonly step3Material: Filament.MaterialInstance;
+    private readonly step4Material: Filament.MaterialInstance;
     private readonly swapChain: Filament.SwapChain;
     private readonly view: Filament.View;
 
@@ -54,6 +55,7 @@ export class Display {
         const step1CylinderFrontMaterial = this.engine.createMaterial(urls.step1CylinderFrontMaterial);
         const step2Material = this.engine.createMaterial(urls.step2Material);
         const step3Material = this.engine.createMaterial(urls.step3Material);
+        const step4Material = this.engine.createMaterial(urls.step4Material);
 
         const mats: Filament.MaterialInstance[] = [
             this.step1Material = step1Material.createInstance(),
@@ -61,6 +63,7 @@ export class Display {
             this.step1CylinderFrontMaterial = step1CylinderFrontMaterial.createInstance(),
             this.step2Material = step2Material.createInstance(),
             this.step3Material = step3Material.createInstance(),
+            this.step4Material = step4Material.createInstance(),
         ];
 
         const sRGB = Filament.RgbType.sRGB;
@@ -180,7 +183,10 @@ export class Display {
                     break;
                 case 2:
                     currentMaterial = this.step3Material;
-            }
+                    break;
+                case 3:
+                    currentMaterial = this.step4Material;
+                }
             glm.vec3.copy(this.scene.viewpoint.eye, [0, 0, 3]);
             rm.setMaterialInstanceAt(sphere, 0, currentMaterial);
             this.currentStep = step;
@@ -215,7 +221,10 @@ export class Display {
                 this.step3Material.setFloatParameter("fadeInLuneA", this.scene.fadeInLuneA);
                 this.step3Material.setFloatParameter("fadeInLuneB", this.scene.fadeInLuneB);
                 this.step3Material.setFloatParameter("fadeInLuneC", this.scene.fadeInLuneC);
-        }
+                break;
+            case 3:
+                this.step4Material.setFloatParameter("fadeInPolygon", this.scene.fadeInPolygon);
+            }
     }
 
     private createCylinders() {

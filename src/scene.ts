@@ -21,6 +21,7 @@ export class Scene {
     public fadeInLuneA = 0;
     public fadeInLuneB = 0;
     public fadeInLuneC = 0;
+    public fadeInPolygon = 0;
     public fadeInTriangle = 0;
     public greatCircle = 0;
     public luneAlpha = 0;

@@ -134,4 +134,14 @@ export class Timeline {
 
         return false;
     }
+
+    public updateStep4(progress: number) {
+        const A = smoothstep(0.00, 0.14, progress); // Draw the geodesic polygon and change the camera
+        const I = smoothstep(0.93, 1.00, progress); // Revert camera and undraw the polygon.
+
+        glm.vec3.lerp(this.scene.viewpoint.eye, [0, 0, 3], [0, 1, 3], A * (1 - I));
+        this.scene.fadeInPolygon = A * (1 - I);
+
+        return false;
+    }
 }

@@ -1,0 +1,139 @@
+material {
+    name : step4,
+    shadingModel : lit,
+    transparency: twoPassesTwoSides,
+    blending: fade,
+    culling: none,
+    parameters : [
+        { type : float3, name : baseColor },
+        { type : float,  name : roughness },
+
+        { type : float,  name : fadeInPolygon },
+        { type : float,  name : triangleExpansion },
+        { type : float,  name : fadeInLuneA },
+        { type : float,  name : fadeInLuneB },
+        { type : float,  name : fadeInLuneC },
+        { type : float,  name : rotation },
+
+        { type : float,  name : clearCoat },
+        { type : float,  name : clearCoatRoughness }
+    ],
+}
+
+fragment {
+
+    vec4 getPerp(vec4 planeEqn, float blend) {
+        float theta = blend * PI;
+        vec3 a = vec3(cos(theta), sin(theta), 0);
+        vec3 Z = normalize(cross(planeEqn.xyz, vec3(0, 0, 1)));
+        vec3 X = normalize(cross(Z, planeEqn.xyz));
+        vec3 Y = normalize(cross(Z, X));
+        return vec4(a * mat3(X, Y, Z), 0.0);
+    }
+
+    mat4 rotationX(in float angle) {
+        return mat4(1.0, 0, 0, 0, 0, cos(angle), -sin(angle), 0, 0, sin(angle), cos(angle), 0, 0, 0, 0, 1);
+    }
+
+    mat4 rotationY(in float angle) {
+        return mat4( cos(angle), 0, sin(angle), 0, 0, 1.0, 0, 0, -sin(angle), 0, cos(angle), 0, 0, 0, 0, 1);
+    }
+
+    mat4 rotationZ(in float angle) {
+        return mat4( cos(angle), -sin(angle), 0, 0, sin(angle), cos(angle), 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
+    }
+
+    const float T = 0.01;
+
+    float getEndcaps(vec4 wpos, vec4 planeA, vec4 planeB, float t) {
+        planeA.w = T;
+        planeB.w = T;
+        float a = step(0.0, dot(wpos, planeA));
+        planeB = normalize(mix(planeA, -planeB, t));
+        float b = step(dot(wpos, planeB), 0.0);
+        return a * b;
+    }
+
+    void material(inout MaterialInputs material) {
+        prepareMaterial(material);
+        material.baseColor.rgb = materialParams.baseColor;
+        material.baseColor.b *= 0.5;
+        material.baseColor.a = 1.0;
+
+        vec4 wpos = vec4(getWorldPosition() + getWorldOffset(), 1.0);
+        mat4 mat = rotationY(materialParams.rotation);
+        vec4 kPlaneA = mat * vec4(normalize(vec3(-0.1, -0.7, +0.5)), 0.0);
+        vec4 kPlaneB = mat * vec4(normalize(vec3(+0.7, +0.7, +0.3)), 0.0);
+        vec4 kPlaneC = mat * vec4(normalize(vec3(-0.6, +0.6, +0.1)), 0.0);
+
+        kPlaneA.xyz = normalize(mix(kPlaneA.xyz, vec3(0, 0, 1), materialParams.triangleExpansion));
+        kPlaneB.xyz = normalize(mix(kPlaneB.xyz, vec3(1, 0, 0), materialParams.triangleExpansion));
+        kPlaneC.xyz = normalize(mix(kPlaneC.xyz, vec3(0, 1, 0), materialParams.triangleExpansion));
+
+        const vec4 kLineColor = vec4(0.0, 0.0, 0.0, 1.0);
+
+        bool insideA = dot(wpos, kPlaneA) > 0.0;
+        bool insideB = dot(wpos, kPlaneB) > 0.0;
+        bool insideC = dot(wpos, kPlaneC) > 0.0;
+
+        vec3 totalLuneColor = vec3(0, 0, 0);
+
+        // Double Lune formed by Angle A
+        float redLune1 = (insideA && insideB) ? 1.0 : 0.0;
+        float redLune2 = (!insideA && !insideB) ? 1.0 : 0.0;
+        totalLuneColor += vec3(materialParams.fadeInLuneA, 0, 0) * redLune1;
+        totalLuneColor += vec3(materialParams.fadeInLuneA, 0, 0) * redLune2;
+
+        // Double Lune formed by Angle B
+        float grnLune1 = (insideA && insideC) ? 1.0 : 0.0;
+        float grnLune2 = (!insideA && !insideC) ? 1.0 : 0.0;
+        totalLuneColor += vec3(0, materialParams.fadeInLuneB, 0) * grnLune1;
+        totalLuneColor += vec3(0, materialParams.fadeInLuneB, 0) * grnLune2;
+
+        // Double Lune formed by Angle C
+        float bluLune1 = (insideB && insideC) ? 1.0 : 0.0;
+        float bluLune2 = (!insideB && !insideC) ? 1.0 : 0.0;
+        totalLuneColor += vec3(0, 0, materialParams.fadeInLuneC) * bluLune1;
+        totalLuneColor += vec3(0, 0, materialParams.fadeInLuneC) * bluLune2;
+
+        float maxLune = max(max(totalLuneColor.r, totalLuneColor.g), totalLuneColor.b);
+        material.baseColor.rgb = mix(material.baseColor.rgb, totalLuneColor, 0.8 * maxLune);
+
+        float fadeIn = materialParams.fadeInPolygon;
+        float aDrawTime = clamp((fadeIn * 3.0 - 0.0), 0.0, 1.0);
+        float bDrawTime = clamp((fadeIn * 3.0 - 1.0), 0.0, 1.0);
+        float cDrawTime = clamp((fadeIn * 3.0 - 2.0), 0.0, 1.0);
+
+        {
+            float d1 = dot(wpos, vec4(kPlaneA.xyz, kPlaneA.w + T));
+            float d2 = dot(wpos, vec4(kPlaneA.xyz, kPlaneA.w - T));
+            float d3 = getEndcaps(wpos, kPlaneB, kPlaneC, aDrawTime);
+            float a = step(d2, 0.0) * step(0.0, d1) * d3;
+            material.baseColor = mix(material.baseColor, kLineColor, a);
+        }
+
+        {
+            float d1 = dot(wpos, vec4(kPlaneB.xyz, kPlaneB.w + T));
+            float d2 = dot(wpos, vec4(kPlaneB.xyz, kPlaneB.w - T));
+            float d3 = getEndcaps(wpos, kPlaneA, kPlaneC, bDrawTime);
+            float a = step(d2, 0.0) * step(0.0, d1) * d3;
+            material.baseColor = mix(material.baseColor, kLineColor, a);
+        }
+
+        {
+            float d1 = dot(wpos, vec4(kPlaneC.xyz, kPlaneC.w + T));
+            float d2 = dot(wpos, vec4(kPlaneC.xyz, kPlaneC.w - T));
+            float d3 = getEndcaps(wpos, kPlaneA, kPlaneB, cDrawTime);
+            float a = step(d2, 0.0) * step(0.0, d1) * d3;
+            material.baseColor = mix(material.baseColor, kLineColor, a);
+        }
+
+        // Dark filled area of triangle
+        float alpha = (insideA && insideB && insideC) ? 0.5 : 1.0;
+        material.baseColor.rgb *= mix(1.0, alpha, cDrawTime);
+
+        material.roughness = materialParams.roughness;
+        material.clearCoat = materialParams.clearCoat;
+        material.clearCoatRoughness = materialParams.clearCoatRoughness;
+    }
+}
