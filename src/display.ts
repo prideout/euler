@@ -187,7 +187,6 @@ export class Display {
                 case 3:
                     currentMaterial = this.step4Material;
                 }
-            glm.vec3.copy(this.scene.viewpoint.eye, [0, 0, 3]);
             rm.setMaterialInstanceAt(sphere, 0, currentMaterial);
             this.currentStep = step;
         }

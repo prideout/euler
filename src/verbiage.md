@@ -18,11 +18,11 @@ geometrical and leverages some interesting properties of geodesic triangles.
 Scroll down at your own pace, but try not to go too fast, otherwise you'll skip over the animation. The proof is divided
 into 5 steps:
 
-1. Surface Area of Sphere
-1. Area of Double Lune
-1. Girard's Theorem
-1. Spherical Polygons
-1. The Conclusion
+1. [Surface Area of Sphere](#h0)
+1. [Area of Double Lune](#h1)
+1. [Girard's Theorem](#h2)
+1. [Spherical Polygons](#h3)
+1. [The Conclusion](#h4)
 
 </div>
 
