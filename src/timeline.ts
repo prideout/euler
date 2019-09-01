@@ -182,7 +182,7 @@ export class Timeline {
         const A = smoothstep(0.00, 0.07, progress); // Fade out the enclosing sphere
         const B = smoothstep(0.19, 0.26, progress); // Inflate the polyhedron and fade in sphere
 
-        this.scene.opacity = 1.0 - (A * 1.0 - B * 0.9);
+        this.scene.opacity = 1.0 - (A * 1.0 - B);
         this.scene.inflation = B;
     }
 }

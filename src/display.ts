@@ -292,43 +292,51 @@ export class Display {
         const PrimitiveType = Filament.RenderableManager$PrimitiveType;
         const VertexAttribute = Filament.VertexAttribute;
 
-        const kSlicesCount = 50.;
-        const kVertCount = kSlicesCount * 2;
+        const kSlicesCount = 50;
+        const kRingsCount = 12;
+        const kVertCount = kSlicesCount * kRingsCount;
         const kThetaInc = Math.PI * 2 / kSlicesCount;
 
         const cylinder = {
             normals: new Float32Array(kVertCount * 3),
             tangents: undefined,
-            triangles: new Uint16Array(kSlicesCount * 6),
+            triangles: new Uint16Array(kSlicesCount * 3 * 2 * (kRingsCount - 1)),
             vertices: new Float32Array(kVertCount * 3),
         };
 
-        let theta = 0;
-        let v = -1;
-        let n = -1;
-        let t = -1;
-        for (let i = 0; i < kSlicesCount; i += 1, theta += kThetaInc) {
+        let t = 0;
+        let v = 0;
+        for (let j = 0; j < kRingsCount - 1; j += 1) {
+            for (let i = 0; i < kSlicesCount; i += 1) {
+                const k = (i + 1) % kSlicesCount;
+                cylinder.triangles[t + 0] = v + i;
+                cylinder.triangles[t + 1] = v + k;
+                cylinder.triangles[t + 2] = v + i + kSlicesCount;
+                cylinder.triangles[t + 3] = v + i + kSlicesCount;
+                cylinder.triangles[t + 4] = v + k;
+                cylinder.triangles[t + 5] = v + k + kSlicesCount;
+                t += 6;
+            }
+            v += kSlicesCount;
+        }
 
-            cylinder.triangles[t += 1] = ((v / 3) + 3) % kVertCount;
-            cylinder.triangles[t += 1] = ((v / 3) + 2) % kVertCount;
-            cylinder.triangles[t += 1] = ((v / 3) + 1) % kVertCount;
-            cylinder.triangles[t += 1] = ((v / 3) + 3) % kVertCount;
-            cylinder.triangles[t += 1] = ((v / 3) + 4) % kVertCount;
-            cylinder.triangles[t += 1] = ((v / 3) + 2) % kVertCount;
+        v = 0;
+        let z = 0;
+        const deltaz = 1.0 / (kRingsCount - 1);
 
-            cylinder.vertices[v += 1] = Math.cos(theta);
-            cylinder.vertices[v += 1] = Math.sin(theta);
-            cylinder.vertices[v += 1] = 0;
-            cylinder.vertices[v += 1] = Math.cos(theta);
-            cylinder.vertices[v += 1] = Math.sin(theta);
-            cylinder.vertices[v += 1] = 1;
-
-            cylinder.normals[n += 1] = Math.cos(theta);
-            cylinder.normals[n += 1] = Math.sin(theta);
-            cylinder.normals[n += 1] = 0;
-            cylinder.normals[n += 1] = Math.cos(theta);
-            cylinder.normals[n += 1] = Math.sin(theta);
-            cylinder.normals[n += 1] = 0;
+        for (let j = 0; j < kRingsCount; j += 1, z += deltaz) {
+           let theta = 0;
+           for (let i = 0; i < kSlicesCount; i += 1, theta += kThetaInc) {
+                const c = Math.cos(theta);
+                const s = Math.sin(theta);
+                cylinder.normals[v + 0] = c;
+                cylinder.normals[v + 1] = s;
+                cylinder.normals[v + 2] = 0;
+                cylinder.vertices[v + 0] = c;
+                cylinder.vertices[v + 1] = s;
+                cylinder.vertices[v + 2] = z;
+                v += 3;
+            }
         }
 
         const normals = Filament._malloc(cylinder.normals.length * cylinder.normals.BYTES_PER_ELEMENT);
@@ -419,7 +427,7 @@ export class Display {
         const dir = glm.vec3.create();
         const v0 = glm.vec3.create();
         const v1 = glm.vec3.create();
-        const rad = 0.02;
+        const rad = 0.015;
 
         for (let i = 0; i < edges.length; i += 1) {
             const entity = this.polyhedronEntities[i] = Filament.EntityManager.get().create();
@@ -446,10 +454,12 @@ export class Display {
 
             const m1 = glm.mat4.fromTranslation(glm.mat4.create(), v0);
             const m2 = glm.mat4.fromRotation(glm.mat4.create(), theta, axis);
-            const m3 = glm.mat4.fromScaling(glm.mat4.create(), [rad, rad, length]);
+            const m3 = glm.mat4.fromTranslation(glm.mat4.create(), [0, 0, -rad / 2]);
+            const m4 = glm.mat4.fromScaling(glm.mat4.create(), [rad, rad, length + rad]);
 
             glm.mat4.multiply(m1, m1, m2);
             glm.mat4.multiply(m1, m1, m3);
+            glm.mat4.multiply(m1, m1, m4);
 
             const tcm = this.engine.getTransformManager();
             tcm.create(entity);
