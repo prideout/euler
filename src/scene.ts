@@ -24,8 +24,10 @@ export class Scene {
     public fadeInPolygon = 0;
     public fadeInTriangle = 0;
     public greatCircle = 0;
+    public inflation = 0;
     public luneAlpha = 0;
     public luneExpansion = 0;
+    public opacity = 0;
     public rotation = 0;
     public sphereGridlines = 0;
     public readonly textSpans: TextSpan[] = [];

@@ -245,7 +245,11 @@ export class Display {
             case 3:
                 this.step4SphereMaterial.setFloatParameter("fadeInPolygon", this.scene.fadeInPolygon);
                 this.step4SphereMaterial.setFloatParameter("fadeInTriangle", this.scene.fadeInTriangle);
-            }
+                break;
+            case 4:
+                this.step5SphereMaterial.setFloatParameter("opacity", this.scene.opacity);
+                this.step5PolyhedronMaterial.setFloatParameter("inflation", this.scene.inflation);
+        }
     }
 
     private createCentralSphere() {
@@ -404,34 +408,54 @@ export class Display {
         const edges = polyhedron.truncated_icosahedron.edges;
         const verts = polyhedron.truncated_icosahedron.verts;
 
-        this.polyhedronEntities = [];
-        const nedges = this.polyhedronEntities.length = 5;
-        for (let i = 0; i < nedges; i += 1) {
-            this.polyhedronEntities[i] = Filament.EntityManager.get().create();
-        }
-
         const vb = this.cylinderVertexBuffer;
         const ib = this.cylinderIndexBuffer;
 
-        const m1 = glm.mat4.fromRotation(glm.mat4.create(), Math.PI / 2, [1, 0, 0]);
-        const m2 = glm.mat4.fromTranslation(glm.mat4.create(), [0, 0, 0]);
-        const m3 = glm.mat4.fromScaling(glm.mat4.create(), [1, 1, 1]);
-        glm.mat4.multiply(m1, m1, m3);
-        glm.mat4.multiply(m1, m1, m2);
+        this.polyhedronEntities = [];
+        this.polyhedronEntities.length = edges.length;
 
-        const entity = this.polyhedronEntities[0];
+        const zed = glm.vec3.fromValues(0, 0, 1);
+        const axis = glm.vec3.create();
+        const dir = glm.vec3.create();
+        const v0 = glm.vec3.create();
+        const v1 = glm.vec3.create();
+        const rad = 0.02;
 
-        Filament.RenderableManager.Builder(1)
-            .boundingBox({ center: [-1, -1, -1], halfExtent: [1, 1, 1] })
-            .material(0, this.step5PolyhedronMaterial)
-            .geometry(0, PrimitiveType.TRIANGLES, vb, ib)
-            .culling(false)
-            .build(this.engine, entity);
+        for (let i = 0; i < edges.length; i += 1) {
+            const entity = this.polyhedronEntities[i] = Filament.EntityManager.get().create();
 
-        const tcm = this.engine.getTransformManager();
-        tcm.create(entity);
-        const inst = tcm.getInstance(entity);
-        tcm.setTransform(inst, m1);
-        inst.delete();
+            Filament.RenderableManager.Builder(1)
+                .boundingBox({ center: [-1, -1, -1], halfExtent: [1, 1, 1] })
+                .material(0, this.step5PolyhedronMaterial)
+                .geometry(0, PrimitiveType.TRIANGLES, vb, ib)
+                .culling(false)
+                .build(this.engine, entity);
+
+            // Each cylinder has radius 1 and stretches from z = 0 to z = +1.
+
+            glm.vec3.scale(v0, verts[edges[i][0]], 0.9);
+            glm.vec3.scale(v1, verts[edges[i][1]], 0.9);
+
+            glm.vec3.sub(dir, v1, v0);
+            glm.vec3.normalize(dir, dir);
+            glm.vec3.cross(axis, zed, dir);
+            glm.vec3.normalize(axis, axis);
+
+            const theta = Math.acos(glm.vec3.dot(zed, dir));
+            const length = glm.vec3.distance(v0, v1);
+
+            const m1 = glm.mat4.fromTranslation(glm.mat4.create(), v0);
+            const m2 = glm.mat4.fromRotation(glm.mat4.create(), theta, axis);
+            const m3 = glm.mat4.fromScaling(glm.mat4.create(), [rad, rad, length]);
+
+            glm.mat4.multiply(m1, m1, m2);
+            glm.mat4.multiply(m1, m1, m3);
+
+            const tcm = this.engine.getTransformManager();
+            tcm.create(entity);
+            const inst = tcm.getInstance(entity);
+            tcm.setTransform(inst, m1);
+            inst.delete();
+        }
     }
 }

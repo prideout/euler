@@ -3,7 +3,20 @@ material {
     shadingModel : lit,
     culling: back,
     parameters : [
+        { type : float,  name : inflation }
     ],
+}
+
+vertex {
+    void materialVertex(inout MaterialVertexInputs material) {
+        vec3 worldPosition = material.worldPosition.xyz + getWorldOffset();
+        vec3 spherePt = normalize(worldPosition);
+        worldPosition = mix(worldPosition, spherePt, materialParams.inflation);
+        worldPosition *= 1.01;
+        material.worldPosition.xyz = worldPosition - getWorldOffset();
+
+        material.worldNormal = normalize(mix(material.worldNormal, spherePt, materialParams.inflation));
+    }
 }
 
 fragment {
@@ -12,6 +25,6 @@ fragment {
         material.baseColor = vec4(0.9, 0.0, 0.1, 1.0);
         material.roughness = 0.2;
         material.clearCoat = 0.0;
-        material.metallic = 0.0;
+        material.metallic = 1.0;
     }
 }

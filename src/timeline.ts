@@ -170,10 +170,19 @@ export class Timeline {
         this.scene.fadeInPolygon = A * (1 - I);
         this.scene.fadeInTriangle = B * (1 - C);
         const fadeInLabels = D * (1 - I);
-        for (let i = 0; i < 11; i += 1) {
-            this.scene.textSpans[i].opacity = fadeInLabels;
+
+        for (const span of this.scene.textSpans) {
+            span.opacity = fadeInLabels;
         }
 
         return false;
+    }
+
+    public updateStep5(progress: number) {
+        const A = smoothstep(0.00, 0.07, progress); // Fade out the enclosing sphere
+        const B = smoothstep(0.19, 0.26, progress); // Inflate the polyhedron and fade in sphere
+
+        this.scene.opacity = 1.0 - (A * 1.0 - B * 0.9);
+        this.scene.inflation = B;
     }
 }
