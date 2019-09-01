@@ -82,7 +82,7 @@ The sum of the lune areas can be visualized by adding up their respective colors
 Notice that the total area of the lunes is equivalent to the surface of the entire sphere, except that the triangle and
 its antipode are each counted an additional 2x times.
 
-<segment>
+<segment class="small">
 
 Recall that:
 - The surface area of the unit sphere is **4π**.
@@ -148,7 +148,7 @@ Next, apply the visual method for computing the area sum across all polygons. Ea
 <segment>
 
 Putting it all together:
-- **Surface area of unit sphere = 2πV - 2πE + 2πF**
+- **Surface area of unit sphere = <br>2πV - 2πE + 2πF**
 
 Or, simply stated:
 - **4π = 2πV - 2πE + 2πF**
@@ -160,7 +160,7 @@ Et Voilà!
 
 </segment>
 
-<segment>
+<segment class="small">
 
 The polyhedron formula is also known as *Euler's Characteristic Formula* because the right-hand side of the equation is
 actually a "characteristic" of the sphere's topology. If we were to inscribe the graph on a torus instead of a sphere,

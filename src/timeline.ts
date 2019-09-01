@@ -169,11 +169,11 @@ export class Timeline {
         const B1 = smoothstep(0.23, 0.26, progress); // Change the camera to see polar triangle
         const C =  smoothstep(0.35, 0.40, progress); // Shrink triangle back and revert the cam
         const D =  smoothstep(0.40, 0.42, progress); // Fade in letters A B C
-        const E =  smoothstep(0.52, 0.63, progress); // Fade in and out three double lunes sequentially
-        const F =  smoothstep(0.63, 0.69, progress); // Fade in three double lunes simultaneously
-        const G =  smoothstep(0.69, 0.75, progress); // Rotate to see antipode
-        const H =  smoothstep(0.75, 0.77, progress); // Rotate back to normal
-        const H2 = smoothstep(0.77, 0.92, progress); // Fade in letters A B C again
+        const E =  smoothstep(0.43, 0.70, progress); // Fade in and out three double lunes sequentially
+        const F =  smoothstep(0.70, 0.75, progress); // Fade in three double lunes simultaneously
+        const G =  smoothstep(0.75, 0.77, progress); // Rotate to see antipode
+        const H =  smoothstep(0.77, 0.91, progress); // Rotate back to normal
+        const H2 = smoothstep(0.80, 0.91, progress); // Fade in letters A B C again
         const I =  smoothstep(0.92, 1.00, progress); // Fade everything out and change the camera
 
         const cam0 = glm.vec3.create();
@@ -240,6 +240,8 @@ export class Timeline {
         for (const span of this.scene.textSpans) {
             span.opacity = fadeInLabels;
         }
+
+        glm.vec3.copy(this.scene.viewpoint.eye, [0, 0, 3]);
 
         this.scene.opacity = 1.0 - (A * 1.0 - B);
         this.scene.inflation = B;
