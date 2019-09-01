@@ -81,8 +81,11 @@ triangle.</li>
 <h2 id="h3">Part 4: Spherical Polygons</h2>
 <segment><p>Now that we know how to compute the area of a geodesic triangle, can we figure out how to compute the area of a geodesic polygon?</p></segment>
 <segment><p>Yes, we can! Every n-gon can be decomposed into <strong>n-2</strong> triangles.</p></segment>
-<segment><p>The sum of all angles of the polygon is equivalent to the sum of all angles of its constituent triangles. Since each inner triangle has area <strong>(angle sum)-π</strong>, the area of the n-gon must be <strong>(angle sum)-(n-2)π</strong>.</p></segment>
-<segment><div><p>Stated another way:</p>
+<segment><div><p>The sum of all the angles in a polygon is equal to the sum of all the angles in its constituent triangles. And, we now know that each of those <strong>(n-2)</strong> constituent triangles has an area of:</p>
+<p class="center"><strong>&lt;angle sum&gt; - π</strong></p>
+<p>Therefore, the area of the polygon must be:</p>
+<p class="center"><strong>&lt;angle sum&gt; - (n-2) π</strong></p>
+</div></segment><segment><div><p>Stated another way:</p>
 <p><strong>A = (a + b + c + d + ...) - nπ + 2π</strong>.</p>
 <p>To portray this formula visually, we&#39;ve inscribed the components of the formula onto the sphere. This will be useful later in the proof.</p>
 </div></segment></div>

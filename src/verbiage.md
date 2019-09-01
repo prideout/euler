@@ -109,8 +109,18 @@ the area of a geodesic polygon?
 
 Yes, we can! Every n-gon can be decomposed into **n-2** triangles.
 
-The sum of all angles of the polygon is equivalent to the sum of all angles of its constituent triangles. Since
-each inner triangle has area **(angle sum)-π**, the area of the n-gon must be **(angle sum)-(n-2)π**.
+<segment>
+
+The sum of all the angles in a polygon is equal to the sum of all the angles in its constituent triangles. And,
+we now know that each of those **(n-2)** constituent triangles has an area of:
+
+**&lt;angle sum&gt; - π**
+
+Therefore, the area of the polygon must be:
+
+**&lt;angle sum&gt; - (n-2) π**
+
+</segment>
 
 <segment>
 

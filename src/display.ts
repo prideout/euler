@@ -223,6 +223,7 @@ export class Display {
                 break;
             case 3:
                 this.step4Material.setFloatParameter("fadeInPolygon", this.scene.fadeInPolygon);
+                this.step4Material.setFloatParameter("fadeInTriangle", this.scene.fadeInTriangle);
             }
     }
 

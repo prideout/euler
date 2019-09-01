@@ -137,10 +137,14 @@ export class Timeline {
 
     public updateStep4(progress: number) {
         const A = smoothstep(0.00, 0.14, progress); // Draw the geodesic polygon and change the camera
+        const B = smoothstep(0.27, 0.39, progress); // Fade in the constituent triangles.
+        const C = smoothstep(0.65, 0.87, progress); // Fade out the constituent triangles.
         const I = smoothstep(0.93, 1.00, progress); // Revert camera and undraw the polygon.
 
         glm.vec3.lerp(this.scene.viewpoint.eye, [0, 0, 3], [0, 1, 3], A * (1 - I));
+
         this.scene.fadeInPolygon = A * (1 - I);
+        this.scene.fadeInTriangle = B * (1 - C);
 
         return false;
     }
