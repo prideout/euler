@@ -26,14 +26,22 @@ export class Timeline {
     }
 
     public enterStep4() {
-        this.scene.textSpans.length = 7;
-        this.scene.textSpans[0] = { opacity: 1.0, text: "a", x: -0.61, y: -0.20 };
-        this.scene.textSpans[1] = { opacity: 1.0, text: "b", x: +0.48, y: -0.13 };
-        this.scene.textSpans[2] = { opacity: 1.0, text: "c", x: -0.13, y: +0.54 };
-        this.scene.textSpans[3] = { opacity: 1.0, text: "d", x: -0.13, y: +0.54 };
-        this.scene.textSpans[4] = { opacity: 1.0, text: "e", x: -0.13, y: +0.54 };
-        this.scene.textSpans[5] = { opacity: 1.0, text: "-π", x: -0.13, y: +0.54 };
-        this.scene.textSpans[6] = { opacity: 1.0, text: "2π", x: -0.13, y: +0.54 };
+        this.scene.textSpans.length = 11;
+        const a = this.scene.textSpans[0] = { opacity: 1.0, text: "a", x: 0.13, y: -0.03};
+        const b = this.scene.textSpans[1] = { opacity: 1.0, text: "b", x: 0.37, y: 0.31};
+        const c = this.scene.textSpans[2] = { opacity: 1.0, text: "c", x: 0.12, y: 0.63};
+        const d = this.scene.textSpans[3] = { opacity: 1.0, text: "d", x: -0.3, y: 0.52};
+        const e = this.scene.textSpans[4] = { opacity: 1.0, text: "e", x: -0.325, y: 0.12};
+
+        this.scene.textSpans[5] = { opacity: 1.0, text: "-π", x: (a.x + b.x) / 2, y: (a.y + b.y) / 2 };
+        this.scene.textSpans[6] = { opacity: 1.0, text: "-π", x: (b.x + c.x) / 2, y: (b.y + c.y) / 2 };
+        this.scene.textSpans[7] = { opacity: 1.0, text: "-π", x: (c.x + d.x) / 2, y: (c.y + d.y) / 2 };
+        this.scene.textSpans[8] = { opacity: 1.0, text: "-π", x: (d.x + e.x) / 2, y: (d.y + e.y) / 2 };
+        this.scene.textSpans[9] = { opacity: 1.0, text: "-π", x: (e.x + a.x) / 2, y: (e.y + a.y) / 2 };
+
+        const x = (a.x + b.x + c.x + d.x + e.x) / 5;
+        const y = (a.y + b.y + c.y + d.y + e.y) / 5;
+        this.scene.textSpans[10] = { opacity: 1.0, text: "2π", x, y };
     }
 
     public exitStep3() {
@@ -162,7 +170,7 @@ export class Timeline {
         this.scene.fadeInPolygon = A * (1 - I);
         this.scene.fadeInTriangle = B * (1 - C);
         const fadeInLabels = D * (1 - I);
-        for (let i = 0; i < 7; i += 1) {
+        for (let i = 0; i < 11; i += 1) {
             this.scene.textSpans[i].opacity = fadeInLabels;
         }
 

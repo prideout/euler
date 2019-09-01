@@ -128,7 +128,9 @@ Stated another way:
 
 **A = (a + b + c + d + ...) - nπ + 2π**.
 
-To portray this formula visually, we've inscribed the components of the formula onto the sphere. This will be useful
+To portray this formula visually, we've inscribed the components of the sum onto the sphere.
+
+Note that each vertex and edge correspond to a component of the sum, as well as the face itself. This will be useful
 later in the proof.
 
 </segment>

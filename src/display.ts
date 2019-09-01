@@ -117,7 +117,7 @@ export class Display {
 
         this.context2d.setTransform(1, 0, 0, 1, 0, 0);
         this.context2d.clearRect(0, 0, width, height);
-        this.context2d.font = `${fontSize}px 'Lexend Deca', sans-serif`;
+        this.context2d.font = `${fontSize}px 'circular-bold', sans-serif`;
         this.context2d.textAlign = "center";
 
         for (const span of this.scene.textSpans) {
