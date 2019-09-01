@@ -64,28 +64,29 @@ fragment {
         color.b *= 0.5;
 
         vec4 wpos = vec4(getWorldPosition() + getWorldOffset(), 1.0);
-        vec4 K = vec4(0, 0, 1, 0);
-        float outwardTheta = 80.0 * PI / 180.0; // <== This angle determines how large the polygon is.
+        const float outwardTheta = 70.0 * PI / 180.0; // <== This angle determines how large the polygon is.
 
-        vec4 plane[4];
-        float inscribe[4];
+        vec4 plane[5];
         float fadeIn = materialParams.fadeInPolygon;
         float inside = 1.0;
 
-        for (int i = 0; i < 4; i++) {
+        for (int i = 0; i < 5; i++) {
             float f = float(i);
-            float theta = 2.0 * PI * f / 4.0;
-            plane[i] = rotate(K, vec3(sin(theta), cos(theta), 0.0), outwardTheta);
-            inscribe[i] = clamp((fadeIn * 4.0 - f), 0.0, 1.0);
+            float theta = 2.0 * PI * f / 5.0;
+            vec3 axis = vec3(sin(theta), cos(theta), 0.0);
+            plane[i] = rotate(vec4(0, 0, 1, 0), axis, outwardTheta);
             inside *= step(0.0, dot(wpos, plane[i]));
         }
 
-        color = mix(color, kLineColor, geodesic(wpos, plane[0], plane[1], plane[3], inscribe[0]));
-        color = mix(color, kLineColor, geodesic(wpos, plane[1], plane[2], plane[0], inscribe[1]));
-        color = mix(color, kLineColor, geodesic(wpos, plane[2], plane[3], plane[1], inscribe[2]));
-        color = mix(color, kLineColor, geodesic(wpos, plane[3], plane[0], plane[2], inscribe[3]));
+        for (int i = 0; i < 5; i++) {
+            int j = (i + 1) % 5;
+            int k = (i + 5 - 1) % 5;
+            float f = float(i);
+            float inscribe = clamp((fadeIn * 5.0 - 5.0 + 1.0 + f), 0.0, 1.0);
+            color = mix(color, kLineColor, geodesic(wpos, plane[i], plane[j], plane[k], inscribe));
+        }
 
-        color.rgb *= mix(1.0, 1.0 - 0.5 * inside, inscribe[3]);
+        color.rgb *= mix(1.0, 1.0 - 0.5 * inside, fadeIn);
         material.baseColor = color;
         material.roughness = materialParams.roughness;
         material.clearCoat = materialParams.clearCoat;
