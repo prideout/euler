@@ -20,6 +20,16 @@ fragment {
     const float kLineThickness = 0.01;
     const vec4 kLineColor = vec4(0.0, 0.0, 0.0, 1.0);
 
+    vec4 rotate(vec4 pt, vec3 axis, float angle) {
+        float s = sin(angle);
+        float c = cos(angle);
+        float oc = 1.0 - c;
+        return pt * mat4(oc * axis.x * axis.x + c,           oc * axis.x * axis.y - axis.z * s,  oc * axis.z * axis.x + axis.y * s,  0.0,
+                         oc * axis.x * axis.y + axis.z * s,  oc * axis.y * axis.y + c,           oc * axis.y * axis.z - axis.x * s,  0.0,
+                         oc * axis.z * axis.x - axis.y * s,  oc * axis.y * axis.z + axis.x * s,  oc * axis.z * axis.z + c,           0.0,
+                         0.0,                                0.0,                                0.0,                                1.0);
+    }
+
     // Returns 0 or 1. The latter is returned only if the given point is both inside the half-space of planeA and inside
     // the reverse half-space of planeB. The given t value is a fraction in [0,1] used to animate planeB to create the
     // illusion that the line is being gradually inscribed.
@@ -54,9 +64,16 @@ fragment {
         color.b *= 0.5;
 
         vec4 wpos = vec4(getWorldPosition() + getWorldOffset(), 1.0);
-        vec4 kPlaneA = vec4(normalize(vec3(-0.1, -0.7, +0.5)), 0.0);
-        vec4 kPlaneB = vec4(normalize(vec3(+0.7, +0.7, +0.3)), 0.0);
-        vec4 kPlaneC = vec4(normalize(vec3(-0.6, +0.6, +0.1)), 0.0);
+        vec4 K = vec4(0, 0, 1, 0);
+        float theta = 85.0 * PI / 180.0; // <== This angle determines how large the polygon is.
+
+        float theta0 = 2.0 * PI * 0.0 / 3.0;
+        float theta1 = 2.0 * PI * 1.0 / 3.0;
+        float theta2 = 2.0 * PI * 2.0 / 3.0;
+
+        vec4 kPlaneA = rotate(K, vec3(sin(theta0), cos(theta0), 0.0), theta);
+        vec4 kPlaneB = rotate(K, vec3(sin(theta1), cos(theta1), 0.0), theta);
+        vec4 kPlaneC = rotate(K, vec3(sin(theta2), cos(theta2), 0.0), theta);
 
         bool insideA = dot(wpos, kPlaneA) > 0.0;
         bool insideB = dot(wpos, kPlaneB) > 0.0;
