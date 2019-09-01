@@ -1,1 +1,3 @@
 docs/* linguist-vendored=true
+docs/main.js binary
+docs/main.js.map binary
