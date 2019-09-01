@@ -9,11 +9,11 @@ import * as urls from "./urls";
 declare const BUILD_COMMAND: string;
 
 export class App {
+    public readonly scene = new Scene();
     public readonly story: Story;
 
     private display: Display;
     private readonly production: boolean;
-    private readonly scene = new Scene();
     private timeline: Timeline;
 
     public constructor() {
@@ -59,7 +59,8 @@ export class App {
     }
 }
 
+/* tslint:disable */
+
 window.onload = () => {
-    // tslint:disable-next-line: no-string-literal
-    const app = window["app"] = new App();
+    window["app"] = new App();
 };

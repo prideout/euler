@@ -44,11 +44,62 @@ export class Timeline {
         this.scene.textSpans[10] = { opacity: 1.0, text: "2π", x, y };
     }
 
+    public enterStep5() {
+        this.scene.textSpans.length = (1 + 5 * 2) + (1 + 6 * 2) + (1 * 6 * 2);
+
+        // Lower-right pentagon
+        this.scene.textSpans[0] = { opacity: 1.0, text: "a",   x: 0.03640982,   y: 0.0797629 };
+        this.scene.textSpans[1] = { opacity: 1.0, text: "b",   x: 0.42658763,   y: 0.1014394 };
+        this.scene.textSpans[2] = { opacity: 1.0, text: "c",   x: 0.46994072,   y: 0.3832345 };
+        this.scene.textSpans[3] = { opacity: 1.0, text: "d",   x: 0.18814563,   y: 0.6216765 };
+        this.scene.textSpans[4] = { opacity: 1.0, text: "e",   x: -0.0719729,   y: 0.4049110 };
+        this.scene.textSpans[5] = { opacity: 1.0, text: "-π",  x: 0.23149872,   y: 0.0797629 };
+        this.scene.textSpans[6] = { opacity: 1.0, text: "-π",  x: 0.36155800,   y: 0.4916172 };
+        this.scene.textSpans[7] = { opacity: 1.0, text: "-π",  x: 0.05808636,   y: 0.4916172 };
+        this.scene.textSpans[8] = { opacity: 1.0, text: "-π",  x: 0.44826418,   y: 0.2314987 };
+        this.scene.textSpans[9] = { opacity: 1.0, text: "-π",  x: -0.0286198,   y: 0.2314987 };
+        this.scene.textSpans[10] = { opacity: 1.0, text: "2π", x: 0.23149872,   y: 0.2965283 };
+
+        // Upper-right hexagon
+        this.scene.textSpans[11] = { opacity: 1.0, text: "a",  x: -0.028619, y: -0.6572396 };
+        this.scene.textSpans[12] = { opacity: 1.0, text: "b",  x: 0.3398814, y: -0.6138865 };
+        this.scene.textSpans[13] = { opacity: 1.0, text: "c",  x: 0.5349703, y: -0.3537679 };
+        this.scene.textSpans[14] = { opacity: 1.0, text: "d",  x: 0.4049110, y: -0.0502963 };
+        this.scene.textSpans[15] = { opacity: 1.0, text: "e",  x: 0.0580863, y: -0.0502963 };
+        this.scene.textSpans[16] = { opacity: 1.0, text: "f",  x: -0.180355, y: -0.3754445 };
+        this.scene.textSpans[17] = { opacity: 1.0, text: "-π", x: 0.1664690, y: -0.6572396 };
+        this.scene.textSpans[18] = { opacity: 1.0, text: "-π", x: 0.2098221, y: -0.0502963 };
+        this.scene.textSpans[19] = { opacity: 1.0, text: "-π", x: 0.4699407, y: -0.2020321 };
+        this.scene.textSpans[20] = { opacity: 1.0, text: "-π", x: 0.4482641, y: -0.4838272 };
+        this.scene.textSpans[21] = { opacity: 1.0, text: "-π", x: -0.071972, y: -0.2237087 };
+        this.scene.textSpans[22] = { opacity: 1.0, text: "-π", x: -0.093649, y: -0.5055038 };
+        this.scene.textSpans[23] = { opacity: 1.0, text: "2π", x: 0.2098221, y: -0.3754445 };
+
+        // Leftmost hexagon
+        this.scene.textSpans[24] = { opacity: 1.0, text: "a",  x: -0.6138, y: -0.2453 };
+        this.scene.textSpans[25] = { opacity: 1.0, text: "b",  x: -0.2670, y: -0.2887 };
+        this.scene.textSpans[26] = { opacity: 1.0, text: "c",  x: -0.0719, y: 0.01473 };
+        this.scene.textSpans[27] = { opacity: 1.0, text: "d",  x: -0.2020, y: 0.36155 };
+        this.scene.textSpans[28] = { opacity: 1.0, text: "e",  x: -0.5488, y: 0.36155 };
+        this.scene.textSpans[29] = { opacity: 1.0, text: "f",  x: -0.7222, y: 0.10143 };
+        this.scene.textSpans[30] = { opacity: 1.0, text: "-π", x: -0.4621, y: -0.2887 };
+        this.scene.textSpans[31] = { opacity: 1.0, text: "-π", x: -0.2020, y: -0.1586 };
+        this.scene.textSpans[32] = { opacity: 1.0, text: "-π", x: -0.1370, y: 0.16646 };
+        this.scene.textSpans[33] = { opacity: 1.0, text: "-π", x: -0.3537, y: 0.38323 };
+        this.scene.textSpans[34] = { opacity: 1.0, text: "-π", x: -0.6572, y: 0.23149 };
+        this.scene.textSpans[35] = { opacity: 1.0, text: "-π", x: -0.6572, y: -0.1153 };
+        this.scene.textSpans[36] = { opacity: 1.0, text: "2π", x: -0.4187, y: 0.03640 };
+}
+
     public exitStep3() {
         this.scene.textSpans.length = 0;
     }
 
     public exitStep4() {
+        this.scene.textSpans.length = 0;
+    }
+
+    public exitStep5() {
         this.scene.textSpans.length = 0;
     }
 
@@ -181,6 +232,14 @@ export class Timeline {
     public updateStep5(progress: number) {
         const A = smoothstep(0.00, 0.07, progress); // Fade out the enclosing sphere
         const B = smoothstep(0.19, 0.26, progress); // Inflate the polyhedron and fade in sphere
+        const C = smoothstep(0.35, 0.42, progress); // Fade in the labels
+        const D = smoothstep(0.62, 0.75, progress); // Fade out the labels
+
+        const fadeInLabels = C * (1 - D);
+
+        for (const span of this.scene.textSpans) {
+            span.opacity = fadeInLabels;
+        }
 
         this.scene.opacity = 1.0 - (A * 1.0 - B);
         this.scene.inflation = B;
