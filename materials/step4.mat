@@ -17,24 +17,41 @@ material {
 
 fragment {
 
-    const float T = 0.01;
+    const float kLineThickness = 0.01;
     const vec4 kLineColor = vec4(0.0, 0.0, 0.0, 1.0);
 
-
-    float getEndcaps(vec4 wpos, vec4 planeA, vec4 planeB, float t) {
-        planeA.w = T;
-        planeB.w = T;
-        float a = step(0.0, dot(wpos, planeA));
+    // Returns 0 or 1. The latter is returned only if the given point is both inside the half-space of planeA and inside
+    // the reverse half-space of planeB. The given t value is a fraction in [0,1] used to animate planeB to create the
+    // illusion that the line is being gradually inscribed.
+    float between(vec4 pos, vec4 planeA, vec4 planeB, float t) {
+        planeA.w = kLineThickness;
+        planeB.w = kLineThickness;
+        float a = step(0.0, dot(pos, planeA));
         planeB = normalize(mix(planeA, -planeB, t));
-        float b = step(dot(wpos, planeB), 0.0);
+        float b = step(dot(pos, planeB), 0.0);
         return a * b;
+    }
+
+    // Returns a number in [0,1] where 0 is outside a thick geodesic line segment and 1 is inside. Fractional values may
+    // be returned to achieve smooth antialiasing. The geodesic is defined as the intersection of a great circle with
+    // two bounding half-spaces (lowerClip and upperClip). The great circle is the intersection of "plane" with the unit
+    // sphere.
+    //
+    // To draw a thick lines, thick function splits "plane" into two planes by shifting it along its normal and checking
+    // that the given point "pos" is between the shifted planes. The given t value is a fraction in [0,1] used to 
+    // animate the bounding planes to create the illusion that the line is being gradually inscribed.
+    float geodesic(vec4 pos, vec4 plane, vec4 lowerClip, vec4 upperClip, float t) {
+        float d1 = dot(pos, vec4(plane.xyz, +kLineThickness));
+        float d2 = dot(pos, vec4(plane.xyz, -kLineThickness));
+        float d3 = between(pos, lowerClip, upperClip, t);
+        return step(0.0, d1) * step(d2, 0.0) * d3;
     }
 
     void material(inout MaterialInputs material) {
         prepareMaterial(material);
-        material.baseColor.rgb = materialParams.baseColor;
-        material.baseColor.b *= 0.5;
-        material.baseColor.a = 1.0;
+
+        vec4 color = vec4(materialParams.baseColor, 1.0);
+        color.b *= 0.5;
 
         vec4 wpos = vec4(getWorldPosition() + getWorldOffset(), 1.0);
         vec4 kPlaneA = vec4(normalize(vec3(-0.1, -0.7, +0.5)), 0.0);
@@ -50,34 +67,15 @@ fragment {
         float bDrawTime = clamp((fadeIn * 3.0 - 1.0), 0.0, 1.0);
         float cDrawTime = clamp((fadeIn * 3.0 - 2.0), 0.0, 1.0);
 
-        {
-            float d1 = dot(wpos, vec4(kPlaneA.xyz, kPlaneA.w + T));
-            float d2 = dot(wpos, vec4(kPlaneA.xyz, kPlaneA.w - T));
-            float d3 = getEndcaps(wpos, kPlaneB, kPlaneC, aDrawTime);
-            float a = step(d2, 0.0) * step(0.0, d1) * d3;
-            material.baseColor = mix(material.baseColor, kLineColor, a);
-        }
+        // Thick lines.
+        color = mix(color, kLineColor, geodesic(wpos, kPlaneA, kPlaneB, kPlaneC, aDrawTime));
+        color = mix(color, kLineColor, geodesic(wpos, kPlaneB, kPlaneA, kPlaneC, bDrawTime));
+        color = mix(color, kLineColor, geodesic(wpos, kPlaneC, kPlaneA, kPlaneB, cDrawTime));
 
-        {
-            float d1 = dot(wpos, vec4(kPlaneB.xyz, kPlaneB.w + T));
-            float d2 = dot(wpos, vec4(kPlaneB.xyz, kPlaneB.w - T));
-            float d3 = getEndcaps(wpos, kPlaneA, kPlaneC, bDrawTime);
-            float a = step(d2, 0.0) * step(0.0, d1) * d3;
-            material.baseColor = mix(material.baseColor, kLineColor, a);
-        }
+        // Dark filled area on the inside.
+        color.rgb *= mix(1.0, (insideA && insideB && insideC) ? 0.5 : 1.0, cDrawTime);
 
-        {
-            float d1 = dot(wpos, vec4(kPlaneC.xyz, kPlaneC.w + T));
-            float d2 = dot(wpos, vec4(kPlaneC.xyz, kPlaneC.w - T));
-            float d3 = getEndcaps(wpos, kPlaneA, kPlaneB, cDrawTime);
-            float a = step(d2, 0.0) * step(0.0, d1) * d3;
-            material.baseColor = mix(material.baseColor, kLineColor, a);
-        }
-
-        // Dark filled area of triangle
-        float alpha = (insideA && insideB && insideC) ? 0.5 : 1.0;
-        material.baseColor.rgb *= mix(1.0, alpha, cDrawTime);
-
+        material.baseColor = color;
         material.roughness = materialParams.roughness;
         material.clearCoat = materialParams.clearCoat;
         material.clearCoatRoughness = materialParams.clearCoatRoughness;
