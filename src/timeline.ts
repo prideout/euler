@@ -25,7 +25,22 @@ export class Timeline {
         this.scene.textSpans[2] = { opacity: 1.0, text: "c", x: -0.13, y: +0.54 };
     }
 
+    public enterStep4() {
+        this.scene.textSpans.length = 7;
+        this.scene.textSpans[0] = { opacity: 1.0, text: "a", x: -0.61, y: -0.20 };
+        this.scene.textSpans[1] = { opacity: 1.0, text: "b", x: +0.48, y: -0.13 };
+        this.scene.textSpans[2] = { opacity: 1.0, text: "c", x: -0.13, y: +0.54 };
+        this.scene.textSpans[3] = { opacity: 1.0, text: "d", x: -0.13, y: +0.54 };
+        this.scene.textSpans[4] = { opacity: 1.0, text: "e", x: -0.13, y: +0.54 };
+        this.scene.textSpans[5] = { opacity: 1.0, text: "-π", x: -0.13, y: +0.54 };
+        this.scene.textSpans[6] = { opacity: 1.0, text: "2π", x: -0.13, y: +0.54 };
+    }
+
     public exitStep3() {
+        this.scene.textSpans.length = 0;
+    }
+
+    public exitStep4() {
         this.scene.textSpans.length = 0;
     }
 
@@ -138,13 +153,18 @@ export class Timeline {
     public updateStep4(progress: number) {
         const A = smoothstep(0.00, 0.14, progress); // Draw the geodesic polygon and change the camera
         const B = smoothstep(0.27, 0.39, progress); // Fade in the constituent triangles.
-        const C = smoothstep(0.65, 0.87, progress); // Fade out the constituent triangles.
+        const C = smoothstep(0.65, 0.80, progress); // Fade out the constituent triangles.
+        const D = smoothstep(0.80, 0.87, progress); // Fade in the text.
         const I = smoothstep(0.93, 1.00, progress); // Revert camera and undraw the polygon.
 
         glm.vec3.lerp(this.scene.viewpoint.eye, [0, 0, 3], [0, 1, 3], A * (1 - I));
 
         this.scene.fadeInPolygon = A * (1 - I);
         this.scene.fadeInTriangle = B * (1 - C);
+        const fadeInLabels = D * (1 - I);
+        for (let i = 0; i < 7; i += 1) {
+            this.scene.textSpans[i].opacity = fadeInLabels;
+        }
 
         return false;
     }
