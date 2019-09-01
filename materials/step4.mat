@@ -65,33 +65,37 @@ fragment {
 
         vec4 wpos = vec4(getWorldPosition() + getWorldOffset(), 1.0);
         vec4 K = vec4(0, 0, 1, 0);
-        float theta = 85.0 * PI / 180.0; // <== This angle determines how large the polygon is.
+        float theta = 80.0 * PI / 180.0; // <== This angle determines how large the polygon is.
 
-        float theta0 = 2.0 * PI * 0.0 / 3.0;
-        float theta1 = 2.0 * PI * 1.0 / 3.0;
-        float theta2 = 2.0 * PI * 2.0 / 3.0;
+        float theta0 = 2.0 * PI * 0.0 / 4.0;
+        float theta1 = 2.0 * PI * 1.0 / 4.0;
+        float theta2 = 2.0 * PI * 2.0 / 4.0;
+        float theta3 = 2.0 * PI * 3.0 / 4.0;
 
         vec4 kPlaneA = rotate(K, vec3(sin(theta0), cos(theta0), 0.0), theta);
         vec4 kPlaneB = rotate(K, vec3(sin(theta1), cos(theta1), 0.0), theta);
         vec4 kPlaneC = rotate(K, vec3(sin(theta2), cos(theta2), 0.0), theta);
-
-        bool insideA = dot(wpos, kPlaneA) > 0.0;
-        bool insideB = dot(wpos, kPlaneB) > 0.0;
-        bool insideC = dot(wpos, kPlaneC) > 0.0;
+        vec4 kPlaneD = rotate(K, vec3(sin(theta3), cos(theta3), 0.0), theta);
 
         float fadeIn = materialParams.fadeInPolygon;
-        float aDrawTime = clamp((fadeIn * 3.0 - 0.0), 0.0, 1.0);
-        float bDrawTime = clamp((fadeIn * 3.0 - 1.0), 0.0, 1.0);
-        float cDrawTime = clamp((fadeIn * 3.0 - 2.0), 0.0, 1.0);
+        float inside = 1.0;
 
-        // Thick lines.
-        color = mix(color, kLineColor, geodesic(wpos, kPlaneA, kPlaneB, kPlaneC, aDrawTime));
-        color = mix(color, kLineColor, geodesic(wpos, kPlaneB, kPlaneA, kPlaneC, bDrawTime));
-        color = mix(color, kLineColor, geodesic(wpos, kPlaneC, kPlaneA, kPlaneB, cDrawTime));
+        float aDrawTime = clamp((fadeIn * 4.0 - 0.0), 0.0, 1.0);
+        float bDrawTime = clamp((fadeIn * 4.0 - 1.0), 0.0, 1.0);
+        float cDrawTime = clamp((fadeIn * 4.0 - 2.0), 0.0, 1.0);
+        float dDrawTime = clamp((fadeIn * 4.0 - 3.0), 0.0, 1.0);
 
-        // Dark filled area on the inside.
-        color.rgb *= mix(1.0, (insideA && insideB && insideC) ? 0.5 : 1.0, cDrawTime);
+        color = mix(color, kLineColor, geodesic(wpos, kPlaneA, kPlaneB, kPlaneD, aDrawTime));
+        color = mix(color, kLineColor, geodesic(wpos, kPlaneB, kPlaneC, kPlaneA, bDrawTime));
+        color = mix(color, kLineColor, geodesic(wpos, kPlaneC, kPlaneD, kPlaneB, cDrawTime));
+        color = mix(color, kLineColor, geodesic(wpos, kPlaneD, kPlaneA, kPlaneC, dDrawTime));
 
+        inside *= step(0.0, dot(wpos, kPlaneA));
+        inside *= step(0.0, dot(wpos, kPlaneB));
+        inside *= step(0.0, dot(wpos, kPlaneC));
+        inside *= step(0.0, dot(wpos, kPlaneD));
+
+        color.rgb *= mix(1.0, 1.0 - 0.5 * inside, dDrawTime);
         material.baseColor = color;
         material.roughness = materialParams.roughness;
         material.clearCoat = materialParams.clearCoat;
