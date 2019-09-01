@@ -95,12 +95,16 @@ triangle.</li>
 <h2 id="h4">Part 5: The Conclusion</h2>
 <segment><p>Now that we have a few tools under our belt, let&#39;s consider a convex polyhedron.</p></segment>
 <segment><p>What happens when we inflate the polyhedron to meet its enclosing sphere? The sum of the areas of all the resulting geodesic polygons should be equivalent to the surface area of the sphere!</p></segment>
-<segment><p>Next, apply the visual method for computing polygon area. Each vertex contributes a total of <strong>2π</strong> radians, each edge contributes <strong>-2π</strong> (one for each side), and each face contributes <strong>2π</strong>.</p></segment>
-<segment><div><p>Thus,</p>
+<segment><p>Next, apply the visual method for computing the area sum across all polygons. Each vertex contributes a total of <strong>2π</strong> radians, each edge contributes <strong>-2π</strong> (one for each side), and each face contributes <strong>2π</strong>.</p></segment>
+<segment><div><p>Putting it all together:</p>
 <ul>
-<li><strong>Surface area of sphere = 4π = 2πV - 2πE + 2πF</strong></li>
+<li><strong>Surface area of unit sphere = 2πV - 2πE + 2πF</strong></li>
 </ul>
-<p>Or, more simply stated:</p>
+<p>Or, simply stated:</p>
+<ul>
+<li><strong>4π = 2πV - 2πE + 2πF</strong></li>
+</ul>
+<p>Therefore:</p>
 <ul>
 <li><strong>V - E + F = 2</strong></li>
 </ul>

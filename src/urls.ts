@@ -8,7 +8,7 @@ export const step1CylinderBackMaterial = "materials/step1_cylinder_back.filamat.
 export const step1CylinderFrontMaterial = "materials/step1_cylinder_front.filamat.bmp";
 export const step2Material = "materials/step2.filamat.bmp";
 export const step3Material = "materials/step3.filamat.bmp";
-export const step4Material = "materials/step4.filamat.bmp";
+export const step4Material = "materials/step4.filamat.bmp?v=1";
 
 export const diffuse = "diffuse.jpg";
 export const specular = "specular.jpg";
