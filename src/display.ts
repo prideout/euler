@@ -1,6 +1,7 @@
 import * as Filament from "filament";
 import * as glm from "gl-matrix";
 
+import * as polyhedron from "./polyhedron";
 import { Scene } from "./scene";
 import * as urls from "./urls";
 
@@ -398,6 +399,10 @@ export class Display {
 
     private createPolyhedron() {
         const PrimitiveType = Filament.RenderableManager$PrimitiveType;
+
+        const faces = polyhedron.truncated_icosahedron.faces;
+        const edges = polyhedron.truncated_icosahedron.edges;
+        const verts = polyhedron.truncated_icosahedron.verts;
 
         this.polyhedronEntities = [];
         const nedges = this.polyhedronEntities.length = 5;
