@@ -107,7 +107,7 @@ This formula was independently discovered by Albert Girard (1595-1632) and Thoma
 Now that we know how to compute the area of a geodesic triangle, can we figure out how to compute
 the area of a geodesic polygon?
 
-Yes, we can! Every n-gon can be decomposed into **n-2** triangles.
+Yes, we can! Every n-gon can be decomposed into **(n-2)** triangles.
 
 <segment>
 

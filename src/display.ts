@@ -5,27 +5,32 @@ import { Scene } from "./scene";
 import * as urls from "./urls";
 
 export class Display {
-    private readonly backCylinderEntity: Filament.Entity;
+    private backCylinderEntity: Filament.Entity;
     private readonly camera: Filament.Camera;
     private readonly canvas2d: HTMLCanvasElement;
     private readonly canvas3d: HTMLCanvasElement;
     private readonly context2d: CanvasRenderingContext2D;
     private currentStep = 0;
+    private cylinderIndexBuffer: Filament.IndexBuffer;
+    private cylinderVertexBuffer: Filament.VertexBuffer;
     private readonly engine: Filament.Engine;
     private readonly filamentScene: Filament.Scene;
-    private readonly frontCylinderEntity: Filament.Entity;
+    private frontCylinderEntity: Filament.Entity;
     private readonly indirectLight: Filament.IndirectLight;
+    private polyhedronEntities: Filament.Entity[];
     private readonly production: boolean;
     private readonly renderer: Filament.Renderer;
     private readonly scene: Scene;
     private readonly skybox: Filament.Skybox;
-    private readonly sphereEntity: Filament.Entity;
+    private sphereEntity: Filament.Entity;
     private readonly step1CylinderBackMaterial: Filament.MaterialInstance;
     private readonly step1CylinderFrontMaterial: Filament.MaterialInstance;
-    private readonly step1Material: Filament.MaterialInstance;
-    private readonly step2Material: Filament.MaterialInstance;
-    private readonly step3Material: Filament.MaterialInstance;
-    private readonly step4Material: Filament.MaterialInstance;
+    private readonly step1SphereMaterial: Filament.MaterialInstance;
+    private readonly step2SphereMaterial: Filament.MaterialInstance;
+    private readonly step3SphereMaterial: Filament.MaterialInstance;
+    private readonly step4SphereMaterial: Filament.MaterialInstance;
+    private readonly step5PolyhedronMaterial: Filament.MaterialInstance;
+    private readonly step5SphereMaterial: Filament.MaterialInstance;
     private readonly swapChain: Filament.SwapChain;
     private readonly view: Filament.View;
 
@@ -50,21 +55,26 @@ export class Display {
         this.view.setCamera(this.camera);
         this.view.setScene(this.filamentScene);
 
-        const step1Material = this.engine.createMaterial(urls.step1Material);
+        const step1SphereMaterial = this.engine.createMaterial(urls.step1SphereMaterial);
         const step1CylinderBackMaterial = this.engine.createMaterial(urls.step1CylinderBackMaterial);
         const step1CylinderFrontMaterial = this.engine.createMaterial(urls.step1CylinderFrontMaterial);
-        const step2Material = this.engine.createMaterial(urls.step2Material);
-        const step3Material = this.engine.createMaterial(urls.step3Material);
-        const step4Material = this.engine.createMaterial(urls.step4Material);
+        const step2SphereMaterial = this.engine.createMaterial(urls.step2SphereMaterial);
+        const step3SphereMaterial = this.engine.createMaterial(urls.step3SphereMaterial);
+        const step4SphereMaterial = this.engine.createMaterial(urls.step4SphereMaterial);
+        const step5PolyhedronMaterial = this.engine.createMaterial(urls.step5PolyhedronMaterial);
+        const step5SphereMaterial = this.engine.createMaterial(urls.step5SphereMaterial);
 
         const mats: Filament.MaterialInstance[] = [
-            this.step1Material = step1Material.createInstance(),
+            this.step1SphereMaterial = step1SphereMaterial.createInstance(),
             this.step1CylinderBackMaterial = step1CylinderBackMaterial.createInstance(),
             this.step1CylinderFrontMaterial = step1CylinderFrontMaterial.createInstance(),
-            this.step2Material = step2Material.createInstance(),
-            this.step3Material = step3Material.createInstance(),
-            this.step4Material = step4Material.createInstance(),
+            this.step2SphereMaterial = step2SphereMaterial.createInstance(),
+            this.step3SphereMaterial = step3SphereMaterial.createInstance(),
+            this.step4SphereMaterial = step4SphereMaterial.createInstance(),
+            this.step5SphereMaterial = step5SphereMaterial.createInstance(),
         ];
+
+        this.step5PolyhedronMaterial = step5PolyhedronMaterial.createInstance();
 
         const sRGB = Filament.RgbType.sRGB;
         for (const mat of mats) {
@@ -74,12 +84,9 @@ export class Display {
             mat.setFloatParameter("clearCoatRoughness", 0.8);
         }
 
-        this.frontCylinderEntity = Filament.EntityManager.get().create();
-        this.backCylinderEntity = Filament.EntityManager.get().create();
-        this.sphereEntity = Filament.EntityManager.get().create();
-
         this.createCylinders();
-        this.createSphere();
+        this.createCentralSphere();
+        this.createPolyhedron();
 
         this.filamentScene.addEntity(this.sphereEntity);
 
@@ -170,23 +177,36 @@ export class Display {
             const sphere = rm.getInstance(this.sphereEntity);
             this.filamentScene.remove(this.frontCylinderEntity);
             this.filamentScene.remove(this.backCylinderEntity);
+
+            if (this.currentStep === 4) {
+                for (const entity of this.polyhedronEntities) {
+                    this.filamentScene.remove(entity);
+                }
+            }
+
             let currentMaterial: Filament.MaterialInstance;
             switch (step) {
                 case 0:
                     this.filamentScene.addEntity(this.backCylinderEntity);
                     this.filamentScene.addEntity(this.frontCylinderEntity);
                 default:
-                    currentMaterial = this.step1Material;
+                    currentMaterial = this.step1SphereMaterial;
                     break;
                 case 1:
-                    currentMaterial = this.step2Material;
+                    currentMaterial = this.step2SphereMaterial;
                     break;
                 case 2:
-                    currentMaterial = this.step3Material;
+                    currentMaterial = this.step3SphereMaterial;
                     break;
                 case 3:
-                    currentMaterial = this.step4Material;
-                }
+                    currentMaterial = this.step4SphereMaterial;
+                    break;
+                case 4:
+                    currentMaterial = this.step5SphereMaterial;
+                    for (const entity of this.polyhedronEntities) {
+                        this.filamentScene.addEntity(entity);
+                    }
+            }
             rm.setMaterialInstanceAt(sphere, 0, currentMaterial);
             this.currentStep = step;
         }
@@ -196,7 +216,7 @@ export class Display {
         switch (step) {
             default:
             case 0:
-                this.step1Material.setFloatParameter("gridlines", this.scene.sphereGridlines);
+                this.step1SphereMaterial.setFloatParameter("gridlines", this.scene.sphereGridlines);
                 this.step1CylinderFrontMaterial.setFloatParameter("gridlines", this.scene.cylinderGridlines);
                 this.step1CylinderFrontMaterial.setColor4Parameter("baseColor", sRGBA, this.scene.baseColor);
                 this.step1CylinderBackMaterial.setColor4Parameter("baseColor",  sRGBA, this.scene.baseColor);
@@ -208,23 +228,57 @@ export class Display {
                 back.delete();
                 break;
             case 1:
-                this.step2Material.setFloatParameter("greatCircle", this.scene.greatCircle);
-                this.step2Material.setFloatParameter("luneAlpha", this.scene.luneAlpha);
-                this.step2Material.setFloatParameter("luneExpansion", this.scene.luneExpansion);
-                this.step2Material.setFloatParameter("antipodeAlpha", this.scene.antipodeAlpha);
+                this.step2SphereMaterial.setFloatParameter("greatCircle", this.scene.greatCircle);
+                this.step2SphereMaterial.setFloatParameter("luneAlpha", this.scene.luneAlpha);
+                this.step2SphereMaterial.setFloatParameter("luneExpansion", this.scene.luneExpansion);
+                this.step2SphereMaterial.setFloatParameter("antipodeAlpha", this.scene.antipodeAlpha);
                 break;
             case 2:
-                this.step3Material.setFloatParameter("rotation", this.scene.rotation);
-                this.step3Material.setFloatParameter("fadeInTriangle", this.scene.fadeInTriangle);
-                this.step3Material.setFloatParameter("triangleExpansion", this.scene.triangleExpansion);
-                this.step3Material.setFloatParameter("fadeInLuneA", this.scene.fadeInLuneA);
-                this.step3Material.setFloatParameter("fadeInLuneB", this.scene.fadeInLuneB);
-                this.step3Material.setFloatParameter("fadeInLuneC", this.scene.fadeInLuneC);
+                this.step3SphereMaterial.setFloatParameter("rotation", this.scene.rotation);
+                this.step3SphereMaterial.setFloatParameter("fadeInTriangle", this.scene.fadeInTriangle);
+                this.step3SphereMaterial.setFloatParameter("triangleExpansion", this.scene.triangleExpansion);
+                this.step3SphereMaterial.setFloatParameter("fadeInLuneA", this.scene.fadeInLuneA);
+                this.step3SphereMaterial.setFloatParameter("fadeInLuneB", this.scene.fadeInLuneB);
+                this.step3SphereMaterial.setFloatParameter("fadeInLuneC", this.scene.fadeInLuneC);
                 break;
             case 3:
-                this.step4Material.setFloatParameter("fadeInPolygon", this.scene.fadeInPolygon);
-                this.step4Material.setFloatParameter("fadeInTriangle", this.scene.fadeInTriangle);
+                this.step4SphereMaterial.setFloatParameter("fadeInPolygon", this.scene.fadeInPolygon);
+                this.step4SphereMaterial.setFloatParameter("fadeInTriangle", this.scene.fadeInTriangle);
             }
+    }
+
+    private createCentralSphere() {
+        const AttributeType = Filament.VertexBuffer$AttributeType;
+        const IndexType = Filament.IndexBuffer$IndexType;
+        const PrimitiveType = Filament.RenderableManager$PrimitiveType;
+        const VertexAttribute = Filament.VertexAttribute;
+
+        const icosphere = new Filament.IcoSphere(5);
+
+        const vb: Filament.VertexBuffer = Filament.VertexBuffer.Builder()
+            .vertexCount(icosphere.vertices.length / 3)
+            .bufferCount(2)
+            .attribute(VertexAttribute.POSITION, 0, AttributeType.FLOAT3, 0, 0)
+            .attribute(VertexAttribute.TANGENTS, 1, AttributeType.SHORT4, 0, 0)
+            .normalized(VertexAttribute.TANGENTS)
+            .build(this.engine);
+
+        const ib: Filament.IndexBuffer = Filament.IndexBuffer.Builder()
+            .indexCount(icosphere.triangles.length)
+            .bufferType(IndexType.USHORT)
+            .build(this.engine);
+
+        vb.setBufferAt(this.engine, 0, icosphere.vertices);
+        vb.setBufferAt(this.engine, 1, icosphere.tangents);
+        ib.setBuffer(this.engine, icosphere.triangles);
+
+        this.sphereEntity = Filament.EntityManager.get().create();
+
+        Filament.RenderableManager.Builder(1)
+            .boundingBox({ center: [-1, -1, -1], halfExtent: [1, 1, 1] })
+            .material(0, this.step1SphereMaterial)
+            .geometry(0, PrimitiveType.TRIANGLES, vb, ib)
+            .build(this.engine, this.sphereEntity);
     }
 
     private createCylinders() {
@@ -289,7 +343,7 @@ export class Display {
         cylinder.tangents = new Int16Array(tangentsMemory);
         /* tslint:enable */
 
-        const vb = Filament.VertexBuffer.Builder()
+        const vb = this.cylinderVertexBuffer = Filament.VertexBuffer.Builder()
             .vertexCount(kVertCount)
             .bufferCount(2)
             .attribute(VertexAttribute.POSITION, 0, AttributeType.FLOAT3, 0, 0)
@@ -297,7 +351,7 @@ export class Display {
             .normalized(VertexAttribute.TANGENTS)
             .build(this.engine);
 
-        const ib = Filament.IndexBuffer.Builder()
+        const ib = this.cylinderIndexBuffer = Filament.IndexBuffer.Builder()
             .indexCount(cylinder.triangles.length)
             .bufferType(IndexType.USHORT)
             .build(this.engine);
@@ -312,12 +366,16 @@ export class Display {
         glm.mat4.multiply(m1, m1, m3);
         glm.mat4.multiply(m1, m1, m2);
 
+        this.frontCylinderEntity = Filament.EntityManager.get().create();
+
         Filament.RenderableManager.Builder(1)
             .boundingBox({ center: [-1, -1, -1], halfExtent: [1, 1, 1] })
             .material(0, this.step1CylinderFrontMaterial)
             .geometry(0, PrimitiveType.TRIANGLES, vb, ib)
             .culling(false)
             .build(this.engine, this.frontCylinderEntity);
+
+        this.backCylinderEntity = Filament.EntityManager.get().create();
 
         Filament.RenderableManager.Builder(1)
             .boundingBox({ center: [-1, -1, -1], halfExtent: [1, 1, 1] })
@@ -338,35 +396,37 @@ export class Display {
         inst.delete();
     }
 
-    private createSphere() {
-        const AttributeType = Filament.VertexBuffer$AttributeType;
-        const IndexType = Filament.IndexBuffer$IndexType;
+    private createPolyhedron() {
         const PrimitiveType = Filament.RenderableManager$PrimitiveType;
-        const VertexAttribute = Filament.VertexAttribute;
 
-        const icosphere = new Filament.IcoSphere(5);
+        this.polyhedronEntities = [];
+        const nedges = this.polyhedronEntities.length = 5;
+        for (let i = 0; i < nedges; i += 1) {
+            this.polyhedronEntities[i] = Filament.EntityManager.get().create();
+        }
 
-        const vb: Filament.VertexBuffer = Filament.VertexBuffer.Builder()
-            .vertexCount(icosphere.vertices.length / 3)
-            .bufferCount(2)
-            .attribute(VertexAttribute.POSITION, 0, AttributeType.FLOAT3, 0, 0)
-            .attribute(VertexAttribute.TANGENTS, 1, AttributeType.SHORT4, 0, 0)
-            .normalized(VertexAttribute.TANGENTS)
-            .build(this.engine);
+        const vb = this.cylinderVertexBuffer;
+        const ib = this.cylinderIndexBuffer;
 
-        const ib: Filament.IndexBuffer = Filament.IndexBuffer.Builder()
-            .indexCount(icosphere.triangles.length)
-            .bufferType(IndexType.USHORT)
-            .build(this.engine);
+        const m1 = glm.mat4.fromRotation(glm.mat4.create(), Math.PI / 2, [1, 0, 0]);
+        const m2 = glm.mat4.fromTranslation(glm.mat4.create(), [0, 0, 0]);
+        const m3 = glm.mat4.fromScaling(glm.mat4.create(), [1, 1, 1]);
+        glm.mat4.multiply(m1, m1, m3);
+        glm.mat4.multiply(m1, m1, m2);
 
-        vb.setBufferAt(this.engine, 0, icosphere.vertices);
-        vb.setBufferAt(this.engine, 1, icosphere.tangents);
-        ib.setBuffer(this.engine, icosphere.triangles);
+        const entity = this.polyhedronEntities[0];
 
         Filament.RenderableManager.Builder(1)
             .boundingBox({ center: [-1, -1, -1], halfExtent: [1, 1, 1] })
-            .material(0, this.step1Material)
+            .material(0, this.step5PolyhedronMaterial)
             .geometry(0, PrimitiveType.TRIANGLES, vb, ib)
-            .build(this.engine, this.sphereEntity);
+            .culling(false)
+            .build(this.engine, entity);
+
+        const tcm = this.engine.getTransformManager();
+        tcm.create(entity);
+        const inst = tcm.getInstance(entity);
+        tcm.setTransform(inst, m1);
+        inst.delete();
     }
 }

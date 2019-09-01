@@ -1,0 +1,26 @@
+material {
+    name : step5,
+    shadingModel : lit,
+    blending: fade,
+    depthCulling: false,
+    culling: back,
+    parameters : [
+        { type : float3, name : baseColor },
+        { type : float,  name : roughness },
+        { type : float,  name : clearCoat },
+        { type : float,  name : clearCoatRoughness }
+    ],
+}
+
+fragment {
+
+    void material(inout MaterialInputs material) {
+        prepareMaterial(material);
+        material.baseColor.rgb = materialParams.baseColor;
+        material.baseColor.b *= 0.5;
+        material.baseColor *= 0.1;
+        material.roughness = materialParams.roughness;
+        material.clearCoat = materialParams.clearCoat;
+        material.clearCoatRoughness = materialParams.clearCoatRoughness;
+    }
+}

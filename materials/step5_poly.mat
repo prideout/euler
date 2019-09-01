@@ -1,0 +1,17 @@
+material {
+    name : step5Poly,
+    shadingModel : lit,
+    culling: back,
+    parameters : [
+    ],
+}
+
+fragment {
+    void material(inout MaterialInputs material) {
+        prepareMaterial(material);
+        material.baseColor = vec4(0.9, 0.0, 0.1, 1.0);
+        material.roughness = 0.2;
+        material.clearCoat = 0.0;
+        material.metallic = 0.0;
+    }
+}
