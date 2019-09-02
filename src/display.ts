@@ -42,12 +42,25 @@ export class Display {
         // tslint:disable-next-line: no-string-literal
         window["vec3"] = glm.vec3;
 
+        this.currentStep = -1;
         this.production = production;
         this.scene = scene;
         this.canvas2d = document.getElementById("canvas2d") as HTMLCanvasElement;
         this.canvas3d = document.getElementById("canvas3d") as HTMLCanvasElement;
         this.context2d = this.canvas2d.getContext("2d");
-        this.engine = Filament.Engine.create(this.canvas3d);
+
+        try {
+            this.engine = Filament.Engine.create(this.canvas3d);
+        } catch (e) {
+            console.error("WebGL 2.0 is not supported.");
+            this.canvas3d.remove();
+            this.canvas3d = undefined;
+        }
+
+        if (!this.canvas3d) {
+            return;
+        }
+
         this.filamentScene = this.engine.createScene();
         this.swapChain = this.engine.createSwapChain();
         this.renderer = this.engine.createRenderer();
@@ -110,7 +123,6 @@ export class Display {
             .build(this.engine, sunlight);
         this.filamentScene.addEntity(sunlight);
 
-        this.currentStep = -1;
         this.update(0);
     }
 
