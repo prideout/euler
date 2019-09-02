@@ -5,12 +5,47 @@ import * as polyhedron from "./polyhedron";
 import { Scene } from "./scene";
 import * as urls from "./urls";
 
+const kFallbackImages = [
+    [0, 0.05],
+    [0, 0.40],
+    [0, 0.65],
+    [1, 0.16],
+    [1, 0.24],
+    [1, 0.45],
+    [1, 0.82],
+    [2, 0.12],
+    [2, 0.30],
+    [2, 0.50],
+    [2, 0.57],
+    [2, 0.62],
+    [2, 0.75],
+    [3, 0.16],
+    [3, 0.41],
+    [3, 0.89],
+    [4, 0.13],
+    [4, 0.29],
+    [4, 0.44],
+];
+
+function getFallbackUrl(panel: number, progress: number): string {
+    let url = "";
+    for (const pair of kFallbackImages) {
+        const p0 = pair[0].toString();
+        const p1 = Math.round(pair[1] * 100).toString().padStart(2, "0");
+        if (pair[0] <= panel && pair[1] <= progress) {
+            url = `images/img${p0}_${p1}.png`;
+        }
+    }
+    return url;
+}
+
 export class Display {
     private backCylinderEntity: Filament.Entity;
     private readonly camera: Filament.Camera;
     private readonly canvas2d: HTMLCanvasElement;
     private readonly canvas3d: HTMLCanvasElement;
     private readonly context2d: CanvasRenderingContext2D;
+    private currentProgress = 0;
     private currentStep = 0;
     private cylinderIndexBuffer: Filament.IndexBuffer;
     private cylinderVertexBuffer: Filament.VertexBuffer;
@@ -59,8 +94,9 @@ export class Display {
             this.canvas2d.remove();
             this.canvas2d = undefined;
 
+            const pair = kFallbackImages[0];
             this.fallbackImage = document.createElement("img");
-            this.fallbackImage.src = "images/screenshot_3d_0_0.05.png";
+            this.fallbackImage.src = getFallbackUrl(pair[0], pair[1]);
             this.fallbackImage.style.height = "auto";
 
             parent.appendChild(this.fallbackImage);
@@ -133,15 +169,24 @@ export class Display {
             .build(this.engine, sunlight);
         this.filamentScene.addEntity(sunlight);
 
-        this.update(0);
+        this.update(0, 0);
     }
 
     public render() {
-        if (this.canvas3d) {
-            const vp = this.scene.viewpoint;
-            this.camera.lookAt(vp.eye, vp.center, vp.up);
-            this.renderer.render(this.swapChain, this.view);
+        if (!this.canvas3d) {
+            const url = getFallbackUrl(this.currentStep, this.currentProgress);
+            if (this.currentStep === -1 || this.currentProgress === -1) {
+                return;
+            }
+            if (url && this.fallbackImage.src !== url) {
+                this.fallbackImage.src = url;
+            }
+            return;
         }
+
+        const vp = this.scene.viewpoint;
+        this.camera.lookAt(vp.eye, vp.center, vp.up);
+        this.renderer.render(this.swapChain, this.view);
 
         const width = this.canvas2d.width;
         const height = this.canvas2d.height;
@@ -182,11 +227,14 @@ export class Display {
         this.camera.setProjectionFov(fov, aspect, near, far, Filament.Camera$Fov.HORIZONTAL);
     }
 
-    public update(step: number) {
+    public update(step: number, progress: number) {
+        this.currentProgress = progress;
+
         if (!this.canvas3d) {
             this.currentStep = step;
             return;
         }
+
         const rm = this.engine.getRenderableManager();
         const tcm = this.engine.getTransformManager();
         if (this.currentStep !== step) {

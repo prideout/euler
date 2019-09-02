@@ -40,7 +40,7 @@ export class App {
             this.display = new Display(this.production, this.scene);
             this.timeline = new Timeline(this.scene);
             this.timeline.update(0, 0);
-            this.display.update(0);
+            this.display.update(0, 0);
             this.display.resize();
             this.story.refresh();
         });
@@ -53,7 +53,7 @@ export class App {
     private render(panel: number, progress: number) {
         if (panel > -1) {
             this.timeline.update(panel, progress);
-            this.display.update(panel);
+            this.display.update(panel, progress);
         }
         this.display.render();
     }
