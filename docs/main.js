@@ -10271,17 +10271,6 @@ class Display {
             this.context2d.fillText(span.text, x, y);
         }
         this.context2d.fillStyle = "rgba(0, 0, 0, 1)";
-        // Draw horizontal guide line for step transitions.
-        if (!this.production) {
-            this.context2d.translate(width / 2.0, height / 2.0);
-            this.context2d.scale(width / 2.0, width / 2.0);
-            this.context2d.beginPath();
-            this.context2d.moveTo(-1, 0);
-            this.context2d.lineTo(+1, 0);
-            this.context2d.lineWidth = 0.01;
-            this.context2d.setLineDash([0.01, 0.02]);
-            this.context2d.stroke();
-        }
     }
     resize() {
         const Fov = filament__WEBPACK_IMPORTED_MODULE_0__["Camera$Fov"];
