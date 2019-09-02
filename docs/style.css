@@ -23,6 +23,7 @@ h1, h2 {
     position: relative;
     font-family: "circular", sans-serif;
     font-size: 20px;
+    -webkit-overflow-scrolling: touch;
 }
 .chart  {
     position: sticky;
@@ -31,6 +32,11 @@ h1, h2 {
     top: calc(50% - 100px);
     text-align: center;
     z-index: -1;
+
+    /* Safari workarounds: */
+    pointer-events: none;
+    display: block;
+    position: -webkit-sticky;
 }
 .chart > div {
     width: 100%;

@@ -4,6 +4,7 @@ import * as glm from "gl-matrix";
 import * as polyhedron from "./polyhedron";
 import { Scene } from "./scene";
 import * as urls from "./urls";
+import { threadId } from "worker_threads";
 
 export class Display {
     private backCylinderEntity: Filament.Entity;
@@ -127,9 +128,11 @@ export class Display {
     }
 
     public render() {
-        const vp = this.scene.viewpoint;
-        this.camera.lookAt(vp.eye, vp.center, vp.up);
-        this.renderer.render(this.swapChain, this.view);
+        if (this.canvas3d) {
+            const vp = this.scene.viewpoint;
+            this.camera.lookAt(vp.eye, vp.center, vp.up);
+            this.renderer.render(this.swapChain, this.view);
+        }
 
         const width = this.canvas2d.width;
         const height = this.canvas2d.height;
@@ -163,27 +166,29 @@ export class Display {
     }
 
     public resize() {
-        const Fov = Filament.Camera$Fov;
-
         const dpr = window.devicePixelRatio;
-        const width = this.canvas3d.width = this.canvas3d.clientWidth * dpr;
-        const height = this.canvas3d.height = this.canvas3d.clientHeight * dpr;
-        this.view.setViewport([0, 0, width, height]);
-
-        this.canvas2d.width = width;
-        this.canvas2d.height = height;
+        const width = this.canvas2d.width = this.canvas2d.clientWidth * dpr;
+        const height = this.canvas2d.height = this.canvas2d.clientHeight * dpr;
         this.context2d.setTransform(1, 0, 0, 1, 0, 0);
         this.context2d.translate(width / 2.0, height / 2.0);
         this.context2d.scale(width / 2.0, width / 2.0);
-
-        const aspect: number = width / height;
-        const fov = 45;
-        const near = 1.0;
-        const far = 20000.0;
-        this.camera.setProjectionFov(fov, aspect, near, far, Fov.HORIZONTAL);
+        if (this.canvas3d) {
+            this.canvas3d.width = width;
+            this.canvas3d.height = height;
+            this.view.setViewport([0, 0, width, height]);
+            const aspect: number = width / height;
+            const fov = 45;
+            const near = 1.0;
+            const far = 20000.0;
+            this.camera.setProjectionFov(fov, aspect, near, far, Filament.Camera$Fov.HORIZONTAL);
+        }
     }
 
     public update(step: number) {
+        if (!this.canvas3d) {
+            this.currentStep = step;
+            return;
+        }
         const rm = this.engine.getRenderableManager();
         const tcm = this.engine.getTransformManager();
         if (this.currentStep !== step) {
