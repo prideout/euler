@@ -4,7 +4,6 @@ import * as glm from "gl-matrix";
 import * as polyhedron from "./polyhedron";
 import { Scene } from "./scene";
 import * as urls from "./urls";
-import { threadId } from "worker_threads";
 
 export class Display {
     private backCylinderEntity: Filament.Entity;
@@ -16,6 +15,7 @@ export class Display {
     private cylinderIndexBuffer: Filament.IndexBuffer;
     private cylinderVertexBuffer: Filament.VertexBuffer;
     private readonly engine: Filament.Engine;
+    private readonly fallbackImage: HTMLImageElement;
     private readonly filamentScene: Filament.Scene;
     private frontCylinderEntity: Filament.Entity;
     private readonly indirectLight: Filament.IndirectLight;
@@ -48,20 +48,29 @@ export class Display {
         this.scene = scene;
         this.canvas2d = document.getElementById("canvas2d") as HTMLCanvasElement;
         this.canvas3d = document.getElementById("canvas3d") as HTMLCanvasElement;
-        this.context2d = this.canvas2d.getContext("2d");
 
         try {
             this.engine = Filament.Engine.create(this.canvas3d);
         } catch (e) {
             console.error("WebGL 2.0 is not supported.");
+            const parent = this.canvas3d.parentElement;
             this.canvas3d.remove();
             this.canvas3d = undefined;
+            this.canvas2d.remove();
+            this.canvas2d = undefined;
+
+            this.fallbackImage = document.createElement("img");
+            this.fallbackImage.src = "images/screenshot_3d_0_0.05.png";
+            this.fallbackImage.style.height = "auto";
+
+            parent.appendChild(this.fallbackImage);
         }
 
         if (!this.canvas3d) {
             return;
         }
 
+        this.context2d = this.canvas2d.getContext("2d");
         this.filamentScene = this.engine.createScene();
         this.swapChain = this.engine.createSwapChain();
         this.renderer = this.engine.createRenderer();
@@ -151,37 +160,26 @@ export class Display {
         }
 
         this.context2d.fillStyle = "rgba(0, 0, 0, 1)";
-
-        // Draw horizontal guide line for step transitions.
-        if (!this.production) {
-            this.context2d.translate(width / 2.0, height / 2.0);
-            this.context2d.scale(width / 2.0, width / 2.0);
-            this.context2d.beginPath();
-            this.context2d.moveTo(-1, 0);
-            this.context2d.lineTo(+1, 0);
-            this.context2d.lineWidth = 0.01;
-            this.context2d.setLineDash([0.01, 0.02]);
-            this.context2d.stroke();
-        }
     }
 
     public resize() {
+        if (!this.canvas3d) {
+            return;
+        }
         const dpr = window.devicePixelRatio;
         const width = this.canvas2d.width = this.canvas2d.clientWidth * dpr;
         const height = this.canvas2d.height = this.canvas2d.clientHeight * dpr;
         this.context2d.setTransform(1, 0, 0, 1, 0, 0);
         this.context2d.translate(width / 2.0, height / 2.0);
         this.context2d.scale(width / 2.0, width / 2.0);
-        if (this.canvas3d) {
-            this.canvas3d.width = width;
-            this.canvas3d.height = height;
-            this.view.setViewport([0, 0, width, height]);
-            const aspect: number = width / height;
-            const fov = 45;
-            const near = 1.0;
-            const far = 20000.0;
-            this.camera.setProjectionFov(fov, aspect, near, far, Filament.Camera$Fov.HORIZONTAL);
-        }
+        this.canvas3d.width = width;
+        this.canvas3d.height = height;
+        this.view.setViewport([0, 0, width, height]);
+        const aspect: number = width / height;
+        const fov = 45;
+        const near = 1.0;
+        const far = 20000.0;
+        this.camera.setProjectionFov(fov, aspect, near, far, Filament.Camera$Fov.HORIZONTAL);
     }
 
     public update(step: number) {
@@ -429,7 +427,6 @@ export class Display {
     private createPolyhedron() {
         const PrimitiveType = Filament.RenderableManager$PrimitiveType;
 
-        const faces = polyhedron.truncated_icosahedron.faces;
         const edges = polyhedron.truncated_icosahedron.edges;
         const verts = polyhedron.truncated_icosahedron.verts;
 
