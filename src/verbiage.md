@@ -30,6 +30,8 @@ into 5 steps:
     <div>
         <canvas id="canvas3d"></canvas>
         <canvas id="canvas2d"></canvas>
+        <a href="#changed_by_js" class="button" id="download3d" download="download3d.png">Download</a>
+        <a href="#changed_by_js" class="button" id="download2d" download="download2d.png">Download</a>
     </div>
 </div>
 

@@ -20,6 +20,31 @@ export class App {
         this.production = BUILD_COMMAND.indexOf("release") > -1;
         console.info(this.production ? "Production mode" : "Development mode");
 
+        document.addEventListener("keypress", (key) => {
+            if (key.key === "s") {
+                const canvas3d = document.getElementById("canvas3d") as HTMLCanvasElement;
+                const canvas2d = document.getElementById("canvas2d") as HTMLCanvasElement;
+                const data3d = canvas3d.toDataURL("image/png");
+                const data2d = canvas2d.toDataURL("image/png");
+
+                const download3d: HTMLAnchorElement = document.getElementById("download3d") as HTMLAnchorElement;
+                const download2d: HTMLAnchorElement = document.getElementById("download2d") as HTMLAnchorElement;
+
+                download3d.href = data3d;
+                download2d.href = data2d;
+
+                const step = this.story.getActivePanelIndex();
+                const progress = this.story.getProgressValue();
+                const prog = progress.toFixed(2);
+
+                download3d.download = `screenshot_3d_${step}_${prog}.png`;
+                download2d.download = `screenshot_2d_${step}_${prog}.png`;
+
+                download3d.click();
+                download2d.click();
+            }
+        });
+
         this.story = new Story({
             chartSelector: ".chart",
             containerSelector: ".container",

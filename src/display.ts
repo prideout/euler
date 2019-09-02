@@ -47,7 +47,12 @@ export class Display {
         this.canvas2d = document.getElementById("canvas2d") as HTMLCanvasElement;
         this.canvas3d = document.getElementById("canvas3d") as HTMLCanvasElement;
         this.context2d = this.canvas2d.getContext("2d");
-        this.engine = Filament.Engine.create(this.canvas3d);
+
+        const foo = Filament.Engine.create as any;
+        this.engine = foo(this.canvas3d, {
+            preserveDrawingBuffer: true
+        });
+
         this.filamentScene = this.engine.createScene();
         this.swapChain = this.engine.createSwapChain();
         this.renderer = this.engine.createRenderer();
