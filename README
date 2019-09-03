@@ -10,10 +10,6 @@ To publish:
     yarn build:release
     git commit -a -m 'Publish' && git push
 
-Todo:
-
-    Backup images for safari
-
 See also:
 
     "Euler's Gem" by David Richeson
