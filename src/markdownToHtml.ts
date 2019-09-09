@@ -76,6 +76,7 @@ const generatedHtml = `<!DOCTYPE html>
 <title>Euler's Polyhedron Formula</title>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="Description" content="Visual proof of the polyhedron formula.">
 <link href="favicon.png" rel="icon" type="image/x-icon" />
 <link href="https://fonts.googleapis.com/css?family=Alegreya" rel="stylesheet">
 <link href="style.css" rel="stylesheet">

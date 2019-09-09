@@ -169,8 +169,8 @@ the Euler characteristic would be 0 rather than 2.
 To learn more about this, I recommend David Richeson's excellent book [*Euler's Gem*][1], which was the inspiration for
 this page.
 
-Also the inimitable 3blue1brown has a great video on the polyhedron formula [here][2], as well as [this][3] video about
-the surface area of a sphere.
+Also the inimitable 3blue1brown has a [great video on the polyhedron formula][2], as well as [a video about
+the surface area of a sphere][3].
 
 </segment>
 
@@ -185,7 +185,7 @@ GitHub Projects:
  - <a href="https://github.com/google/scrollytell">google/scrollytell</a>
 
 <a href="https://prideout.net">
-<img src="https://prideout.net/assets/PublishedLogo.svg" style="height:64px">
+<img src="https://prideout.net/assets/PublishedLogo.svg" alt="The Little Grasshopper" style="height:64px">
 </a>
 
 </segment>
